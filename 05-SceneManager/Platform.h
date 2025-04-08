@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GameObject.h"
 
@@ -12,11 +12,18 @@ protected:
 	float cellWidth;
 	float cellHeight;
 	int spriteIdBegin, spriteIdMiddle, spriteIdEnd;
+	boolean direction1, direction2, direction3, direction4;
 
 public:
+	// Thêm 4 thuộc tính là direction 1,2,3,4 để custom về hướng collision
+	// direction1 -> nx = -1
+	// direction2 -> nx = 1
+	// direction3 -> ny = -1
+	// direction4 -> ny = 1
 	CPlatform(float x, float y,
 		float cell_width, float cell_height, int length,
-		int sprite_id_begin, int sprite_id_middle, int sprite_id_end) :CGameObject(x, y)
+		int sprite_id_begin, int sprite_id_middle, int sprite_id_end,
+		boolean direction1, boolean direction2, boolean direction3, boolean direction4) :CGameObject(x, y)
 	{
 		this->length = length;
 		this->cellWidth = cell_width;
@@ -24,6 +31,10 @@ public:
 		this->spriteIdBegin = sprite_id_begin;
 		this->spriteIdMiddle = sprite_id_middle;
 		this->spriteIdEnd = sprite_id_end;
+		this->direction1 = direction1;
+		this->direction2 = direction2;
+		this->direction3 = direction3;
+		this->direction4 = direction4;
 	}
 
 	void Render();
