@@ -101,12 +101,12 @@
 
 #define MARIO_UNTOUCHABLE_TIME 2500
 
-class CMario : public CGameObject
+class CMario : public CGameObject, public CMoveable
 {
 	BOOLEAN isSitting;
-	float maxVx;
-	float ax;				// acceleration on x 
-	float ay;				// acceleration on y 
+	//float maxVx;
+	//float ax;				// acceleration on x 
+	//float ay;				// acceleration on y 
 
 	int level; 
 	int untouchable; 
@@ -153,4 +153,14 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+
+	virtual void SetSpeed(float vx, float vy) override {
+		this->vx = vx;
+		this->vy = vy;
+	}
+	virtual void GetSpeed(float& vx, float& vy) override {
+		vx = this->vx;
+		vy = this->vy;
+	}
+
 };

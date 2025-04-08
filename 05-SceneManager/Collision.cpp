@@ -129,12 +129,25 @@ LPCOLLISIONEVENT CCollision::SweptAABB(LPGAMEOBJECT objSrc, DWORD dt, LPGAMEOBJE
 	float t, nx, ny;
 
 	float mvx, mvy;
-	objSrc->GetSpeed(mvx, mvy);
+	if (dynamic_cast<CMoveable*>(objSrc)) {
+		dynamic_cast<CMoveable*>(objSrc)->GetSpeed(mvx, mvy);
+	}
+	else
+	{
+		//the object is immoveable->has no velocity, same for the below
+		mvx = mvy = 0.0f;
+	}
 	float mdx = mvx * dt;
 	float mdy = mvy * dt;
 
 	float svx, svy;
-	objDest->GetSpeed(svx, svy);
+	if (dynamic_cast<CMoveable*>(objDest)) {
+		dynamic_cast<CMoveable*>(objDest)->GetSpeed(svx, svy);
+	}
+	else
+	{
+		svx = svy = 0.0f;
+	}
 	float sdx = svx * dt;
 	float sdy = svy * dt;
 
@@ -247,7 +260,12 @@ void CCollision::Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* co
 
 		float x, y, vx, vy, dx, dy;
 		objSrc->GetPosition(x, y);
-		objSrc->GetSpeed(vx, vy);
+		if (dynamic_cast<CMoveable*>(objSrc)) {
+			dynamic_cast<CMoveable*>(objSrc)->GetSpeed(vx, vy);
+		}
+		else {
+			vx = vy = 0;
+		}
 		dx = vx * dt;
 		dy = vy * dt;
 
