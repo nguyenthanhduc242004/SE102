@@ -11,7 +11,7 @@ tree.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = Coins, 5 = Platform
 # See OBJECT_TYPE constants in AssetIDs.h
 
 
@@ -89,24 +89,8 @@ tree.txt
 
 
 
-#COIN
-4	100	120
-4	120	120
-4	140	120
-4	160	120
-4	180	120
-
-4	100	100
-4	120	100
-4	140	100
-4	160	100
-4	180	100
-
-4	100	80
-4	120	80
-4	140	80
-4	160	80
-4	180	80
+#COIN		itX	itY	ofX	ofY
+4	100	120	5	3	20	-20
 
 
 
