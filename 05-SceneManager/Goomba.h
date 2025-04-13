@@ -17,11 +17,11 @@
 #define ID_ANI_GOOMBA_WALKING 5000
 #define ID_ANI_GOOMBA_DIE 5001
 
-class CGoomba : public CGameObject
+class CGoomba : public CGameObject, public CMoveable
 {
 protected:
-	float ax;				
-	float ay; 
+	//float ax;				
+	//float ay; 
 
 	ULONGLONG die_start;
 
@@ -38,4 +38,14 @@ protected:
 public: 	
 	CGoomba(float x, float y);
 	virtual void SetState(int state);
+
+	virtual void SetSpeed(float vx, float vy) override {
+		this->vx = vx;
+		this->vy = vy;
+	}
+	virtual void GetSpeed(float& vx, float& vy) override {
+		vx = this->vx;
+		vy = this->vy;
+	}
+
 };

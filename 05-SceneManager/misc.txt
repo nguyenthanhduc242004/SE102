@@ -1,6 +1,15 @@
 # id	left	top	right	bottom	texture_id
 [SPRITES]
-70001	52	6	67	21	30
+#Mushroom
+100001	112	32	127	47	40
+#Star
+100002	224	64	239	79	40
+#Super mushroom
+100003	256	64	271	79	40
+
+
+
+
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
