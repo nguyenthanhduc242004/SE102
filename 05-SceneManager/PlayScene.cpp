@@ -34,6 +34,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 
 #define MAX_SCENE_LINE 1024
 
+#define DEFALT_CAM_Y 244.0f
+
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
 	vector<string> tokens = split(line);
@@ -329,7 +331,7 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, DEFALT_CAM_Y /*cy*/);
 
 	PurgeDeletedObjects();
 }
