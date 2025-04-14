@@ -12,22 +12,22 @@ void CBackgroundCloud::Render()
 	float xx = x;
 	CSprites* s = CSprites::GetInstance();
 
-	s->Get(this->sprite_id_first_quarter)->Draw(xx, y);
+	s->Get(SPRITE_ID_BACKGROUND_CLOUD_FIRST_QUARTER)->Draw(xx, y);
 	xx += this->cellWidth;
-	s->Get(this->sprite_id_second_quarter)->Draw(xx, y);
+	s->Get(SPRITE_ID_BACKGROUND_CLOUD_SECOND_QUARTER)->Draw(xx, y);
 	xx += this->cellWidth;
 
 	for (int i = 1; i < this->length; i++)
 	{
-		s->Get(this->sprite_id_third_quarter)->Draw(xx, y);
+		s->Get(SPRITE_ID_BACKGROUND_CLOUD_THIRD_QUARTER)->Draw(xx, y);
 		xx += this->cellWidth;
-		s->Get(this->sprite_id_second_quarter)->Draw(xx, y);
+		s->Get(SPRITE_ID_BACKGROUND_CLOUD_SECOND_QUARTER)->Draw(xx, y);
 		xx += this->cellWidth;
 	}
 
-	s->Get(this->sprite_id_third_quarter)->Draw(xx, y);
+	s->Get(SPRITE_ID_BACKGROUND_CLOUD_THIRD_QUARTER)->Draw(xx, y);
 	xx += this->cellWidth;
-	s->Get(this->sprite_id_fourth_quarter)->Draw(xx, y);
+	s->Get(SPRITE_ID_BACKGROUND_CLOUD_FOURTH_QUARTER)->Draw(xx, y);
 
 	//RenderBoundingBox();	
 }

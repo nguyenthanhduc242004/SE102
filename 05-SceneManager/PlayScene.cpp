@@ -11,6 +11,7 @@
 #include "Platform.h"
 #include "Background.h"
 #include "BackgroundCloud.h"
+#include "Block.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -195,15 +196,22 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BACKGROUND_CLOUD:
 	{
 		int length = atoi(tokens[3].c_str());
-		int sprite_id_first_quarter = atoi(tokens[4].c_str());
-		int sprite_id_second_quarter = atoi(tokens[5].c_str());
-		int sprite_id_third_quarter = atoi(tokens[6].c_str());
-		int sprite_id_fourth_quarter = atoi(tokens[7].c_str());
 
-		objs.push_back(new CBackgroundCloud(
+		objs.push_back(new CBackgroundCloud(x, y, length));
+
+		break;
+	}
+
+	case OBJECT_TYPE_BLOCK:
+	{
+		int length_width = atoi(tokens[3].c_str());
+		int length_height = atoi(tokens[4].c_str());
+		int color = atoi(tokens[5].c_str());
+
+		objs.push_back(new CBlock(
 			x, y,
-			length,
-			sprite_id_first_quarter, sprite_id_second_quarter, sprite_id_third_quarter, sprite_id_fourth_quarter
+			length_width, length_height,
+			color
 		));
 
 		break;

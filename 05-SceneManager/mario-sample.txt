@@ -19,3 +19,4 @@ height	240
 20	textures\misc.png
 30	textures\misc-2.png
 40	textures\Map1-1.png
+50	textures\tiles.png

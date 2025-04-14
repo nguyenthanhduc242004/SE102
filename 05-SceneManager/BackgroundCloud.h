@@ -5,25 +5,16 @@
 #define BACKGROUND_CLOUDE_WIDTH 32
 #define BACKGROUND_CLOUDE_HEIGHT 24
 
+#define SPRITE_ID_BACKGROUND_CLOUD_FIRST_QUARTER 90001
+#define SPRITE_ID_BACKGROUND_CLOUD_SECOND_QUARTER 90002
+#define SPRITE_ID_BACKGROUND_CLOUD_THIRD_QUARTER 90003
+#define SPRITE_ID_BACKGROUND_CLOUD_FOURTH_QUARTER 90004
+
 class CBackgroundCloud : public CBackground
 {
-protected:
-	int sprite_id_first_quarter;
-	int sprite_id_second_quarter;
-	int sprite_id_third_quarter;
-	int sprite_id_fourth_quarter;
-
 public:
-	CBackgroundCloud(float x, float y,
-		int length,
-		int sprite_id_first_quarter, int sprite_id_second_quarter, int sprite_id_third_quarter, int sprite_id_fourth_quarter)
-		:CBackground(x, y, BACKGROUND_CLOUDE_WIDTH / 4, BACKGROUND_CLOUDE_HEIGHT, length, NULL, NULL, NULL)
-	{
-		this->sprite_id_first_quarter = sprite_id_first_quarter;
-		this->sprite_id_second_quarter = sprite_id_second_quarter;
-		this->sprite_id_third_quarter = sprite_id_third_quarter;
-		this->sprite_id_fourth_quarter = sprite_id_fourth_quarter;
-	}
+	CBackgroundCloud(float x, float y, int length)
+		:CBackground(x, y, BACKGROUND_CLOUDE_WIDTH / 4, BACKGROUND_CLOUDE_HEIGHT, length, NULL, NULL, NULL) {}
 
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
