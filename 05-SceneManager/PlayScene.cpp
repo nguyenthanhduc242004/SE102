@@ -11,7 +11,7 @@
 #include "Platform.h"
 #include "Background.h"
 #include "BackgroundCloud.h"
-#include "Block.h"
+#include "Box.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -202,13 +202,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 
-	case OBJECT_TYPE_BLOCK:
+	case OBJECT_TYPE_BOX:
 	{
 		int length_width = atoi(tokens[3].c_str());
 		int length_height = atoi(tokens[4].c_str());
 		int color = atoi(tokens[5].c_str());
 
-		objs.push_back(new CBlock(
+		objs.push_back(new CBox(
 			x, y,
 			length_width, length_height,
 			color

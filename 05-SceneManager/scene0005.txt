@@ -9,7 +9,8 @@ bush.txt
 tree.txt
 background_cloud.txt
 misc.txt
-block.txt
+box.txt
+platform_cloud.txt
 
 #
 [OBJECTS]
@@ -126,6 +127,12 @@ block.txt
 5 	1636	424	16	16	5	61001	61002	61003
 5 	1764	424	16	16	36	61001	61002	61003
 5 	2356	424	16	16	35	61001	61002	61003
+
+
+
+#Platform Cloud
+5	1508	200	16	16	4	120001	120001	120001
+5	1588	184	16	16	13	120001	120001	120001
 
 
 
