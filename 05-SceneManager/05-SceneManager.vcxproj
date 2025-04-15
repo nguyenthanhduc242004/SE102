@@ -150,6 +150,7 @@
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="BackgroundCloud.cpp" />
+    <ClCompile Include="BlockPlatform.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Coin.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="AssetIDs.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="BackgroundCloud.h" />
+    <ClInclude Include="BlockPlatform.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Coin.h" />
