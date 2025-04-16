@@ -1,0 +1,65 @@
+#include "QuestionBlock.h"
+
+CQuestionBlock::CQuestionBlock(float x, float y) :CGameObject(x, y)
+{
+	lastFrameTime = 0;
+	disabled_start = -1;
+	SetState(QUESTION_BLOCK_STATE_ACTIVE);
+}
+
+void CQuestionBlock::GetBoundingBox(float& left, float& top, float& right, float& bottom)
+{
+	left = x - QUESTION_BLOCK_WIDTH / 2;
+	top = y - QUESTION_BLOCK_HEIGHT / 2;
+	right = left + QUESTION_BLOCK_WIDTH;
+	bottom = top + QUESTION_BLOCK_HEIGHT;
+}
+
+void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	// Bounce the QuestionBlock a bit
+	if (state == QUESTION_BLOCK_STATE_DISABLED) {
+		ULONGLONG time = GetTickCount64() - disabled_start;
+		if (time < QUESTION_BLOCK_BOUNE_TIME / 2) {
+			int bouncePx = time / (QUESTION_BLOCK_BOUNE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT);
+			int lastFrameBouncePx = lastFrameTime / (QUESTION_BLOCK_BOUNE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT);
+			y -= bouncePx - lastFrameBouncePx;
+		}
+		else if (QUESTION_BLOCK_BOUNE_TIME / 2 <= time && time < QUESTION_BLOCK_BOUNE_TIME) {
+			int bouncePx = time / (QUESTION_BLOCK_BOUNE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT);
+			int lastFrameBouncePx = lastFrameTime / (QUESTION_BLOCK_BOUNE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT);
+			y += bouncePx - lastFrameBouncePx;
+		}
+		lastFrameTime = time;
+	} 
+
+	CGameObject::Update(dt, coObjects);
+}
+
+
+void CQuestionBlock::Render()
+{
+	int aniId = ID_ANI_QUESTION_BLOCK_ACTIVE;;
+	if (state == QUESTION_BLOCK_STATE_DISABLED)
+	{
+		aniId = ID_ANI_QUESTION_BLOCK_DISABLED;
+	}
+
+	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
+	//RenderBoundingBox();
+}
+
+void CQuestionBlock::SetState(int state)
+{
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case QUESTION_BLOCK_STATE_DISABLED:
+		disabled_start = GetTickCount64();
+		y--;
+		break;
+	case QUESTION_BLOCK_STATE_ACTIVE:
+		break;
+	}
+}
+

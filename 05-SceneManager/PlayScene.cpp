@@ -14,6 +14,7 @@
 #include "Box.h"
 #include "SideCollidablePlatform.h"
 #include "BlockPlatform.h"
+#include "QuestionBlock.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -153,6 +154,24 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		for (int i = 0; i < itX; i++) {
 			for (int j = 0; j < itY; j++) {
 				objs.push_back(new CCoin(x + i * offsetX, y + j * offsetY));
+			}
+		}
+		break;
+	}
+
+	case OBJECT_TYPE_QUESTION_BLOCK:
+	{
+		// number of iterations into a maze
+		int itX = (int)atof(tokens[3].c_str());
+		int itY = (int)atof(tokens[4].c_str());
+
+		// distance between objects following directX top-left axis
+		int offsetX = (int)atof(tokens[5].c_str());
+		int offsetY = (int)atof(tokens[6].c_str());
+
+		for (int i = 0; i < itX; i++) {
+			for (int j = 0; j < itY; j++) {
+				objs.push_back(new CQuestionBlock(x + i * offsetX, y + j * offsetY));
 			}
 		}
 		break;

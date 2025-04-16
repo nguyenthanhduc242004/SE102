@@ -12,6 +12,7 @@ misc.txt
 box.txt
 platform_cloud.txt
 block.txt
+question_block.txt
 
 #
 [OBJECTS]
@@ -80,7 +81,9 @@ block.txt
 6	2516	152	16	16	1	100001	100001	100001
 6	2548	8	16	16	1	100001	100001	100001
 
-##Background cloud
+
+
+#BackgroundCloud
 7	216	284	2
 7	424	268	1
 7	744	284	1
@@ -91,7 +94,7 @@ block.txt
 
 
 
-#Block
+#Box
 8	372	408	3	5	0
 8	340	408	3	3	1
 
@@ -114,13 +117,13 @@ block.txt
 
 
 
-#COIN		itX	itY	ofX	ofY
-4	100	364	5	3	20	-20
+#COIN			itX	itY	ofX	ofY
+4	100	364	5	3	20	-20	
 
 
 
 
-#Platform
+#Ground (SideCollidablePlatform)
 9 	100	424	16	16	39	61001	61002	61003
 9 	724	408	16	17	29	61001	61002	61003
 9	724	424	16	16	29	62001	62002	62003
@@ -131,13 +134,13 @@ block.txt
 
 
 
-#Platform Cloud
+#Cloud (Platform)
 5	1508	200	16	16	4	120001	120001	120001
 5	1588	184	16	16	13	120001	120001	120001
 
 
 
-#BlockPlatform
+#BlockPlatform		
 10	1604	344	16	16	2	130001	130001	130001
 10	1668	408	16	16	3	130001	130001	130001
 10	1684	392	16	16	2	130001	130001	130001
@@ -148,6 +151,10 @@ block.txt
 10	2356	376	16	16	2	130001	130001	130001
 10	2356	312	16	16	2	130001	130001	130001
 
+
+
+#QuestionBlock
+11	276	360	2	1	16	16
 
 
 #Portal 

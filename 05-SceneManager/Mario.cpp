@@ -9,6 +9,7 @@
 #include "Portal.h"
 
 #include "Collision.h"
+#include "QuestionBlock.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -63,6 +64,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
+	else if (dynamic_cast<CQuestionBlock*>(e->obj))
+		OnCollisionWithQuestionBlock(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
@@ -99,6 +102,20 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 					SetState(MARIO_STATE_DIE);
 				}
 			}
+		}
+	}
+}
+
+void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
+{
+	CQuestionBlock* questionBlock = dynamic_cast<CQuestionBlock*>(e->obj);
+
+	// hit the bottom of QuestionBlock >> Change the QuestionBlock state
+	if (e->ny > 0)
+	{
+		if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
+		{
+			questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
 		}
 	}
 }
