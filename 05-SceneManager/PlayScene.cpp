@@ -332,6 +332,10 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 	DebugOut(L"[INFO] Done loading assets from %s\n", assetFile);
 }
 
+void CPlayScene::AddObject(LPGAMEOBJECT object) {
+	this->objects.push_back(object);
+}
+
 void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene from : %s \n", sceneFilePath);

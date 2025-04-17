@@ -2,7 +2,8 @@
 
 CQuestionBlock::CQuestionBlock(float x, float y) :CGameObject(x, y)
 {
-	lastFrameTime = 0;
+	x0 = x;
+	y0 = y;
 	disabled_start = -1;
 	SetState(QUESTION_BLOCK_STATE_ACTIVE);
 }
@@ -20,17 +21,13 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Bounce the QuestionBlock a bit
 	if (state == QUESTION_BLOCK_STATE_DISABLED) {
 		ULONGLONG time = GetTickCount64() - disabled_start;
-		if (time < QUESTION_BLOCK_BOUNE_TIME / 2) {
-			int bouncePx = time / (QUESTION_BLOCK_BOUNE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT);
-			int lastFrameBouncePx = lastFrameTime / (QUESTION_BLOCK_BOUNE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT);
-			y -= bouncePx - lastFrameBouncePx;
-		}
-		else if (QUESTION_BLOCK_BOUNE_TIME / 2 <= time && time < QUESTION_BLOCK_BOUNE_TIME) {
-			int bouncePx = time / (QUESTION_BLOCK_BOUNE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT);
-			int lastFrameBouncePx = lastFrameTime / (QUESTION_BLOCK_BOUNE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT);
-			y += bouncePx - lastFrameBouncePx;
-		}
-		lastFrameTime = time;
+		int pxMoved = floor(time / (QUESTION_BLOCK_BOUNCE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT));
+		if (time < QUESTION_BLOCK_BOUNCE_TIME / 2)
+			y = y0 - pxMoved;
+		else if (QUESTION_BLOCK_BOUNCE_TIME / 2 <= time && time < QUESTION_BLOCK_BOUNCE_TIME)
+			y = y0 - 2 * QUESTION_BLOCK_BOUNCE_HEIGHT + pxMoved;
+		else
+			y = y0;
 	} 
 
 	CGameObject::Update(dt, coObjects);
@@ -56,7 +53,6 @@ void CQuestionBlock::SetState(int state)
 	{
 	case QUESTION_BLOCK_STATE_DISABLED:
 		disabled_start = GetTickCount64();
-		y--;
 		break;
 	case QUESTION_BLOCK_STATE_ACTIVE:
 		break;

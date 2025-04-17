@@ -24,6 +24,8 @@ protected:
 	void _ParseSection_OBJECTS(string line);
 
 	void LoadAssets(LPCWSTR assetFile);
+
+	
 	
 public: 
 	CPlayScene(int id, LPCWSTR filePath);
@@ -32,6 +34,7 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void AddObject(LPGAMEOBJECT object);
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

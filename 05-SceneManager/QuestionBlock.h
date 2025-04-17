@@ -14,7 +14,7 @@
 #define QUESTION_BLOCK_STATE_ACTIVE 200
 
 
-#define QUESTION_BLOCK_BOUNE_TIME 200
+#define QUESTION_BLOCK_BOUNCE_TIME 200
 
 #define QUESTION_BLOCK_BOUNCE_HEIGHT 8
 
@@ -22,8 +22,9 @@
 
 class CQuestionBlock : public CGameObject {
 protected:
-	ULONGLONG lastFrameTime;
 	ULONGLONG disabled_start;
+	// The original coordinate of the object (For bouncing logic)
+	float x0, y0;
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
