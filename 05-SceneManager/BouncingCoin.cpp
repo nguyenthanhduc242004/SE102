@@ -1,5 +1,7 @@
 #include "BouncingCoin.h"
 #include "QuestionBlock.h"
+#include "Game.h"
+#include "FlyingScore.h"
 
 CBouncingCoin::CBouncingCoin(float x, float y) :CGameObject(x, y)
 {
@@ -7,7 +9,6 @@ CBouncingCoin::CBouncingCoin(float x, float y) :CGameObject(x, y)
 	this->ay = BOUNCING_COIN_GRAVITY;
 	this->vx = 0;
 	this->vy = -BOUNCING_COIN_INITIAL_SPEED;
-	//active_start = -1;
 }
 
 void CBouncingCoin::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -50,6 +51,9 @@ void CBouncingCoin::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	// hit the top of QuestionBlock >> Delete coin and show score received
 	if (e->ny < 0)
 	{
+		float x, y;
+		questionBlock->GetPosition(x, y);
+		CGame::GetInstance()->GetCurrentScene()->AddObject(new CFlyingScore(x, y - (QUESTION_BLOCK_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100));
 		isDeleted = true;
 	}
 }
