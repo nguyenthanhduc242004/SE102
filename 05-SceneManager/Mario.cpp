@@ -10,6 +10,7 @@
 
 #include "Collision.h"
 #include "QuestionBlock.h"
+#include "BouncingCoin.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -115,7 +116,10 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	{
 		if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
 		{
+			float x, y;
+			questionBlock->GetPosition(x, y);
 			questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
+			CGame::GetInstance()->GetCurrentScene()->AddObject(new CBouncingCoin(x, y - (QUESTION_BLOCK_HEIGHT + BOUNCING_COIN_HEIGHT) / 2));
 		}
 	}
 }

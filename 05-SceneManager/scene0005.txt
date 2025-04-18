@@ -13,6 +13,7 @@ box.txt
 platform_cloud.txt
 block.txt
 question_block.txt
+bouncing_coin.txt
 
 #
 [OBJECTS]
@@ -155,6 +156,12 @@ question_block.txt
 
 #QuestionBlock
 11	276	360	2	1	16	16
+11	324	312	2	1	16	16
+11	516	328	1	1	16	16
+11	756	392	1	1	16	16
+11	804	360	1	1	16	16
+11	1540	136	1	1	16	16
+11	1572	376	1	1	16	16
 
 
 #Portal 
