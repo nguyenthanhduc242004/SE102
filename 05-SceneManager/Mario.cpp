@@ -16,12 +16,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vx += ax * dt;
 
 	//there should be a mechanism to ease from running to walking, currently it just slows down immediately
-	if (abs(vx) > abs(maxVx)) vx = maxVx;
+	if (abs(vx) > abs(maxVx) && vx * maxVx > 0) vx = maxVx;
 	//in game, there is maxVy observed, not implemented yet
 	//if (abs(vy) > abs(maxVy)) vy = maxVy;
 
 	//	drag system, slowly reduces vx to 0 if detects movement
 	//	currently have a bug where drag is negated completely, running to walking does it
+	//	fixed, the maxVx causes it
 	if (vx > 0.0f) {
 		vx -= MARIO_DRAG_X * dt;
 		if (vx < 0.0f)	vx = 0.0f;
@@ -263,7 +264,8 @@ void CMario::Render()
 
 void CMario::SetState(int state)
 {
-	DebugOutTitle(L"State: %d", state);
+	//DebugOutTitle(L"State: %d", state);
+	DebugOut(L"maxVx: %f\n", maxVx);
 	// DIE is the end state, cannot be changed! 
 	if (this->state == MARIO_STATE_DIE) return;
 
