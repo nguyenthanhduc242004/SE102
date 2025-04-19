@@ -9,6 +9,12 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Platform.h"
+#include "Background.h"
+#include "BackgroundCloud.h"
+#include "Box.h"
+#include "SideCollidablePlatform.h"
+#include "BlockPlatform.h"
+#include "QuestionBlock.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -31,6 +37,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define ASSETS_SECTION_ANIMATIONS 2
 
 #define MAX_SCENE_LINE 1024
+
+#define DEFALT_CAM_Y 244.0f
 
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
@@ -151,6 +159,24 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 
+	case OBJECT_TYPE_QUESTION_BLOCK:
+	{
+		// number of iterations into a maze
+		int itX = (int)atof(tokens[3].c_str());
+		int itY = (int)atof(tokens[4].c_str());
+
+		// distance between objects following directX top-left axis
+		int offsetX = (int)atof(tokens[5].c_str());
+		int offsetY = (int)atof(tokens[6].c_str());
+
+		for (int i = 0; i < itX; i++) {
+			for (int j = 0; j < itY; j++) {
+				objs.push_back(new CQuestionBlock(x + i * offsetX, y + j * offsetY));
+			}
+		}
+		break;
+	}
+
 	case OBJECT_TYPE_PLATFORM:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
@@ -159,16 +185,90 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int sprite_begin = atoi(tokens[6].c_str());
 		int sprite_middle = atoi(tokens[7].c_str());
 		int sprite_end = atoi(tokens[8].c_str());
-		boolean direction1 = atoi(tokens[9].c_str());
-		boolean direction2 = atoi(tokens[10].c_str());
-		boolean direction3 = atoi(tokens[11].c_str());
-		boolean direction4 = atoi(tokens[12].c_str());
 
 		objs.push_back(new CPlatform(
 			x, y,
 			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end,
-			direction1, direction2, direction3, direction4
+			sprite_begin, sprite_middle, sprite_end
+		));
+
+		break;
+	}
+
+	case OBJECT_TYPE_SIDE_COLLIDABLE_PLATFORM:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int sprite_begin = atoi(tokens[6].c_str());
+		int sprite_middle = atoi(tokens[7].c_str());
+		int sprite_end = atoi(tokens[8].c_str());
+
+		objs.push_back(new CSideCollidablePlatform(
+			x, y,
+			cell_width, cell_height, length,
+			sprite_begin, sprite_middle, sprite_end
+		));
+
+		break;
+	}
+
+	case OBJECT_TYPE_BLOCK_PLATFORM:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int sprite_begin = atoi(tokens[6].c_str());
+		int sprite_middle = atoi(tokens[7].c_str());
+		int sprite_end = atoi(tokens[8].c_str());
+
+		objs.push_back(new CBlockPlatform(
+			x, y,
+			cell_width, cell_height, length,
+			sprite_begin, sprite_middle, sprite_end
+		));
+
+		break;
+	}
+
+	case OBJECT_TYPE_BACKGROUND:
+	{
+		std::cout << "Reading Background!";
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int sprite_id_begin = atoi(tokens[6].c_str());
+		int sprite_id_middle = atoi(tokens[7].c_str());
+		int sprite_id_end = atoi(tokens[8].c_str());
+
+		objs.push_back(new CBackground(
+			x, y,
+			cell_width, cell_height, length,
+			sprite_id_begin, sprite_id_middle, sprite_id_end
+		));
+
+		break;
+	}
+
+	case OBJECT_TYPE_BACKGROUND_CLOUD:
+	{
+		int length = atoi(tokens[3].c_str());
+
+		objs.push_back(new CBackgroundCloud(x, y, length));
+
+		break;
+	}
+
+	case OBJECT_TYPE_BOX:
+	{
+		int length_width = atoi(tokens[3].c_str());
+		int length_height = atoi(tokens[4].c_str());
+		int color = atoi(tokens[5].c_str());
+
+		objs.push_back(new CBox(
+			x, y,
+			length_width, length_height,
+			color
 		));
 
 		break;
@@ -230,6 +330,10 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 	f.close();
 
 	DebugOut(L"[INFO] Done loading assets from %s\n", assetFile);
+}
+
+void CPlayScene::AddObject(LPGAMEOBJECT object) {
+	this->objects.push_back(object);
 }
 
 void CPlayScene::Load()
@@ -296,7 +400,7 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, DEFALT_CAM_Y /*cy*/);
 
 	PurgeDeletedObjects();
 }
