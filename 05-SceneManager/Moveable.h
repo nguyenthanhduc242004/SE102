@@ -14,5 +14,6 @@ protected:
 public:
     virtual void SetSpeed(float vx, float vy) = 0;
     virtual void GetSpeed(float& vx, float& vy) = 0;
+    int GetDirection() { return nx; }
 };
 

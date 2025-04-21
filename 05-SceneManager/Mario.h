@@ -121,6 +121,7 @@ class CMario : public CGameObject, public CMoveable
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
+	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -166,5 +167,4 @@ public:
 		vx = this->vx;
 		vy = this->vy;
 	}
-
 };

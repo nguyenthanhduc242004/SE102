@@ -11,6 +11,7 @@
 #include "Collision.h"
 #include "QuestionBlock.h"
 #include "BouncingCoin.h"
+#include "Mushroom.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -20,11 +21,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//there should be a mechanism to ease from running to walking, currently it just slows down immediately
 	if (abs(vx) > abs(maxVx) && vx * maxVx > 0) vx = maxVx;
 	//in game, there is maxVy observed, not implemented yet
-	//if (abs(vy) > abs(maxVy)) vy = maxVy;
-
-	//	drag system, slowly reduces vx to 0 if detects movement
-	//	currently have a bug where drag is negated completely, running to walking does it
-	//	fixed, the maxVx causes it
 	if (vx > 0.0f) {
 		vx -= MARIO_DRAG_X * dt;
 		if (vx < 0.0f)	vx = 0.0f;
@@ -72,6 +68,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<CMushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -135,6 +133,23 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+}
+
+void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+{
+	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
+	int type = mushroom->GetType();
+	if (type == MUSHROOM_TYPE_RED) {
+		if (level < MARIO_LEVEL_BIG) {
+			SetLevel(MARIO_LEVEL_BIG);
+		}
+		//add score later
+	}
+	else if (type == MUSHROOM_TYPE_GREEN) {
+		//add life later
+		//add score later
+	}
+	mushroom->Delete();
 }
 
 //

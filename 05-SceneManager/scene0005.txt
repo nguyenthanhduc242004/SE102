@@ -15,7 +15,7 @@ block.txt
 question_block.txt
 bouncing_coin.txt
 flying_score.txt
-
+goomba.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -24,7 +24,8 @@ flying_score.txt
 
 
 
-#Background (Put these before Mario)
+#6 = Background (Put these before Mario)
+#type cellW cellH Leng begin middle end
 ##Bush
 6 	260	408	16	16	3	70001	70001	70001
 6 	772	392	16	16	6	70001	70001	70001
@@ -164,6 +165,10 @@ flying_score.txt
 11	1540	136	1	1	16	16
 11	1572	376	1	1	16	16
 
+#MushRoom
+13	300	10
+
+2	250	10
 
 #Portal 
 #50	200	404	216	180	1
