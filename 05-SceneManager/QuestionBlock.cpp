@@ -1,11 +1,43 @@
 #include "QuestionBlock.h"
+#include "BouncingCoin.h"
+#include "Mushroom.h"
+#include "Game.h"
 
 CQuestionBlock::CQuestionBlock(float x, float y) :CGameObject(x, y)
 {
 	x0 = x;
 	y0 = y;
 	disabled_start = -1;
+}
+
+CQuestionBlock::CQuestionBlock(float x, float y, int itemID) : CQuestionBlock(x, y)
+{
+	switch (itemID)
+	{
+	case ITEM_COIN:
+		item = new CBouncingCoin(x, y - (QUESTION_BLOCK_HEIGHT + BOUNCING_COIN_HEIGHT) / 2);
+		break;
+	case ITEM_COIN_x5:
+
+		break;
+	case ITEM_CUSTOM:
+
+		break;
+	case ITEM_LEAF:
+
+		break;
+	case ITEM_MUSHROOM_GREEN:
+		item = new CMushroom(x, y - QUESTION_BLOCK_ITEM_Y_OFFSET, MUSHROOM_TYPE_GREEN);
+		break;
+	case ITEM_MUSHROOM_RED:
+		item = new CMushroom(x, y - QUESTION_BLOCK_ITEM_Y_OFFSET, MUSHROOM_TYPE_RED);
+		break;
+	case ITEM_SWITCH:
+		break;
+	}
 	SetState(QUESTION_BLOCK_STATE_ACTIVE);
+	CGame::GetInstance()->GetCurrentScene()->AddObject(item);
+
 }
 
 void CQuestionBlock::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -28,7 +60,7 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			y = y0 - 2 * QUESTION_BLOCK_BOUNCE_HEIGHT + pxMoved;
 		else
 			y = y0;
-	} 
+	}
 
 	CGameObject::Update(dt, coObjects);
 }
@@ -52,9 +84,11 @@ void CQuestionBlock::SetState(int state)
 	switch (state)
 	{
 	case QUESTION_BLOCK_STATE_DISABLED:
+		item->SetState(QUESTION_BLOCK_ITEM_STATE_SPAWNING);
 		disabled_start = GetTickCount64();
 		break;
 	case QUESTION_BLOCK_STATE_ACTIVE:
+		item->SetState(QUESTION_BLOCK_ITEM_STATE_IDLE);
 		break;
 	}
 }

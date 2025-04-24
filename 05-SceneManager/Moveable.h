@@ -5,10 +5,10 @@ class CMoveable
 protected:
     float vx = 0;
     float vy = 0;
-    float maxVx;
-    float maxVy;
-    float ax;
-    float ay;
+    float maxVx = 0;
+    float maxVy = 0;
+    float ax = 0;
+    float ay = 0;
     int nx = 1;
 
 public:

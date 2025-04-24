@@ -9,6 +9,11 @@
 
 void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (state == MUSHROOM_STATE_SPAWNING && (y <= y0 + QUESTION_BLOCK_ITEM_Y_OFFSET - (QUESTION_BLOCK_HEIGHT + MUSHROOM_HEIGHT) / 2)) {
+		SetState(MUSHROOM_STATE_WALKING);
+	}
+
+	//no logic for camera spawning yet
 	//Camera* cam = Camera::GetInstance();
 	//if (!cam->isAreaCamera(x, y))
 
@@ -22,12 +27,12 @@ void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CMushroom::Render()
 {
+	//	if not spawned yet, no rendering
+	if (state == MUSHROOM_STATE_IDLE)	return;
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
+
 	//	still animation, no relation to state
-	//	if not spawned yet, no rendering
-	if (!isSpawned)
-		return;
 	if (type == MUSHROOM_TYPE_RED) {
 		aniId = ID_ANI_MUSHROOM_RED;
 	}
@@ -52,6 +57,12 @@ void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (!e->obj->IsBlocking()) return;
 	if (dynamic_cast<CMushroom*>(e->obj)) return;
+	if (state != MUSHROOM_STATE_WALKING) return;
+		//if (state == MUSHROOM_STATE_IDLE)
+			//return;
+		//if (e->ny < 0 && state == MUSHROOM_STATE_SPAWNING)
+			//SetState(MUSHROOM_STATE_WALKING);
+	//}
 
 	if (e->ny != 0)
 	{
@@ -63,13 +74,12 @@ void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 }
 
-
 void CMushroom::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = x - MUSHROOM_BBOX_WIDTH / 2;
-	top = y - MUSHROOM_BBOX_HEIGHT / 2;
-	right = left + MUSHROOM_BBOX_WIDTH;
-	bottom = top + MUSHROOM_BBOX_HEIGHT;
+	left = x - MUSHROOM_WIDTH / 2;
+	top = y - MUSHROOM_HEIGHT / 2;
+	right = left + MUSHROOM_WIDTH;
+	bottom = top + MUSHROOM_HEIGHT;
 }
 
 void CMushroom::SetState(int state)
@@ -79,13 +89,13 @@ void CMushroom::SetState(int state)
 	switch (state)
 	{
 	case MUSHROOM_STATE_IDLE:
-		vx = vy = 0;
 		break;
-	case MUSHROOM_STATE_UP:
-		vy = -0.5f;
-		//start_y = y;
+	case MUSHROOM_STATE_SPAWNING:
+		y0 = y;
+		vy = -MUSHROOM_SPAWNING_SPEED;
 		break;
 	case MUSHROOM_STATE_WALKING:
+		ay = MUSHROOM_GRAVITY;
 		mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		vx = mario->GetDirection() * MUSHROOM_SPEED;
 		break;

@@ -12,6 +12,9 @@
 
 #define ID_ANI_BOUNCING_COIN 40000
 
+#define BOUNCING_COIN_STATE_IDLE	QUESTION_BLOCK_ITEM_STATE_IDLE
+#define BOUNCING_COIN_STATE_SPAWNING	QUESTION_BLOCK_ITEM_STATE_SPAWNING
+
 class CBouncingCoin : public CGameObject, public CMoveable
 {
 protected:
@@ -43,4 +46,5 @@ public:
 		vx = this->vx;
 		vy = this->vy;
 	}
+	void SetState(int state);
 };

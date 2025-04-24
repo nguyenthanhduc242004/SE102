@@ -171,9 +171,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int offsetX = (int)atof(tokens[5].c_str());
 		int offsetY = (int)atof(tokens[6].c_str());
 
+		//0: coin, 3:mushroom red, 5:mushroom green
+		int itemID = (int)atof(tokens[7].c_str());
 		for (int i = 0; i < itX; i++) {
 			for (int j = 0; j < itY; j++) {
-				objs.push_back(new CQuestionBlock(x + i * offsetX, y + j * offsetY));
+				objs.push_back(new CQuestionBlock(x + i * offsetX, y + j * offsetY, itemID));
 			}
 		}
 		break;

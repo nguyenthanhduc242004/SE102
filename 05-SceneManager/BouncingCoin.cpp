@@ -2,13 +2,15 @@
 #include "QuestionBlock.h"
 #include "Game.h"
 #include "FlyingScore.h"
+#include "debug.h"
+
 
 CBouncingCoin::CBouncingCoin(float x, float y) :CGameObject(x, y)
 {
 	this->ax = 0;
-	this->ay = BOUNCING_COIN_GRAVITY;
+	this->ay = 0;
 	this->vx = 0;
-	this->vy = -BOUNCING_COIN_INITIAL_SPEED;
+	this->vy = 0;
 }
 
 void CBouncingCoin::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -76,6 +78,20 @@ void CBouncingCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CBouncingCoin::Render()
 {
+	if (state == BOUNCING_COIN_STATE_IDLE) return;
 	CAnimations::GetInstance()->Get(ID_ANI_BOUNCING_COIN)->Render(x, y);
 	//RenderBoundingBox();
+}
+
+void CBouncingCoin::SetState(int state) {
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case BOUNCING_COIN_STATE_IDLE:
+		break;
+	case BOUNCING_COIN_STATE_SPAWNING:
+		ay = BOUNCING_COIN_GRAVITY;
+		vy = -BOUNCING_COIN_INITIAL_SPEED;
+		break;
+	}
 }

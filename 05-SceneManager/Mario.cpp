@@ -115,10 +115,11 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	{
 		if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
 		{
-			float x, y;
-			questionBlock->GetPosition(x, y);
 			questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
-			CGame::GetInstance()->GetCurrentScene()->AddObject(new CBouncingCoin(x, y - (QUESTION_BLOCK_HEIGHT + BOUNCING_COIN_HEIGHT) / 2));
+			//right now, logically, the block should HAVE the coin, but we are spawning the coin purely and universally from player, not conditional to the block
+			//false logic, should fix to a statemachine
+			//done! remember to still add object to scene for it to work...
+			//CGame::GetInstance()->GetCurrentScene()->AddObject(new CBouncingCoin(x, y - (QUESTION_BLOCK_HEIGHT + BOUNCING_COIN_HEIGHT) / 2));
 		}
 	}
 }
@@ -191,7 +192,7 @@ int CMario::GetAniIdSmall()
 			}
 			else if (vx > 0.0f)
 			{
-				if (ax < 0.0f)
+				if (ax <= 0.0f)
 					aniId = ID_ANI_MARIO_SMALL_BRACE_RIGHT;
 				else if (ax == MARIO_ACCEL_RUN_X)
 					aniId = ID_ANI_MARIO_SMALL_RUNNING_RIGHT;
@@ -200,7 +201,7 @@ int CMario::GetAniIdSmall()
 			}
 			else // vx < 0
 			{
-				if (ax > 0.0f)
+				if (ax >= 0.0f)
 					aniId = ID_ANI_MARIO_SMALL_BRACE_LEFT;
 				else if (ax == -MARIO_ACCEL_RUN_X)
 					aniId = ID_ANI_MARIO_SMALL_RUNNING_LEFT;
@@ -301,7 +302,7 @@ void CMario::Render()
 void CMario::SetState(int state)
 {
 	//DebugOutTitle(L"State: %d", state);
-	DebugOut(L"maxVx: %f\n", maxVx);
+	//DebugOut(L"maxVx: %f\n", maxVx);
 	// DIE is the end state, cannot be changed! 
 	if (this->state == MARIO_STATE_DIE) return;
 
