@@ -18,9 +18,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
-	//there should be a mechanism to ease from running to walking, currently it just slows down immediately
-	if (abs(vx) > abs(maxVx) && vx * maxVx > 0) vx = maxVx;
-	//in game, there is maxVy observed, not implemented yet
+	//there should be a mechanism to ease from running to walking, currently it just cuts down immediately
 	if (vx > 0.0f) {
 		vx -= MARIO_DRAG_X * dt;
 		if (vx < 0.0f)	vx = 0.0f;
@@ -29,6 +27,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vx += MARIO_DRAG_X * dt;
 		if (vx > 0.0f)	vx = 0.0f;
 	}
+
+	if (abs(vx) > abs(maxVx) && vx * maxVx > 0) vx = maxVx;
+	if (vy > maxVy) vy = maxVy;
+	//in game, there is maxVy observed, not implemented yet
 
 	// reset untouchable timer if untouchable time has passed
 	if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
@@ -116,10 +118,6 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
 		{
 			questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
-			//right now, logically, the block should HAVE the coin, but we are spawning the coin purely and universally from player, not conditional to the block
-			//false logic, should fix to a statemachine
-			//done! remember to still add object to scene for it to work...
-			//CGame::GetInstance()->GetCurrentScene()->AddObject(new CBouncingCoin(x, y - (QUESTION_BLOCK_HEIGHT + BOUNCING_COIN_HEIGHT) / 2));
 		}
 	}
 }
@@ -194,18 +192,19 @@ int CMario::GetAniIdSmall()
 			{
 				if (ax <= 0.0f)
 					aniId = ID_ANI_MARIO_SMALL_BRACE_RIGHT;
-				else if (ax == MARIO_ACCEL_RUN_X)
+				else if (vx >= MARIO_RUNNING_SPEED)
 					aniId = ID_ANI_MARIO_SMALL_RUNNING_RIGHT;
-				else if (ax == MARIO_ACCEL_WALK_X)
+				else
 					aniId = ID_ANI_MARIO_SMALL_WALKING_RIGHT;
+
 			}
 			else // vx < 0
 			{
 				if (ax >= 0.0f)
 					aniId = ID_ANI_MARIO_SMALL_BRACE_LEFT;
-				else if (ax == -MARIO_ACCEL_RUN_X)
+				else if (vx <= -MARIO_RUNNING_SPEED)
 					aniId = ID_ANI_MARIO_SMALL_RUNNING_LEFT;
-				else if (ax == -MARIO_ACCEL_WALK_X)
+				else
 					aniId = ID_ANI_MARIO_SMALL_WALKING_LEFT;
 			}
 
@@ -256,10 +255,8 @@ int CMario::GetAniIdBig()
 			{
 				if (ax < 0)
 					aniId = ID_ANI_MARIO_BRACE_RIGHT;
-				else if (ax == MARIO_ACCEL_RUN_X)
+				else if (vx >= MARIO_RUNNING_SPEED)
 					aniId = ID_ANI_MARIO_RUNNING_RIGHT;
-				else if (ax == MARIO_ACCEL_WALK_X)
-					aniId = ID_ANI_MARIO_WALKING_RIGHT;
 				else
 					aniId = ID_ANI_MARIO_WALKING_RIGHT;
 			}
@@ -267,10 +264,8 @@ int CMario::GetAniIdBig()
 			{
 				if (ax > 0.0f)
 					aniId = ID_ANI_MARIO_BRACE_LEFT;
-				else if (ax == -MARIO_ACCEL_RUN_X)
+				else if (vx <= -MARIO_RUNNING_SPEED)
 					aniId = ID_ANI_MARIO_RUNNING_LEFT;
-				else if (ax == -MARIO_ACCEL_WALK_X)
-					aniId = ID_ANI_MARIO_WALKING_LEFT;
 				else
 					aniId = ID_ANI_MARIO_WALKING_LEFT;
 			}

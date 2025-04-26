@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-
+#include "AssetIDs.h"
 #define FLYING_SCORE_GRAVITY 0.0001f
 #define FLYING_SCORE_INITIAL_SPEED 0.1f
 
@@ -19,23 +19,10 @@
 #define FLYING_SCORE_TYPE_4000 4000
 #define FLYING_SCORE_TYPE_8000 8000
 
-#define SPRITE_ID_FLYING_SCORE_100 160001
-#define SPRITE_ID_FLYING_SCORE_200 160002
-#define SPRITE_ID_FLYING_SCORE_400 160003
-#define SPRITE_ID_FLYING_SCORE_800 160004
-#define SPRITE_ID_FLYING_SCORE_1000 160005
-#define SPRITE_ID_FLYING_SCORE_2000 160006
-#define SPRITE_ID_FLYING_SCORE_4000 160007
-#define SPRITE_ID_FLYING_SCORE_8000 160008
 
 class CFlyingScore : public CGameObject, public CMoveable
 {
 protected:
-	//float ax;				
-	//float ay; 
-
-	//ULONGLONG active_start;
-
 	ULONGLONG created_start;
 	int type;
 	int sprite_id;

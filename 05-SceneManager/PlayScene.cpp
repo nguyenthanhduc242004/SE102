@@ -127,7 +127,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	case OBJECT_TYPE_GOOMBA: objs.push_back(new CGoomba(x, y)); break;
-	case OBJECT_TYPE_MUSHROOM: objs.push_back(new CMushroom(x, y)); break;
 	case OBJECT_TYPE_BRICK:
 	{
 		// number of iterations into a maze

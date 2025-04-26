@@ -18,11 +18,6 @@
 class CBouncingCoin : public CGameObject, public CMoveable
 {
 protected:
-	//float ax;				
-	//float ay; 
-
-	//ULONGLONG active_start;
-
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();

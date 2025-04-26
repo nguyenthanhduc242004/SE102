@@ -5,13 +5,7 @@
 #include "debug.h"
 
 
-CBouncingCoin::CBouncingCoin(float x, float y) :CGameObject(x, y)
-{
-	this->ax = 0;
-	this->ay = 0;
-	this->vx = 0;
-	this->vy = 0;
-}
+CBouncingCoin::CBouncingCoin(float x, float y) :CGameObject(x, y) {}
 
 void CBouncingCoin::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -64,12 +58,6 @@ void CBouncingCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
 	vx += ax * dt;
-
-	/*if ((state == GOOMBA_STATE_DIE) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT))
-	{
-		isDeleted = true;
-		return;
-	}*/
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
