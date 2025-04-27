@@ -84,6 +84,7 @@ void CQuestionBlock::SetState(int state)
 	switch (state)
 	{
 	case QUESTION_BLOCK_STATE_DISABLED:
+		if (item == NULL) break;
 		item->SetState(QUESTION_BLOCK_ITEM_STATE_SPAWNING);
 		disabled_start = GetTickCount64();
 		break;

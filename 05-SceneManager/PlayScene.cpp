@@ -29,17 +29,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 }
 
 
-#define SCENE_SECTION_UNKNOWN -1
-#define SCENE_SECTION_ASSETS	1
-#define SCENE_SECTION_OBJECTS	2
 
-#define ASSETS_SECTION_UNKNOWN -1
-#define ASSETS_SECTION_SPRITES 1
-#define ASSETS_SECTION_ANIMATIONS 2
-
-#define MAX_SCENE_LINE 1024
-
-#define DEFALT_CAM_Y 244.0f
 
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
@@ -376,12 +366,20 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
+	if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED)
+		return;
+	float x, y;
 
+	// We know that Mario is the first object in the list hence we won't add him into the collidable object list
+	// TO-DO: This is a "dirty" way, need a more organized way 
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < objects.size(); i++)
 	{
+		objects[i]->GetPosition(x, y);
+		if (y >= LOWER_BOUND_DEATHZONE) {
+			objects[i]->Delete();
+			continue;
+		}
 		coObjects.push_back(objects[i]);
 	}
 
@@ -401,9 +399,9 @@ void CPlayScene::Update(DWORD dt)
 	cx -= game->GetBackBufferWidth() / 2;
 	cy -= game->GetBackBufferHeight() / 2;
 
-	if (cx < 0) cx = 0;
+	if (cx < LEFT_BOUND_CAM_X) cx = LEFT_BOUND_CAM_X;
 
-	CGame::GetInstance()->SetCamPos(cx, DEFALT_CAM_Y /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, DEFAULT_CAM_Y /*cy*/);
 
 	PurgeDeletedObjects();
 }

@@ -530,6 +530,16 @@ void CGame::InitiateSwitchScene(int scene_id)
 {
 	next_scene = scene_id;
 }
+void CGame::ReloadCurrentScene()
+{
+	DebugOut(L"[INFO] Reloading current scene...\n");
+	if (scenes[current_scene] != NULL)
+	{
+		scenes[current_scene]->Unload();
+		scenes[current_scene]->Load();
+	}
+	DebugOut(L"[INFO] Reloading finished!\n");
+}
 
 
 void CGame::_ParseSection_TEXTURES(string line)

@@ -308,7 +308,7 @@ void CMario::SetState(int state)
 		maxVx = MARIO_RUNNING_SPEED;
 		ax = MARIO_ACCEL_RUN_X;
 		nx = 1;
-		//if airborn reaching halt, reset gravity, mario drops heavier, probably need fix for less repetition
+		//if airborn reaching halt, reset gravity, mario drops heavier
 		if (!isOnPlatform && vy >= 0.0f)
 		{
 			ay = MARIO_GRAVITY;
@@ -359,7 +359,6 @@ void CMario::SetState(int state)
 	case MARIO_STATE_RELEASE_JUMP:
 		//release jump reset gravity back
 		ay = MARIO_GRAVITY;
-		//if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 7;
 		break;
 
 	case MARIO_STATE_SIT:
@@ -367,7 +366,6 @@ void CMario::SetState(int state)
 		{
 			state = MARIO_STATE_IDLE;
 			isSitting = true;
-			//vx = 0;
 			vy = 0.0f;
 			y += MARIO_SIT_HEIGHT_ADJUST;
 		}
@@ -384,7 +382,6 @@ void CMario::SetState(int state)
 
 	case MARIO_STATE_IDLE:
 		ax = 0.0f;
-		//vx = 0.0f;
 		if (!isOnPlatform && vy >= 0.0f)
 		{
 			ay = MARIO_GRAVITY;
@@ -393,8 +390,10 @@ void CMario::SetState(int state)
 
 	case MARIO_STATE_DIE:
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
-		//vx = 0;
 		ax = 0;
+		ay = MARIO_LIFTED_GRAVITY;
+		//if (y >= LOWER_BOUND_DEATHZONE)
+			//CGameObject::Delete();
 		break;
 	}
 

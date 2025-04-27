@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-
+#include "PlayScene.h"
 #include "Animation.h"
 #include "Animations.h"
 
@@ -22,7 +22,7 @@
 #define MARIO_GRAVITY			0.0012f
 #define MARIO_LIFTED_GRAVITY	0.00045f
 
-#define MARIO_JUMP_DEFLECT_SPEED  0.28f
+#define MARIO_JUMP_DEFLECT_SPEED  0.25f
 
 #define MARIO_STATE_DIE				-10
 #define MARIO_STATE_IDLE			0
@@ -109,11 +109,11 @@ class CMario : public CGameObject, public CMoveable
 {
 	BOOLEAN isSitting;
 
-	int level; 
-	int untouchable; 
+	int level;
+	int untouchable;
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
-	int coin; 
+	int coin;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
@@ -129,7 +129,7 @@ public:
 	{
 		isSitting = false;
 		maxVy = MARIO_FALL_SPEED_Y;
-		ay = MARIO_GRAVITY; 
+		ay = MARIO_GRAVITY;
 
 		level = MARIO_LEVEL_BIG;
 		untouchable = 0;
@@ -142,11 +142,11 @@ public:
 	void SetState(int state);
 
 	int IsCollidable()
-	{ 
-		return (state != MARIO_STATE_DIE); 
+	{
+		return (state != MARIO_STATE_DIE);
 	}
 
-	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable==0); }
+	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable == 0); }
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
@@ -163,5 +163,17 @@ public:
 	virtual void GetSpeed(float& vx, float& vy) override {
 		vx = this->vx;
 		vy = this->vy;
+	}
+	//will only be called when Mario fall out of bound
+	virtual void Delete() override {
+		CGame* game = CGame::GetInstance();
+		if (state != MARIO_STATE_DIE) {
+			float x, y;
+			game->GetCamPos(x, y);
+			this->SetPosition(x + game->GetBackBufferWidth() / 2, y + game->GetBackBufferHeight());
+			SetState(MARIO_STATE_DIE);
+			return;
+		}
+		game->EndGame();
 	}
 };

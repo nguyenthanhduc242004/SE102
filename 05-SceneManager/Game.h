@@ -23,6 +23,12 @@ using namespace std;
 /*
 	Our simple game framework
 */
+enum GameState {
+	GAME_RUNNING,
+	GAME_PAUSED,
+	GAME_OVER,
+};
+
 class CGame
 {
 	static CGame* __instance;
@@ -60,6 +66,7 @@ class CGame
 	void _ParseSection_SETTINGS(string line);
 	void _ParseSection_SCENES(string line);
 
+	GameState currentState;
 public:
 	// Init DirectX, Sprite Handler
 	void Init(HWND hWnd, HINSTANCE hInstance);
@@ -111,9 +118,25 @@ public:
 	void Load(LPCWSTR gameFile);
 	void SwitchScene();
 	void InitiateSwitchScene(int scene_id);
-
+	void ReloadCurrentScene();
 	void _ParseSection_TEXTURES(string line);
 
+	void PauseGame() {
+		if (currentState == GAME_RUNNING) {
+			currentState = GAME_PAUSED;
+		}
+	}
+	void ResumeGame() {
+		//if (currentState == GAME_PAUSED) {
+			currentState = GAME_RUNNING;
+		//}
+	}
+	void EndGame() {
+		currentState = GAME_OVER;
+	}
+	GameState GetCurrentGameState() {
+		return currentState;
+	}
 
 	~CGame();
 };

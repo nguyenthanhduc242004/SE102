@@ -8,6 +8,20 @@
 #include "Goomba.h"
 //#include "Koopas.h"
 
+#define SCENE_SECTION_UNKNOWN -1
+#define SCENE_SECTION_ASSETS	1
+#define SCENE_SECTION_OBJECTS	2
+
+#define ASSETS_SECTION_UNKNOWN -1
+#define ASSETS_SECTION_SPRITES 1
+#define ASSETS_SECTION_ANIMATIONS 2
+
+#define MAX_SCENE_LINE 1024
+
+#define DEFAULT_CAM_Y 244.0f
+#define LEFT_BOUND_CAM_X 93
+#define LOWER_BOUND_DEATHZONE 700.0f
+
 
 class CPlayScene: public CScene
 {
