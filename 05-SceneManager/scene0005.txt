@@ -168,7 +168,7 @@ goomba.txt
 
 #MushRoom
 
-2	250	10
+2	650	100
 
 #Portal 
 #50	200	404	216	180	1

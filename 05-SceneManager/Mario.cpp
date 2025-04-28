@@ -56,11 +56,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		vy = 0.0f;
 		if (e->ny < 0) isOnPlatform = true;
 	}
-	else
-		if (e->nx != 0 && e->obj->IsBlocking())
-		{
-			vx = 0.0f;
-		}
+	if (e->nx != 0 && e->obj->IsBlocking())
+	{
+		vx = 0.0f;
+	}
 
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
@@ -392,8 +391,6 @@ void CMario::SetState(int state)
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		ax = 0;
 		ay = MARIO_LIFTED_GRAVITY;
-		//if (y >= LOWER_BOUND_DEATHZONE)
-			//CGameObject::Delete();
 		break;
 	}
 

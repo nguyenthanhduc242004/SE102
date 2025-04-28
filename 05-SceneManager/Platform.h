@@ -8,12 +8,13 @@
 class CPlatform : public CGameObject
 {
 protected:
-	int length;				// Unit: cell 
+	int length, girth;				// Unit: cell 
 	float cellWidth;
 	float cellHeight;
 	int spriteIdBegin, spriteIdMiddle, spriteIdEnd;
 
 public:
+	CPlatform(float x, float y) : CGameObject(x, y) {}
 	CPlatform(float x, float y,
 		float cell_width, float cell_height, int length,
 		int sprite_id_begin, int sprite_id_middle, int sprite_id_end) :CGameObject(x, y)
@@ -31,7 +32,7 @@ public:
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void RenderBoundingBox();
 
-	int IsDirectionColliable(float nx, float ny);
+	int IsDirectionCollidable(float nx, float ny);
 };
 
 typedef CPlatform* LPPLATFORM;

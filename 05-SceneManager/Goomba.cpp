@@ -40,11 +40,36 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		vy = 0;
 	}
-	else if (e->nx != 0)
+	//temp
+	if (dynamic_cast<CPlatform*>(e->obj)) {
+		if (!IsGroundAhead(e)) {
+			vx = -vx;
+		}
+	}
+	//
+	if (e->nx != 0)
 	{
 		vx = -vx;
 	}
 }
+
+bool CGoomba::IsGroundAhead(LPCOLLISIONEVENT e)
+{
+	float probeX = x + (vx > 0 ? GOOMBA_BBOX_WIDTH / 2 : -GOOMBA_BBOX_WIDTH / 2);
+	float probeY = y + GOOMBA_BBOX_HEIGHT / 2 + 1; // 1 pixel below the bottom
+
+		float l, t, r, b;
+		e->obj->GetBoundingBox(l, t, r, b);
+
+		// Check if probe point is inside the object's bounding box
+		if (probeX >= l && probeX <= r && probeY >= t && probeY <= b)
+		{
+			return true; // Solid ground detected
+		}
+
+	return false; // No ground
+}
+
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {

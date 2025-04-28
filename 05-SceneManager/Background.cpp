@@ -25,7 +25,7 @@ void CBackground::Render()
 	//RenderBoundingBox();	
 }
 
-int CBackground::IsDirectionColliable(float nx, float ny)
+int CBackground::IsDirectionCollidable(float nx, float ny)
 {
 	return 0;
 }

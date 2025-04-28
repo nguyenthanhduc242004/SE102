@@ -32,7 +32,7 @@ void CBox::RenderBoundingBox()
 
 void CBox::Render()
 {
-	if (this->length_width <= 0 || this->length_height <= 0) return;
+	if (this->length <= 0 || this->girth <= 0) return;
 	float xx = x;
 	float yy = y;
 	CSprites* s = CSprites::GetInstance();
@@ -100,14 +100,14 @@ void CBox::Render()
 	s->Get(sprite_id_shadow_middle)->Draw(xx, yy);
 	xx += BOX_SHADOW_WIDTH;
 
-	for (int i = 1; i < this->length_width - 1; i++)
+	for (int i = 1; i < this->length - 1; i++)
 	{
 		s->Get(sprite_id_shadow_middle)->Draw(xx, yy);
 		xx += BOX_SHADOW_WIDTH;
 		s->Get(sprite_id_shadow_middle)->Draw(xx, yy);
 		xx += BOX_SHADOW_WIDTH;
 	}
-	if (this->length_width > 1) {
+	if (this->length > 1) {
 		s->Get(sprite_id_shadow_middle)->Draw(xx, yy);
 		xx += BOX_SHADOW_WIDTH;
 		s->Get(sprite_id_shadow_bottom_right)->Draw(xx, yy);
@@ -121,12 +121,12 @@ void CBox::Render()
 	// Drawing the first row
 	s->Get(sprite_id_bottom_left)->Draw(xx, yy);
 	xx += this->cell_width;
-	for (int i = 1; i < this->length_width - 1; i++)
+	for (int i = 1; i < this->length - 1; i++)
 	{
 		s->Get(sprite_id_bottom_middle)->Draw(xx, yy);
 		xx += this->cell_width;
 	}
-	if (this->length_width > 1) 
+	if (this->length > 1) 
 		s->Get(sprite_id_bottom_right)->Draw(xx, yy);
 	yy += BOX_SHADOW_HEIGHT / 2;
 	xx += (this->cell_width + BOX_SHADOW_WIDTH) / 2;
@@ -140,18 +140,18 @@ void CBox::Render()
 
 	// Drawing the middle row(s)
 	yy -= this->cell_height;
-	for (int i = 1; i < this->length_height - 1; i++) {
+	for (int i = 1; i < this->girth - 1; i++) {
 		s->Get(sprite_id_middle_left)->Draw(xx, yy);
 		xx += this->cell_width;
-		for (int i = 1; i < this->length_width - 1; i++)
+		for (int i = 1; i < this->length - 1; i++)
 		{
 			s->Get(sprite_id_middle)->Draw(xx, yy);
 			xx += this->cell_width;
 		}
-		if (this->length_width > 1)
+		if (this->length > 1)
 			s->Get(sprite_id_middle_right)->Draw(xx, yy);
 
-		if (i != this->length_height - 2) {
+		if (i != this->girth - 2) {
 			yy += BOX_SHADOW_HEIGHT / 2;
 			xx += (this->cell_width + BOX_SHADOW_WIDTH) / 2;
 			s->Get(sprite_id_shadow_middle)->Draw(xx, yy);
@@ -176,15 +176,15 @@ void CBox::Render()
 	}
 
 	// Drawing the last row
-	if (length_height > 1) {
+	if (girth > 1) {
 		s->Get(sprite_id_top_left)->Draw(xx, yy);
 		xx += this->cell_width;
-		for (int i = 1; i < this->length_width - 1; i++)
+		for (int i = 1; i < this->length - 1; i++)
 		{
 			s->Get(sprite_id_top_middle)->Draw(xx, yy);
 			xx += this->cell_width;
 		}
-		if (this->length_width > 1)
+		if (this->length > 1)
 			s->Get(sprite_id_top_right)->Draw(xx, yy);
 
 		yy += BOX_SHADOW_HEIGHT / 2;
@@ -200,12 +200,12 @@ void CBox::GetBoundingBox(float& l, float& t, float& r, float& b)
 	float cellWidth_div_2 = this->cell_width / 2;
 	l = x - cellWidth_div_2;
 	b = y + this->cell_height / 2;
-	t = b - this->cell_height * this->length_height;
-	r = l + this->cell_width * this->length_width;
+	t = b - this->cell_height * this->girth;
+	r = l + this->cell_width * this->length;
 
 }
 
-int CBox::IsDirectionColliable(float nx, float ny)
+int CBox::IsDirectionCollidable(float nx, float ny)
 {
 	if (nx == 0 && ny == -1) return 1;
 	else return 0;

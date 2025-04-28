@@ -1,7 +1,8 @@
 #pragma once
 #include "GameObject.h"
+#include "Platform.h"
 
-#define GOOMBA_GRAVITY 0.0012f
+#define GOOMBA_GRAVITY GRAVITY
 #define GOOMBA_WALKING_SPEED 0.05f
 
 
@@ -34,7 +35,7 @@ protected:
 	virtual void OnNoCollision(DWORD dt);
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
-
+	virtual bool IsGroundAhead(LPCOLLISIONEVENT e);
 public: 	
 	CGoomba(float x, float y);
 	virtual void SetState(int state);

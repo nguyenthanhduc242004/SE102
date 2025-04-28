@@ -16,7 +16,7 @@ public:
 		int sprite_id_middle, int sprite_id_end)
 		: CPlatform(x, y, cell_width, cell_height, length, sprite_id_begin, sprite_id_middle, sprite_id_end) {}
 
-	int IsDirectionColliable(float nx, float ny);
+	int IsDirectionCollidable(float nx, float ny);
 };
 
 typedef CBlockPlatform* LPBLOCKPLATFORM;

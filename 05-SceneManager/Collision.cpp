@@ -8,8 +8,7 @@
 CCollision* CCollision::__instance = NULL;
 
 int CCollisionEvent::WasCollided() {
-	return
-		t >= 0.0f && t <= 1.0f && obj->IsDirectionColliable(nx, ny) == 1;
+	return t >= 0.0f && t <= 1.0f && obj->IsDirectionCollidable(nx, ny) == 1;
 }
 
 CCollision* CCollision::GetInstance()

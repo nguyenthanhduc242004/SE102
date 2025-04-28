@@ -120,7 +120,8 @@ public:
 	void InitiateSwitchScene(int scene_id);
 	void ReloadCurrentScene();
 	void _ParseSection_TEXTURES(string line);
-
+	
+	// GameStateMachine
 	void PauseGame() {
 		if (currentState == GAME_RUNNING) {
 			currentState = GAME_PAUSED;
@@ -137,7 +138,15 @@ public:
 	GameState GetCurrentGameState() {
 		return currentState;
 	}
+	//
 
+	bool IsInCamera(float x, float y) {
+		if (x < cam_x) return false;
+		if (x > cam_x + backBufferWidth) return false;
+		if (y < cam_y) return false;
+		if (y > cam_y + backBufferHeight) return false;
+		return true;
+	}
 	~CGame();
 };
 typedef CGame* LPGAME;
