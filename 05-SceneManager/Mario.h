@@ -3,7 +3,7 @@
 #include "PlayScene.h"
 #include "Animation.h"
 #include "Animations.h"
-
+#include "DeltaTimer.h"
 #include "debug.h"
 
 #define MARIO_WALKING_SPEED		0.1f
@@ -108,10 +108,9 @@
 class CMario : public CGameObject, public CMoveable
 {
 	BOOLEAN isSitting;
-
 	int level;
 	int untouchable;
-	ULONGLONG untouchable_start;
+	CDeltaTimer invincibleTimer;
 	BOOLEAN isOnPlatform;
 	int coin;
 
@@ -131,10 +130,8 @@ public:
 		isSitting = false;
 		maxVy = MARIO_FALL_SPEED_Y;
 		ay = MARIO_GRAVITY;
-
 		level = MARIO_LEVEL_BIG;
 		untouchable = 0;
-		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
 	}
@@ -153,7 +150,10 @@ public:
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
 	void SetLevel(int l);
-	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
+	void StartUntouchable() { 
+		untouchable = 1;
+		invincibleTimer.Start();
+	}
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 

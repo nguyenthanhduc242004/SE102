@@ -122,9 +122,6 @@
     <ClCompile Include="Box.cpp">
       <Filter>Map\Interactable\Non-functional</Filter>
     </ClCompile>
-    <ClCompile Include="DeltaTimer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Koopa.cpp">
       <Filter>NPC</Filter>
     </ClCompile>

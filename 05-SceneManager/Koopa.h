@@ -12,7 +12,7 @@
 #define KOOPAS_BBOX_HEIGHT_SHELL   14
 
 #define KOOPAS_DIE_DEFLECT_SPEED   0.3f
-#define KOOPAS_SHELL_TIMEOUT       4000
+#define KOOPAS_SHELL_TIMEOUT       4000.0f
 
 #define KOOPAS_STATE_WALKING_LEFT   100
 #define KOOPAS_STATE_WALKING_RIGHT  101
@@ -30,9 +30,9 @@
 class CKoopa : public CGameObject, public CMoveable
 {
 protected:
-	CDeltaTimer revivingTimer;
 	CDeltaTimer shellTimer;
-	CDeltaTimer dyingTimer;
+	//CDeltaTimer revivingTimer;
+	//CDeltaTimer dyingTimer;
 	//CDeltaTimer respawnTimer;
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);

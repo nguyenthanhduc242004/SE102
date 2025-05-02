@@ -10,6 +10,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
+	if (invincibleTimer.IsRunning()) {
+		invincibleTimer.Tick(dt);
+	}
+
 	//there should be a mechanism to ease from running to walking, currently it just cuts down immediately
 	if (vx > 0.0f) {
 		vx -= MARIO_DRAG_X * dt;
@@ -22,12 +26,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (abs(vx) > abs(maxVx) && vx * maxVx > 0) vx = maxVx;
 	if (vy > maxVy) vy = maxVy;
-	//in game, there is maxVy observed, not implemented yet
 
 	// reset untouchable timer if untouchable time has passed
-	if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+	if (invincibleTimer.HasPassed(MARIO_UNTOUCHABLE_TIME))
 	{
-		untouchable_start = 0;
+		invincibleTimer.Reset();
 		untouchable = 0;
 	}
 
@@ -113,15 +116,15 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 			koopa->SetState(KOOPAS_STATE_SPINNING_RIGHT);
 		}
 	}
-	//hit koopa on top
-	else if (koopa->GetState() == KOOPAS_STATE_WALKING_LEFT || koopa->GetState() == KOOPAS_STATE_WALKING_RIGHT) {
-		if (e->ny < 0)
-		{
+	//hit koopa not in shell on top, can turn koopa from walking ---> shell
+	else if (e->ny < 0)
+	{
+		if (koopa->GetState() == KOOPAS_STATE_WALKING_LEFT || koopa->GetState() == KOOPAS_STATE_WALKING_RIGHT) {
 			koopa->SetState(KOOPAS_STATE_SHELL);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
-			//if (koopa->GetState() == KOOPAS_STATE_SHELL)
 		}
 	}
+	//hit koopa not in shell, not on top, koopa can be any other state, just not dead
 	else if (koopa->GetState() != KOOPAS_STATE_DIE)
 	{
 		if (untouchable == 0)

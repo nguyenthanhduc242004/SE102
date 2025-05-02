@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Platform.h"
+#include "DeltaTimer.h"
 
 #define GOOMBA_GRAVITY GRAVITY
 #define GOOMBA_WALKING_SPEED 0.05f
@@ -10,7 +11,7 @@
 #define GOOMBA_BBOX_HEIGHT 14
 #define GOOMBA_BBOX_HEIGHT_DIE 7
 
-#define GOOMBA_DIE_TIMEOUT 500
+#define GOOMBA_DIE_TIMEOUT 500.0f
 
 #define GOOMBA_STATE_WALKING 100
 #define GOOMBA_STATE_DIE 200
@@ -23,8 +24,7 @@ class CGoomba : public CGameObject, public CMoveable
 protected:
 	//float ax;				
 	//float ay; 
-
-	ULONGLONG die_start;
+	CDeltaTimer dyingTimer;
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);

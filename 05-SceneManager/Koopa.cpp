@@ -27,32 +27,14 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (shellTimer.IsRunning()) {
 		shellTimer.Tick(dt);
 	}
-	//if (respawnTimer.IsRunning()) {
-		//respawnTimer.Tick(dt);
-	//}
-
-	// respawn if off camera
-	//if (respawnTimer.ElapsedTime() >= KOOPAS_SHELL_TIMEOUT && respawnTimer.IsStarted()) {
-		//respawnTimer.Reset();
-		//if (!CGame::GetInstance()->IsInCamera(x, y)) Reset();
-	//}
-	//if (!CGame::GetInstance()->IsInCamera(x, y)) return;
-
-
 	// shell revival
-	if (state == KOOPAS_STATE_SHELL) {
-		if (shellTimer.HasPassed(KOOPAS_SHELL_TIMEOUT)) {
-			// pop out of shell
-			y -= (KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_SHELL) + 1;
+	if (state == KOOPAS_STATE_SHELL && shellTimer.HasPassed(KOOPAS_SHELL_TIMEOUT)) {
+		shellTimer.Reset();
 
-			(nx < 0) ? SetState(KOOPAS_STATE_WALKING_LEFT) : SetState(KOOPAS_STATE_WALKING_RIGHT);
-		}
+		// pop out of shell
+		y -= (KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_SHELL) + 1;
+		(nx < 0) ? SetState(KOOPAS_STATE_WALKING_LEFT) : SetState(KOOPAS_STATE_WALKING_RIGHT);
 	}
-	// Shell timeout
-	//if (state == KOOPAS_STATE_SHELL && GetTickCount64() - shell_start > KOOPAS_SHELL_TIMEOUT)
-	//{
-		//(nx < 0) ? SetState(KOOPAS_STATE_WALKING_LEFT) : SetState(KOOPAS_STATE_WALKING_RIGHT);
-	//}
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -142,29 +124,26 @@ void CKoopa::SetState(int state)
 		nx = -1;
 		vx = -KOOPAS_WALKING_SPEED;
 		break;
-
 	case KOOPAS_STATE_WALKING_RIGHT:
 		nx = 1;
 		vx = KOOPAS_WALKING_SPEED;
 		break;
-
 	case KOOPAS_STATE_SHELL:
 		vx = 0;
 		shellTimer.Start();
 		break;
-
 	case KOOPAS_STATE_SPINNING_LEFT:
-		DebugOut(L"this is spinning left");
+		//DebugOut(L"this is spinning left");
 		nx = -1;
 		vx = -KOOPAS_SPINNING_SPEED;
 		break;
 	case KOOPAS_STATE_SPINNING_RIGHT:
-		DebugOut(L"this is spinning left");
+		//DebugOut(L"this is spinning left");
 		nx = 1;
 		vx = KOOPAS_SPINNING_SPEED;
 		break;
 	case KOOPAS_STATE_DIE:
-		DebugOut(L"this is dead");
+		//DebugOut(L"this is dead");
 		vx = 0;
 		break;
 	}

@@ -157,7 +157,6 @@
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="debug.cpp" />
-    <ClCompile Include="DeltaTimer.cpp" />
     <ClCompile Include="FlyingScore.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
