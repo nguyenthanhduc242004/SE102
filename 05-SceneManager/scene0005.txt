@@ -16,6 +16,7 @@ question_block.txt
 bouncing_coin.txt
 flying_score.txt
 goomba.txt
+koopa.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -166,9 +167,8 @@ goomba.txt
 11	1540	136	1	1	16	16	0
 11	1572	376	1	1	16	16	0
 
-#MushRoom
-
-2	650	100
+#Koopa
+3	600	90
 
 #Portal 
 #50	200	404	216	180	1

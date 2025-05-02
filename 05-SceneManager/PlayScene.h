@@ -6,7 +6,21 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
-//#include "Koopas.h"
+#include "Utils.h"
+#include "Textures.h"
+#include "Sprites.h"
+#include "Portal.h"
+#include "Coin.h"
+#include "Platform.h"
+#include "Background.h"
+#include "BackgroundCloud.h"
+#include "Box.h"
+#include "SideCollidablePlatform.h"
+#include "BlockPlatform.h"
+#include "QuestionBlock.h"
+#include "Mushroom.h"
+#include "Koopa.h"
+#include "SampleKeyEventHandler.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1

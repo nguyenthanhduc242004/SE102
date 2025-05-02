@@ -3,21 +3,7 @@
 #include "AssetIDs.h"
 
 #include "PlayScene.h"
-#include "Utils.h"
-#include "Textures.h"
-#include "Sprites.h"
-#include "Portal.h"
-#include "Coin.h"
-#include "Platform.h"
-#include "Background.h"
-#include "BackgroundCloud.h"
-#include "Box.h"
-#include "SideCollidablePlatform.h"
-#include "BlockPlatform.h"
-#include "QuestionBlock.h"
-#include "Mushroom.h"
 
-#include "SampleKeyEventHandler.h"
 
 using namespace std;
 
@@ -117,6 +103,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	case OBJECT_TYPE_GOOMBA: objs.push_back(new CGoomba(x, y)); break;
+
+	case OBJECT_TYPE_KOOPA: objs.push_back(new CKoopa(x, y)); break;
+
 	case OBJECT_TYPE_BRICK:
 	{
 		// number of iterations into a maze
@@ -133,6 +122,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		break;
 	}
+
 	case OBJECT_TYPE_COIN:
 	{
 		// number of iterations into a maze

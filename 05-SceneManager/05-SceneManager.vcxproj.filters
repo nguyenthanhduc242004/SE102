@@ -122,6 +122,12 @@
     <ClCompile Include="Box.cpp">
       <Filter>Map\Interactable\Non-functional</Filter>
     </ClCompile>
+    <ClCompile Include="DeltaTimer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Koopa.cpp">
+      <Filter>NPC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -222,6 +228,12 @@
     </ClInclude>
     <ClInclude Include="Box.h">
       <Filter>Map\Interactable\Non-functional</Filter>
+    </ClInclude>
+    <ClInclude Include="DeltaTimer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Koopa.h">
+      <Filter>NPC</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

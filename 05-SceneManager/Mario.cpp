@@ -3,15 +3,7 @@
 
 #include "Mario.h"
 #include "Game.h"
-
-#include "Goomba.h"
-#include "Coin.h"
-#include "Portal.h"
-
-#include "Collision.h"
-#include "QuestionBlock.h"
-#include "BouncingCoin.h"
-#include "Mushroom.h"
+#include "PlayScene.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -63,6 +55,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
+	else if (dynamic_cast<CKoopa*>(e->obj))
+		OnCollisionWithKoopa(e);
 	else if (dynamic_cast<CQuestionBlock*>(e->obj))
 		OnCollisionWithQuestionBlock(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
@@ -105,6 +99,48 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 			}
 		}
 	}
+}
+
+void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
+	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
+
+	//hit koopa in shell in any direction
+	if (koopa->GetState() == KOOPAS_STATE_SHELL) {
+		if (nx < 0) {
+			koopa->SetState(KOOPAS_STATE_SPINNING_LEFT);
+		}
+		else if (nx > 0) {
+			koopa->SetState(KOOPAS_STATE_SPINNING_RIGHT);
+		}
+	}
+	//hit koopa on top
+	else if (koopa->GetState() == KOOPAS_STATE_WALKING_LEFT || koopa->GetState() == KOOPAS_STATE_WALKING_RIGHT) {
+		if (e->ny < 0)
+		{
+			koopa->SetState(KOOPAS_STATE_SHELL);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			//if (koopa->GetState() == KOOPAS_STATE_SHELL)
+		}
+	}
+	else if (koopa->GetState() != KOOPAS_STATE_DIE)
+	{
+		if (untouchable == 0)
+		{
+			{
+				if (level > MARIO_LEVEL_SMALL)
+				{
+					level = MARIO_LEVEL_SMALL;
+					StartUntouchable();
+				}
+				else
+				{
+					DebugOut(L">>> Mario DIE >>> \n");
+					SetState(MARIO_STATE_DIE);
+				}
+			}
+		}
+	}
+
 }
 
 void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
