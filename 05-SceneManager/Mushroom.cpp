@@ -44,7 +44,7 @@ void CMushroom::Render()
 	if (aniId == -1) aniId = ID_ANI_MUSHROOM_RED;
 	animations->Get(aniId)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CMushroom::OnNoCollision(DWORD dt)
