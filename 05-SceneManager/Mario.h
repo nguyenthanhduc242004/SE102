@@ -130,7 +130,7 @@ public:
 		isSitting = false;
 		maxVy = MARIO_FALL_SPEED_Y;
 		ay = MARIO_GRAVITY;
-		level = MARIO_LEVEL_BIG;
+		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
 		isOnPlatform = false;
 		coin = 0;
