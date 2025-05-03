@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Mario.h"
 
 #define BOUNCING_COIN_GRAVITY 0.002f
 #define BOUNCING_COIN_INITIAL_SPEED 0.47f

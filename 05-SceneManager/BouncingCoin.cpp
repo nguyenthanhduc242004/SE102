@@ -49,7 +49,8 @@ void CBouncingCoin::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	{
 		float x, y;
 		questionBlock->GetPosition(x, y);
-		CGame::GetInstance()->GetCurrentScene()->AddObject(new CFlyingScore(x, y - (QUESTION_BLOCK_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100));
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		mario->AddScore(x, y - (QUESTION_BLOCK_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
 		isDeleted = true;
 	}
 }

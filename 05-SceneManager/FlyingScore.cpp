@@ -29,11 +29,9 @@ CFlyingScore::CFlyingScore(float x, float y, int type) :CGameObject(x, y)
 		this->sprite_id = SPRITE_ID_FLYING_SCORE_8000;
 		break;
 	}
-	this->ax = 0;
 	this->ay = FLYING_SCORE_GRAVITY;
-	this->vx = 0;
 	this->vy = -FLYING_SCORE_INITIAL_SPEED;
-	created_start = GetTickCount64();
+	liveTimer.Start();
 }
 
 void CFlyingScore::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -52,7 +50,11 @@ void CFlyingScore::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += vx * dt;
 	y += vy * dt;
 
-	if (GetTickCount64() - created_start > FLYING_SCORE_FLYING_TIME)
+	if (liveTimer.IsRunning()) {
+		liveTimer.Tick(dt);
+	}
+
+	if (liveTimer.HasPassed(FLYING_SCORE_FLYING_TIME))
 	{
 		isDeleted = true;
 		return;
