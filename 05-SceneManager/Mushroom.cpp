@@ -9,6 +9,9 @@
 
 void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (state == MUSHROOM_STATE_SPAWNING && GetTickCount64() - spawning_start > QUESTION_BLOCK_BOUNCE_TIME) {
+		vy = -MUSHROOM_SPAWNING_SPEED;
+	}
 	if (state == MUSHROOM_STATE_SPAWNING && (y <= y0 + QUESTION_BLOCK_ITEM_Y_OFFSET - (QUESTION_BLOCK_HEIGHT + MUSHROOM_HEIGHT) / 2)) {
 		SetState(MUSHROOM_STATE_WALKING);
 	}
@@ -42,9 +45,13 @@ void CMushroom::Render()
 
 	//just has a default ani for practice
 	if (aniId == -1) aniId = ID_ANI_MUSHROOM_RED;
-	animations->Get(aniId)->Render(x, y);
 
-	RenderBoundingBox();
+	// Render onlyafter the QuestionBlock has finished bouncing
+	if (GetTickCount64() - spawning_start > QUESTION_BLOCK_BOUNCE_TIME) {
+		animations->Get(aniId)->Render(x, y);
+	}
+
+	//RenderBoundingBox();
 }
 
 void CMushroom::OnNoCollision(DWORD dt)
@@ -91,8 +98,8 @@ void CMushroom::SetState(int state)
 	case MUSHROOM_STATE_IDLE:
 		break;
 	case MUSHROOM_STATE_SPAWNING:
+		spawning_start = GetTickCount64();
 		y0 = y;
-		vy = -MUSHROOM_SPAWNING_SPEED;
 		break;
 	case MUSHROOM_STATE_WALKING:
 		ay = MUSHROOM_GRAVITY;

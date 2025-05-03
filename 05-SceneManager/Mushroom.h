@@ -12,7 +12,7 @@
 
 #define MUSHROOM_GRAVITY		GRAVITY
 #define MUSHROOM_SPEED			0.06f
-#define MUSHROOM_SPAWNING_SPEED 0.012f 
+#define MUSHROOM_SPAWNING_SPEED 0.012f
 
 #define MUSHROOM_STATE_IDLE		QUESTION_BLOCK_ITEM_STATE_IDLE
 #define MUSHROOM_STATE_SPAWNING		QUESTION_BLOCK_ITEM_STATE_SPAWNING
@@ -24,6 +24,7 @@
 class CMushroom : public CGameObject, public CMoveable
 {
 protected:
+	ULONGLONG spawning_start;
 	int type;
 	float y0;
 
