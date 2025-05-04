@@ -108,7 +108,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 
 	//hit koopa in shell in any direction
-	if (koopa->GetState() == KOOPAS_STATE_SHELL) {
+	if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
 		if (nx < 0) {
 			koopa->SetState(KOOPAS_STATE_SPINNING_LEFT);
 		}
@@ -472,5 +472,17 @@ void CMario::SetLevel(int l)
 		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
 	}
 	level = l;
+}
+
+void CMario::AddScore(float x, float y, int value, bool showEffect)
+{
+	score += value;
+
+	if (showEffect)
+	{
+		// create a score effect popup at (x, y)
+		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+		scene->AddObject(new CFlyingScore(x, y, value));
+	}
 }
 

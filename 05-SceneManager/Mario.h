@@ -5,6 +5,7 @@
 #include "Animations.h"
 #include "DeltaTimer.h"
 #include "debug.h"
+#include "FlyingScore.h"
 
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f
@@ -113,6 +114,7 @@ class CMario : public CGameObject, public CMoveable
 	CDeltaTimer invincibleTimer;
 	BOOLEAN isOnPlatform;
 	int coin;
+	int score;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
@@ -177,4 +179,7 @@ public:
 		}
 		game->EndGame();
 	}
+	void AddScore(float x, float y, int value, bool showEffect);
+
+	int GetScore() const { return score; }
 };

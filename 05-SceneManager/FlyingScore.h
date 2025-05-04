@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 #include "AssetIDs.h"
+#include "DeltaTimer.h"
+
 #define FLYING_SCORE_GRAVITY 0.0001f
 #define FLYING_SCORE_INITIAL_SPEED 0.1f
 
@@ -23,7 +25,7 @@
 class CFlyingScore : public CGameObject, public CMoveable
 {
 protected:
-	ULONGLONG created_start;
+	CDeltaTimer liveTimer;
 	int type;
 	int sprite_id;
 

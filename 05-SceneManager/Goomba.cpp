@@ -54,7 +54,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (dyingTimer.IsRunning()) {
 		dyingTimer.Tick(dt);
 	}
-	if ((state == GOOMBA_STATE_DIE) && (dyingTimer.HasPassed(GOOMBA_DIE_TIMEOUT)))
+	if ((state == GOOMBA_STATE_DIE) && (dyingTimer.HasPassed(GOOMBA_DYING_TIMEOUT)))
 	{
 		dyingTimer.Reset();
 		isDeleted = true;
@@ -86,9 +86,9 @@ void CGoomba::SetState(int state)
 	case GOOMBA_STATE_DIE:
 		dyingTimer.Start();
 		y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE) / 2;
-		vx = 0;
-		vy = 0;
-		ay = 0;
+		ay = 0.0f;
+		vx = 0.0f;
+		vy = 0.0f;
 		break;
 	case GOOMBA_STATE_WALKING:
 		vx = -GOOMBA_WALKING_SPEED;
