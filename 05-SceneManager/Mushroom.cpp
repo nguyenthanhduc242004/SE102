@@ -46,7 +46,7 @@ void CMushroom::Render()
 	//just has a default ani for practice
 	if (aniId == -1) aniId = ID_ANI_MUSHROOM_RED;
 
-	// Render onlyafter the QuestionBlock has finished bouncing
+	// Render only after the QuestionBlock has finished bouncing
 	if (GetTickCount64() - spawning_start > QUESTION_BLOCK_BOUNCE_TIME) {
 		animations->Get(aniId)->Render(x, y);
 	}

@@ -18,6 +18,9 @@ flying_score.txt
 goomba.txt
 koopa.txt
 mushroom.txt
+pipe.txt
+piranha_plant.txt
+
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -167,6 +170,17 @@ mushroom.txt
 11	804	360	1	1	16	16	0
 11	1540	136	1	1	16	16	0
 11	1572	376	1	1	16	16	0
+
+#Piranha plant		#stem_height	#type
+13	460	364	2	0
+
+#Pipe
+12	452	408	3
+12	1892	408	2
+12	1956	408	3
+12	2356	408	3
+12	2356	296	12
+12	2420	408	2
 
 #Koopa
 3	600	90

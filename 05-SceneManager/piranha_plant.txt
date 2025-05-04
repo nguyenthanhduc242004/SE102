@@ -1,0 +1,68 @@
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+#Red shootable
+##Left
+###Downward
+####Mouth opening
+191111	13	62	28	77	10
+####Mouth closing
+191112	60	62	75	77	10
+
+###Upward
+####Mouth opening
+191121	313	528	328	543	10
+####Mouth closing
+191122	266	528	281	543	10
+	
+##Right
+###Downward
+####Mouth opening
+191211	156	62	171	77	10
+####Mouth closing
+191212	109	62	124	77	10
+
+###Upward
+####Mouth opening
+191221	170	528	185	543	10
+####Mouth closing
+191222	217	528	232	543	10
+
+#Green shootable
+##Left
+###Mouth opening
+192101	299	194	314	209	10
+###Mouth closing
+192102	346	194	361	209	10
+	
+##Right
+###Mouth opening
+192201	442	194	457	209	10
+###Mouth closing
+192202	395	194	410	209	10
+
+#Green unshootable
+##Mouth opening
+193001	314	259	329	274	10
+##Mouth closing
+193002	358	259	373	274	10
+
+#Stem
+194001	13	78	28	85	10
+
+# ani_id	sprite1_id	time1	sprite2_id	time2	...
+[ANIMATIONS]
+#Red shootable
+##Left
+51101	191121	200	191122	200
+
+##Right
+51102	191221	200	191222	200
+
+#Green shootable
+##Left
+52001	192101	200	192102	200
+##Right	
+52002	192201	200	192202	200
+
+#Green unshootable
+53001	193001	200	193002	200
