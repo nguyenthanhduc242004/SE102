@@ -1,21 +1,13 @@
 #include "Mushroom.h"
-#include "Utils.h"
-#include "Mario.h"
-//#include "Block.h"
-#include "Brick.h"
-#include "PlayScene.h"
-//#include "IntroScene.h"
-//#include "Camera.h"
+
 
 void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == MUSHROOM_STATE_SPAWNING && GetTickCount64() - spawning_start > QUESTION_BLOCK_BOUNCE_TIME) {
-		vy = -MUSHROOM_SPAWNING_SPEED;
-	}
 	if (state == MUSHROOM_STATE_SPAWNING && (y <= y0 + QUESTION_BLOCK_ITEM_Y_OFFSET - (QUESTION_BLOCK_HEIGHT + MUSHROOM_HEIGHT) / 2)) {
 		SetState(MUSHROOM_STATE_WALKING);
 	}
 
+	HandleTimer(dt);
 	//no logic for camera spawning yet
 	//Camera* cam = Camera::GetInstance();
 	//if (!cam->isAreaCamera(x, y))
@@ -31,7 +23,7 @@ void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CMushroom::Render()
 {
 	//	if not spawned yet, no rendering
-	if (state == MUSHROOM_STATE_IDLE)	return;
+	if (!isSpawned)	return;
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
 
@@ -43,13 +35,10 @@ void CMushroom::Render()
 		aniId = ID_ANI_MUSHROOM_GREEN;
 	}
 
-	// Render only after the QuestionBlock has finished bouncing
-	if (GetTickCount64() - spawning_start > QUESTION_BLOCK_BOUNCE_TIME) {
-		animations->Get(aniId)->Render(x, y);
-	}
-
-	//RenderBoundingBox();
+	animations->Get(aniId)->Render(x, y);
 }
+
+//RenderBoundingBox();
 
 void CMushroom::OnNoCollision(DWORD dt)
 {
@@ -60,21 +49,29 @@ void CMushroom::OnNoCollision(DWORD dt)
 void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (!e->obj->IsBlocking()) return;
-	if (dynamic_cast<CMushroom*>(e->obj)) return;
-	if (state != MUSHROOM_STATE_WALKING) return;
-		//if (state == MUSHROOM_STATE_IDLE)
-			//return;
-		//if (e->ny < 0 && state == MUSHROOM_STATE_SPAWNING)
-			//SetState(MUSHROOM_STATE_WALKING);
-	//}
-
+	// Mario is blocking by default, so we handle so Mushroom if landing on Mario's head wont just stop but phase through for Mario to consume, just for safety
+	if (dynamic_cast<CMario*>(e->obj)) return;
 	if (e->ny != 0)
 	{
 		vy = 0;
 	}
-	else if (e->nx != 0)
+
+	if (e->nx != 0)
 	{
 		vx = -vx;
+	}
+}
+
+void CMushroom::HandleTimer(DWORD dt)
+{
+	if (spawningTimer.IsRunning()) {
+		spawningTimer.Tick(dt);
+	}
+
+	if (state == MUSHROOM_STATE_SPAWNING && spawningTimer.HasPassed(QUESTION_BLOCK_BOUNCE_TIME)) {
+		vy = -MUSHROOM_SPAWNING_SPEED;
+		isSpawned = true;
+		spawningTimer.Reset();
 	}
 }
 
@@ -95,7 +92,7 @@ void CMushroom::SetState(int state)
 	case MUSHROOM_STATE_IDLE:
 		break;
 	case MUSHROOM_STATE_SPAWNING:
-		spawning_start = GetTickCount64();
+		spawningTimer.Start();
 		y0 = y;
 		break;
 	case MUSHROOM_STATE_WALKING:

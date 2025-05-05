@@ -3,6 +3,11 @@
 #include <algorithm>
 #include "Brick.h"
 #include "QuestionBlock.h"
+#include "Mushroom.h"
+#include "Utils.h"
+#include "Mario.h"
+#include "Brick.h"
+#include "PlayScene.h"
 
 #define MUSHROOM_WIDTH  16
 #define MUSHROOM_HEIGHT 16
@@ -24,7 +29,8 @@
 class CMushroom : public CGameObject, public CMoveable
 {
 protected:
-	ULONGLONG spawning_start;
+	CDeltaTimer spawningTimer;
+	bool isSpawned = false;
 	int type;
 	float y0;
 
@@ -38,7 +44,7 @@ protected:
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 
-
+	void HandleTimer(DWORD dt);
 public:
 	CMushroom(float x, float y) : CGameObject(x, y) {
 		y0 = 0.0f;

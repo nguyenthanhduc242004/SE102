@@ -68,10 +68,6 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
-	//no logic for camera spawning yet
-	//Camera* cam = Camera::GetInstance();
-	//if (!cam->isAreaCamera(x, y))
-
 	vy += ay * dt;
 	vx += ax * dt;
 

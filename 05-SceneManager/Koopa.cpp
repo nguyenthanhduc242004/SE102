@@ -131,8 +131,10 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 			}
 		}
 	}
-	nx = -nx;
-	vx = -vx;
+	if (e->nx != 0) {
+		nx = -nx;
+		vx = -vx;
+	}
 }
 void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 	if (state == KOOPAS_STATE_SPINNING_LEFT || state == KOOPAS_STATE_SPINNING_RIGHT) {
@@ -142,8 +144,10 @@ void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 			return;
 		}
 	}
-	nx = -nx;
-	vx = -vx;
+	if (e->nx != 0) {
+		nx = -nx;
+		vx = -vx;
+	}
 }
 void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
@@ -163,6 +167,7 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	else if (thisSpinning && otherWalking)
 	{
 		koopa->SetState(KOOPAS_STATE_DIE);
+		koopa->SetSpeed(vx, -KOOPAS_KILL_VERTICAL_BOUNCE);
 		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
 		return;
@@ -176,14 +181,15 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
 	if ((state == KOOPAS_STATE_SPINNING_LEFT || state == KOOPAS_STATE_SPINNING_RIGHT) || isHeld) {
 		// kill the goomba
+		goomba->SetState(GOOMBA_STATE_DIE);
+		goomba->SetSpeed(vx, -KOOPAS_KILL_VERTICAL_BOUNCE);
 		float x, y;
 		goomba->GetPosition(x, y);
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->AddScore(x, y - (GOOMBA_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, 100, true);
-		goomba->SetState(GOOMBA_STATE_DIE);
 		return;
 	}
 }
@@ -300,7 +306,7 @@ void CKoopa::SetState(int state)
 		break;
 	case KOOPAS_STATE_DIE:
 		dyingTimer.Start();
-		ay = 0.0f;
+		//ay = 0.0f;
 		vx = 0.0f;
 		vy = 0.0f;
 		//DebugOut(L"this is dead");

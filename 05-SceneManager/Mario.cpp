@@ -403,6 +403,7 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_SIT:
+		if (ax != 0) break;
 		if (isOnPlatform && level != MARIO_LEVEL_SMALL)
 		{
 			state = MARIO_STATE_IDLE;
