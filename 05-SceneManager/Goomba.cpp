@@ -33,12 +33,11 @@ void CGoomba::OnNoCollision(DWORD dt)
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (!e->obj->IsBlocking()) return;
-	if (dynamic_cast<CGoomba*>(e->obj)) return;
-
 	if (e->ny != 0)
 	{
 		vy = 0;
 	}
+
 	if (e->nx != 0)
 	{
 		nx = -nx;
@@ -46,11 +45,8 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 }
 
-void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CGoomba::HandleTimer(DWORD dt)
 {
-	vy += ay * dt;
-	vx += ax * dt;
-
 	if (dyingTimer.IsRunning()) {
 		dyingTimer.Tick(dt);
 	}
@@ -60,6 +56,14 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		isDeleted = true;
 		return;
 	}
+}
+
+void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	vy += ay * dt;
+	vx += ax * dt;
+
+	HandleTimer(dt);
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);

@@ -25,44 +25,14 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
 
-	// timer handling
-	if (shellTimer.IsRunning()) {
-		shellTimer.Tick(dt);
-	}
-	if (revivingTimer.IsRunning()) {
-		revivingTimer.Tick(dt);
-	}
-	if (dyingTimer.IsRunning()) {
-		dyingTimer.Tick(dt);
-	}
-	//
-
-	// shell revival / only work when in shell
-	if (state == KOOPAS_STATE_SHELL && shellTimer.HasPassed(KOOPAS_SHELL_TIMEOUT)) {
-		shellTimer.Reset();
-		// shaking out of shell
-		SetState(KOOPAS_STATE_REVIVING);
-	}
-	// shell emerge / only work when in shell
-	if (state == KOOPAS_STATE_REVIVING && revivingTimer.HasPassed(KOOPAS_REVIVING_TIMEOUT)) {
-		revivingTimer.Reset();
-		// popping out of shell
-		y -= (KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_SHELL) + 1;
-		(nx < 0) ? SetState(KOOPAS_STATE_WALKING_LEFT) : SetState(KOOPAS_STATE_WALKING_RIGHT);
-
-	}
-	// die
-	if ((state == KOOPAS_STATE_DIE) && (dyingTimer.HasPassed(KOOPAS_DYING_TIMEOUT)))
-	{
-		dyingTimer.Reset();
-		isDeleted = true;
-		return;
-	}
+	// timer handling funtion seperately
+	HandleTimer(dt);
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 
 }
+
 
 void CKoopa::Render()
 {
@@ -102,28 +72,38 @@ void CKoopa::OnNoCollision(DWORD dt)
 
 void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	//check all npc / which this npc can go through/interact ---> solve Mario triggering collision event multiple times
+	if (dynamic_cast<CKoopa*>(e->obj)) {
+		OnCollisionWithKoopa(e);
+		return;
+	}
+	if (dynamic_cast<CGoomba*>(e->obj)) {
+		OnCollisionWithGoomba(e);
+		return;
+	}
+
+	//IsBlocking will be used only to check map objects ---> NPCs are not blocking, then Mario can finally go through it.
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0)
 	{
 		vy = 0;
 	}
+
 	if (dynamic_cast<CQuestionBlock*>(e->obj)) {
 		OnCollisionWithQuestionBlock(e);
+		return;
 	}
 
 	if (dynamic_cast<CPlatform*>(e->obj)) {
 		OnCollisionWithPlatform(e);
+		return;
 	}
-	else if (dynamic_cast<CBrick*>(e->obj)) {
+	if (dynamic_cast<CBrick*>(e->obj)) {
 		OnCollisionWithBrick(e);
+		return;
 	}
-	else if (dynamic_cast<CKoopa*>(e->obj)) {
-		OnCollisionWithKoopa(e);
-	}
-	else if (dynamic_cast<CGoomba*>(e->obj)) {
-		OnCollisionWithGoomba(e);
-	}
-	else if (e->nx != 0) {
+	// process all blocks, handle the turning seperately depending on the type and state, if not falling into any of the cases, turn automatically.
+	if (e->nx != 0) {
 		nx = -nx;
 		vx = -vx;
 	}
@@ -151,6 +131,8 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 			}
 		}
 	}
+	nx = -nx;
+	vx = -vx;
 }
 void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 	if (state == KOOPAS_STATE_SPINNING_LEFT || state == KOOPAS_STATE_SPINNING_RIGHT) {
@@ -190,9 +172,6 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		//spinning the opposite direction
 		koopa->SetState(nx < 0 ? KOOPAS_STATE_SPINNING_LEFT : KOOPAS_STATE_SPINNING_RIGHT);
 	}
-	//the koopa is not spinning, thus turning around
-	nx = -nx;
-	vx = -vx;
 }
 void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
@@ -207,8 +186,6 @@ void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		goomba->SetState(GOOMBA_STATE_DIE);
 		return;
 	}
-	nx = -nx;
-	vx = -vx;
 }
 //void CKoopa::OnCollisionWithPlant(LPCOLLISIONEVENT e)
 //{
@@ -250,6 +227,40 @@ bool CKoopa::IsGroundAhead(LPCOLLISIONEVENT e)
 	}
 
 	return false; // No ground
+}
+void CKoopa::HandleTimer(DWORD dt) {
+	if (shellTimer.IsRunning()) {
+		shellTimer.Tick(dt);
+	}
+	if (revivingTimer.IsRunning()) {
+		revivingTimer.Tick(dt);
+	}
+	if (dyingTimer.IsRunning()) {
+		dyingTimer.Tick(dt);
+	}
+	//
+
+	// shell revival / only work when in shell
+	if (state == KOOPAS_STATE_SHELL && shellTimer.HasPassed(KOOPAS_SHELL_TIMEOUT)) {
+		shellTimer.Reset();
+		// shaking out of shell
+		SetState(KOOPAS_STATE_REVIVING);
+	}
+	// shell emerge / only work when in shell
+	if (state == KOOPAS_STATE_REVIVING && revivingTimer.HasPassed(KOOPAS_REVIVING_TIMEOUT)) {
+		revivingTimer.Reset();
+		// popping out of shell
+		y -= (KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_SHELL) + 1;
+		(nx < 0) ? SetState(KOOPAS_STATE_WALKING_LEFT) : SetState(KOOPAS_STATE_WALKING_RIGHT);
+
+	}
+	// die
+	if ((state == KOOPAS_STATE_DIE) && (dyingTimer.HasPassed(KOOPAS_DYING_TIMEOUT)))
+	{
+		dyingTimer.Reset();
+		isDeleted = true;
+		return;
+	}
 }
 
 void CKoopa::SetState(int state)

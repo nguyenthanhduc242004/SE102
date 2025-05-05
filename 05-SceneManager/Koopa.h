@@ -49,7 +49,7 @@ protected:
 	virtual void Render();
 
 	virtual int IsCollidable() { return state != KOOPAS_STATE_DIE; };
-	virtual int IsBlocking() { return state != KOOPAS_STATE_DIE; }
+	virtual int IsBlocking() { return 0; }
 	virtual void OnNoCollision(DWORD dt);
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
@@ -60,7 +60,7 @@ protected:
 	virtual void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 
 	virtual bool IsGroundAhead(LPCOLLISIONEVENT e);
-
+	void HandleTimer(DWORD dt);
 public:
 	CKoopa(float x, float y) : CGameObject(x, y) {
 		vx = -KOOPAS_WALKING_SPEED;

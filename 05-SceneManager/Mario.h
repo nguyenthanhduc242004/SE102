@@ -109,11 +109,10 @@
 class CMario : public CGameObject, public CMoveable
 {
 	BOOLEAN isSitting;
+	BOOLEAN isOnPlatform;
 	int level;
 	int untouchable;
 	CDeltaTimer invincibleTimer;
-	BOOLEAN isOnPlatform;
-	int coin;
 	int score;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -135,7 +134,7 @@ public:
 		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
 		isOnPlatform = false;
-		coin = 0;
+		score = 0;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
@@ -182,4 +181,6 @@ public:
 	void AddScore(float x, float y, int value, bool showEffect);
 
 	int GetScore() const { return score; }
+
+	void HandleTimer(DWORD dt);
 };

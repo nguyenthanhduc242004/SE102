@@ -30,10 +30,11 @@ protected:
 	virtual void Render();
 
 	virtual int IsCollidable() { return state != GOOMBA_STATE_DIE; };
-	virtual int IsBlocking() { return state != GOOMBA_STATE_DIE; }
+	virtual int IsBlocking() { return 0; }
 	virtual void OnNoCollision(DWORD dt);
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
+	void HandleTimer(DWORD dt);
 public: 	
 	CGoomba(float x, float y);
 	virtual void SetState(int state);

@@ -10,9 +10,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
-	if (invincibleTimer.IsRunning()) {
-		invincibleTimer.Tick(dt);
-	}
+	HandleTimer(dt);
 
 	//there should be a mechanism to ease from running to walking, currently it just cuts down immediately
 	if (vx > 0.0f) {
@@ -27,13 +25,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (abs(vx) > abs(maxVx) && vx * maxVx > 0) vx = maxVx;
 	if (vy > maxVy) vy = maxVy;
 
-	// reset untouchable timer if untouchable time has passed
-	if (invincibleTimer.HasPassed(MARIO_UNTOUCHABLE_TIME))
-	{
-		invincibleTimer.Reset();
-		untouchable = 0;
-	}
-
+	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -44,8 +36,8 @@ void CMario::OnNoCollision(DWORD dt)
 	isOnPlatform = false;
 }
 
-void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
-{
+void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
+
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0.0f;
@@ -56,18 +48,30 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		vx = 0.0f;
 	}
 
-	if (dynamic_cast<CGoomba*>(e->obj))
+	if (dynamic_cast<CGoomba*>(e->obj)) {
 		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<CKoopa*>(e->obj))
+		return;
+	}
+	if (dynamic_cast<CKoopa*>(e->obj)) {
 		OnCollisionWithKoopa(e);
-	else if (dynamic_cast<CQuestionBlock*>(e->obj))
+		return;
+	}
+	if (dynamic_cast<CQuestionBlock*>(e->obj)) {
 		OnCollisionWithQuestionBlock(e);
-	else if (dynamic_cast<CCoin*>(e->obj))
+		return;
+	}
+	if (dynamic_cast<CCoin*>(e->obj)) {
 		OnCollisionWithCoin(e);
-	else if (dynamic_cast<CPortal*>(e->obj))
+		return;
+	}
+	if (dynamic_cast<CPortal*>(e->obj)) {
 		OnCollisionWithPortal(e);
-	else if (dynamic_cast<CMushroom*>(e->obj))
+		return;
+	}
+	if (dynamic_cast<CMushroom*>(e->obj)) {
 		OnCollisionWithMushroom(e);
+		return;
+	}
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -116,12 +120,12 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 			koopa->SetState(KOOPAS_STATE_SPINNING_RIGHT);
 		}
 	}
-	//hit koopa not in shell on top, can turn koopa from walking ---> shell
+	//hit koopa not in shell on top, can turn koopa ---> shell
 	else if (e->ny < 0)
 	{
-		if (koopa->GetState() == KOOPAS_STATE_WALKING_LEFT || koopa->GetState() == KOOPAS_STATE_WALKING_RIGHT) {
-			koopa->SetState(KOOPAS_STATE_SHELL);
+		if (koopa->GetState() == KOOPAS_STATE_WALKING_LEFT || koopa->GetState() == KOOPAS_STATE_WALKING_RIGHT || koopa->GetState() == KOOPAS_STATE_SPINNING_LEFT || koopa->GetState() == KOOPAS_STATE_SPINNING_RIGHT) {
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			koopa->SetState(KOOPAS_STATE_SHELL);
 		}
 	}
 	//hit koopa not in shell, not on top, koopa can be any other state, just not dead
@@ -129,22 +133,20 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	{
 		if (untouchable == 0)
 		{
+			if (level > MARIO_LEVEL_SMALL)
 			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
+				level = MARIO_LEVEL_SMALL;
+				StartUntouchable();
+			}
+			else
+			{
+				DebugOut(L">>> Mario DIE >>> \n");
+				SetState(MARIO_STATE_DIE);
 			}
 		}
 	}
-
 }
+
 
 void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 {
@@ -163,7 +165,7 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
-	coin++;
+	AddScore(x, y, FLYING_SCORE_TYPE_100, false);
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -175,6 +177,7 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
+	if (mushroom->GetState() != MUSHROOM_STATE_WALKING) return;
 	int type = mushroom->GetType();
 	if (type == MUSHROOM_TYPE_RED) {
 		if (level < MARIO_LEVEL_BIG) {
@@ -483,6 +486,19 @@ void CMario::AddScore(float x, float y, int value, bool showEffect)
 		// create a score effect popup at (x, y)
 		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 		scene->AddObject(new CFlyingScore(x, y, value));
+	}
+}
+
+void CMario::HandleTimer(DWORD dt)
+{
+	if (invincibleTimer.IsRunning()) {
+		invincibleTimer.Tick(dt);
+	}
+	// reset timer if time has passed
+	if (invincibleTimer.HasPassed(MARIO_UNTOUCHABLE_TIME))
+	{
+		invincibleTimer.Reset();
+		untouchable = 0;
 	}
 }
 
