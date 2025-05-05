@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include "AssetIDs.h"
-
 #include "PlayScene.h"
 
 
@@ -256,6 +255,25 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
+
+	case OBJECT_TYPE_PIPE:
+	{
+		int height = atoi(tokens[3].c_str());
+
+		objs.push_back(new CPipe(x, y, height));
+
+		break;
+	}
+
+	case OBJECT_TYPE_PIRANHA_PLANT:
+	{
+		int stem_height = atoi(tokens[3].c_str());
+		int type = atoi(tokens[4].c_str());
+
+		objs.push_back(new CPiranhaPlant(x, y, stem_height, type));
+		break;
+	}
+
 
 	case OBJECT_TYPE_PORTAL:
 	{

@@ -21,3 +21,4 @@ height	240
 40	textures\Map1-1.png
 50	textures\tiles.png
 60	textures\misc-3.png
+70	textures\enemies-5.gif
