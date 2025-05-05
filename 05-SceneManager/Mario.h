@@ -110,9 +110,12 @@ class CMario : public CGameObject, public CMoveable
 {
 	BOOLEAN isSitting;
 	BOOLEAN isOnPlatform;
+	BOOLEAN isHolding;
+	BOOLEAN isReadyToHold;
 	int level;
 	int untouchable;
 	CDeltaTimer invincibleTimer;
+	CDeltaTimer kickTimer;
 	int score;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -129,11 +132,13 @@ public:
 	CMario(float x, float y) : CGameObject(x, y)
 	{
 		isSitting = false;
+		isOnPlatform = false;
+		isHolding = false;
+		isReadyToHold = false;
 		maxVy = MARIO_FALL_SPEED_Y;
 		ay = MARIO_GRAVITY;
 		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
-		isOnPlatform = false;
 		score = 0;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -150,8 +155,19 @@ public:
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
-	void SetLevel(int l);
-	void StartUntouchable() { 
+	int GetLevel() {
+		return level;
+	}
+	void SetLevel(int l) {
+		// Adjust position to avoid falling off platform
+		if (this->level == MARIO_LEVEL_SMALL)
+		{
+			y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+		}
+		level = l;
+
+	}
+	void StartUntouchable() {
 		untouchable = 1;
 		invincibleTimer.Start();
 	}
@@ -183,4 +199,17 @@ public:
 	int GetScore() const { return score; }
 
 	void HandleTimer(DWORD dt);
+
+	BOOLEAN IsHolding() {
+		return isHolding;
+	}
+	BOOLEAN IsReadyToHold() {
+		return isReadyToHold;
+	}
+	void SetIsHolding(BOOLEAN isHolding) {
+		this->isHolding = isHolding;
+	}
+	void SetIsReadyToHold(BOOLEAN isReadyToHold) {
+		this->isReadyToHold = isReadyToHold;
+	}
 };

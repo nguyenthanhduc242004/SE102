@@ -15,6 +15,9 @@
 #define KOOPAS_BBOX_HEIGHT         24
 #define KOOPAS_BBOX_HEIGHT_SHELL   14
 
+#define KOOPAS_HOLDING_Y_OFFSET		KOOPAS_BBOX_HEIGHT_SHELL / 3
+#define KOOPAS_HOLDING_SMALL_MARIO_Y_ADJUST		(MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2
+
 #define KOOPAS_KILL_VERTICAL_BOUNCE   0.3f
 #define KOOPAS_DYING_TIMEOUT 500.0f
 #define KOOPAS_SHELL_TIMEOUT       4000.0f
@@ -79,5 +82,11 @@ public:
 	virtual void GetSpeed(float& vx, float& vy) override {
 		vx = this->vx;
 		vy = this->vy;
+	}
+	void SetIsHeld(BOOLEAN isHeld) {
+		this->isHeld = isHeld;
+	}
+	BOOLEAN IsHeld() {
+		return isHeld;
 	}
 };

@@ -28,6 +28,36 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// timer handling funtion seperately
 	HandleTimer(dt);
 
+	//shell is held
+	if (isHeld)
+	{
+		CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		//Get mario to check if he wants to hold or kick
+		//if shell is held, most of time, mario is holding
+		if (mario->IsHolding()) {
+			float mX, mY;
+			mario->GetPosition(mX, mY);
+			y = mY + KOOPAS_HOLDING_Y_OFFSET;
+
+			x = mX + mario->GetDirection() * (MARIO_BIG_BBOX_WIDTH);
+			if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+			{
+				x = mX + mario->GetDirection() * (MARIO_SMALL_BBOX_WIDTH);
+				y -= KOOPAS_HOLDING_SMALL_MARIO_Y_ADJUST;
+			}
+		}
+		else
+		{
+			//mario stops holding, koopa will be kicked
+			isHeld = false;
+			if (mario->GetDirection() < 0) {
+				SetState(KOOPAS_STATE_SPINNING_LEFT);
+			}
+			else if (mario->GetDirection() > 0) {
+				SetState(KOOPAS_STATE_SPINNING_RIGHT);
+			}
+		}
+	}
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 
@@ -278,15 +308,18 @@ void CKoopa::SetState(int state)
 	case KOOPAS_STATE_WALKING_LEFT:
 		nx = -1;
 		vx = -KOOPAS_WALKING_SPEED;
+		ay = KOOPAS_GRAVITY;
 		isHeld = false;
 		break;
 	case KOOPAS_STATE_WALKING_RIGHT:
 		nx = 1;
 		vx = KOOPAS_WALKING_SPEED;
+		ay = KOOPAS_GRAVITY;
 		isHeld = false;
 		break;
 	case KOOPAS_STATE_SHELL:
-		vx = 0;
+		vx = 0.0f;
+		ay = 0.0f;
 		shellTimer.Start();
 		break;
 	case KOOPAS_STATE_REVIVING:
@@ -296,12 +329,14 @@ void CKoopa::SetState(int state)
 		//DebugOut(L"this is spinning left");
 		nx = -1;
 		vx = -KOOPAS_SPINNING_SPEED;
+		ay = KOOPAS_GRAVITY;
 		isHeld = false;
 		break;
 	case KOOPAS_STATE_SPINNING_RIGHT:
 		//DebugOut(L"this is spinning left");
 		nx = 1;
 		vx = KOOPAS_SPINNING_SPEED;
+		ay = KOOPAS_GRAVITY;
 		isHeld = false;
 		break;
 	case KOOPAS_STATE_DIE:

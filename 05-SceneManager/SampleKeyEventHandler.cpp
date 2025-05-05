@@ -26,6 +26,9 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	if (game->GetCurrentGameState() != GAME_RUNNING) return;
 	switch (KeyCode)
 	{
+	case DIK_A:
+		mario->SetIsReadyToHold(true);
+		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_SIT);
 		break;
@@ -53,12 +56,17 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	if (game->GetCurrentGameState() != GAME_RUNNING) return;
 	switch (KeyCode)
 	{
-	case DIK_S:
-		mario->SetState(MARIO_STATE_RELEASE_JUMP);
+	case DIK_A:
+		mario->SetIsReadyToHold(false);
+		mario->SetIsHolding(false);
 		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_SIT_RELEASE);
 		break;
+	case DIK_S:
+		mario->SetState(MARIO_STATE_RELEASE_JUMP);
+		break;
+
 	}
 }
 

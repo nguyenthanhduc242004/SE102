@@ -111,13 +111,22 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 
-	//hit koopa in shell in any direction
+	// hit koopa in shell in any direction
+	// doesnt handle kicking, since this is collision event, when mario collides with a koopa. Mario can kick the koopa right away, or hold on to it, but if Mario wants to kick later, it's not a collision event, just an event.
+	// koopa existing in Mario's context right now is for collision, in the logic where Mario stores the object he holds, koopa will exist for the kicking action later, but this is not it. so kicking will be handle on the koopa.
+	// Mario releases a will make him not ready for holding anymore, 
 	if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
-		if (nx < 0) {
-			koopa->SetState(KOOPAS_STATE_SPINNING_LEFT);
+		if (!isReadyToHold || e->ny != 0) {
+			if (nx < 0) {
+				koopa->SetState(KOOPAS_STATE_SPINNING_LEFT);
+			}
+			else if (nx > 0) {
+				koopa->SetState(KOOPAS_STATE_SPINNING_RIGHT);
+			}
 		}
-		else if (nx > 0) {
-			koopa->SetState(KOOPAS_STATE_SPINNING_RIGHT);
+		else {
+			isHolding = true;
+			koopa->SetIsHeld(true);
 		}
 	}
 	//hit koopa not in shell on top, can turn koopa ---> shell
@@ -128,7 +137,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 			koopa->SetState(KOOPAS_STATE_SHELL);
 		}
 	}
-	//hit koopa not in shell, not on top, koopa can be any other state, just not dead
+	//hit koopa not in shell, not hit on top, koopa can be any other state, just not dead
 	else if (koopa->GetState() != KOOPAS_STATE_DIE)
 	{
 		if (untouchable == 0)
@@ -466,16 +475,6 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 	}
-}
-
-void CMario::SetLevel(int l)
-{
-	// Adjust position to avoid falling off platform
-	if (this->level == MARIO_LEVEL_SMALL)
-	{
-		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
-	}
-	level = l;
 }
 
 void CMario::AddScore(float x, float y, int value, bool showEffect)
