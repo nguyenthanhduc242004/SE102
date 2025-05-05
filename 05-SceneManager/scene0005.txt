@@ -20,6 +20,7 @@ koopa.txt
 mushroom.txt
 pipe.txt
 piranha_plant.txt
+bullet.txt
 
 #
 [OBJECTS]

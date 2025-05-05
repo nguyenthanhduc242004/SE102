@@ -22,6 +22,7 @@
 #include "Pipe.h"
 #include "Koopa.h"
 #include "PiranhaPlant.h"
+#include "Bullet.h"
 #include "SampleKeyEventHandler.h"
 
 #define SCENE_SECTION_UNKNOWN -1

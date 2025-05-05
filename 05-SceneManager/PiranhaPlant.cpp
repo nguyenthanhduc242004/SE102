@@ -1,9 +1,27 @@
 #include "PiranhaPlant.h"
 #include "Mario.h"
+#include "Bullet.h"
+#include "Game.h"
 
-void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) 
+void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == PIRANHA_PLANT_STATE_HIDDEN && GetTickCount64() - state_start > PIRANHA_PLANT_STATE_TIME) {
+	CGame* game = CGame::GetInstance();
+
+	CMario* mario;
+	mario = (CMario*)((CPlayScene*)game->GetCurrentScene())->GetPlayer();
+
+	float marioX, marioY;
+	mario->GetPosition(marioX, marioY);
+
+	if (!game->IsInCamera(x + 16, y) && !game->IsInCamera(x - 16, y)) {
+		if (state != PIRANHA_PLANT_STATE_HIDDEN) {
+			SetState(PIRANHA_PLANT_STATE_HIDDEN);
+			// To make piranha plant ascend as soon as it's in camera again
+			state_start = 0;
+		}
+	}
+	else if (state == PIRANHA_PLANT_STATE_HIDDEN && GetTickCount64() - state_start > PIRANHA_PLANT_STATE_TIME 
+		&& abs(piranhaPlantHeadX - marioX) >= 32) {
 		SetState(PIRANHA_PLANT_STATE_ASCENDING);
 	} 
 	else if (state == PIRANHA_PLANT_STATE_ASCENDING && y <= y0) {
@@ -14,6 +32,40 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	} 
 	else if (state == PIRANHA_PLANT_STATE_DESCENDING && y >= y0 + PIRANHA_PLANT_HEAD_HEIGHT + PIRANHA_PLANT_STEM_HEIGHT * stem_height) {
 		SetState(PIRANHA_PLANT_STATE_HIDDEN);
+	}
+
+	if (state == PIRANHA_PLANT_STATE_FULLY_EXPOSED && GetTickCount64() - state_start > PIRANHA_PLANT_STATE_TIME / 2) {
+		if (!hasFired && CGame::GetInstance()->IsInCamera(x, y)) {
+			float bulletVX, bulletVY;
+			// Mario in bottom left of piranha plant head
+			if (marioX <= piranhaPlantHeadX && marioY >= piranhaPlantHeadY) {
+				bulletVX = -BULLET_SPEED;
+				bulletVY = BULLET_SPEED;
+			}
+			// Mario in top left of piranha plant head
+			else if (marioX <= piranhaPlantHeadX && marioY < piranhaPlantHeadY) {
+				bulletVX = -BULLET_SPEED;
+				bulletVY = -BULLET_SPEED;
+			}
+			// Mario in bottom right of piranha plant head
+			else if (marioX > piranhaPlantHeadX && marioY >= piranhaPlantHeadY) {
+				bulletVX = BULLET_SPEED;
+				bulletVY = BULLET_SPEED;
+			}
+			// Mario in top right of piranha plant head
+			else {
+				bulletVX = BULLET_SPEED;
+				bulletVY = -BULLET_SPEED;
+			}
+
+			if (abs(piranhaPlantHeadX - marioX) >= PIRANHA_PLANT_DISTANCE_CLOSE) {
+				CGame::GetInstance()->GetCurrentScene()->AddObject(new CBullet(piranhaPlantHeadX, piranhaPlantHeadY, bulletVX, bulletVY / 3));
+			}
+			else {
+				CGame::GetInstance()->GetCurrentScene()->AddObject(new CBullet(piranhaPlantHeadX, piranhaPlantHeadY, bulletVX, bulletVY));
+			}
+			hasFired = true;
+		}
 	}
 
 	//no logic for camera spawning yet
@@ -49,9 +101,6 @@ void CPiranhaPlant::Render()
 
 	float marioX, marioY;
 	mario->GetPosition(marioX, marioY);
-
-	float piranhaPlantHeadX = x + PIRANHA_PLANT_WIDTH / 2;
-	float piranhaPlantHeadY = y + PIRANHA_PLANT_STEM_HEIGHT / 2 - PIRANHA_PLANT_STEM_HEIGHT * stem_height - PIRANHA_PLANT_HEAD_HEIGHT / 2;
 
 	if (type == PIRANHA_PLANT_TYPE_RED_SHOOTABLE) {
 		if (state == PIRANHA_PLANT_STATE_FULLY_EXPOSED) {
@@ -141,6 +190,7 @@ void CPiranhaPlant::SetState(int state)
 		state_start = GetTickCount64();
 		y = y0 + PIRANHA_PLANT_HEAD_HEIGHT + PIRANHA_PLANT_STEM_HEIGHT * stem_height;
 		vy = 0;
+		hasFired = false;
 		break;
 	case PIRANHA_PLANT_STATE_ASCENDING:
 		vy = -PIRANHA_PLANT_SPEED;

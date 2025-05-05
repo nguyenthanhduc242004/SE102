@@ -21,6 +21,8 @@
 
 #define PIRANHA_PLANT_STATE_TIME	1500
 
+#define PIRANHA_PLANT_DISTANCE_CLOSE	80
+
 #define PIRANHA_PLANT_TYPE_RED_SHOOTABLE		0
 #define PIRANHA_PLANT_TYPE_GREEN_SHOOTABLE		1
 #define PIRANHA_PLANT_TYPE_GREEN_UNSHOOTABLE	2
@@ -39,6 +41,10 @@
 //#define ID_ANI_PIRANHA_PLANT_GREEN_SHOOTABLE_RIGHT	52002
 //#define ID_ANI_PIRANHA_PLANT_GREEN_UNSHOOTABLE		53001
 
+
+
+#define PIRANHA_PLANT_BULLET_SPEED	0.05f
+
 class CPiranhaPlant : public CGameObject, public CMoveable
 {
 protected:
@@ -46,6 +52,8 @@ protected:
 	int stem_height;		// Unit: cells
 	int type;
 	float y0;
+	boolean hasFired = false;
+	float piranhaPlantHeadX, piranhaPlantHeadY;
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -63,6 +71,8 @@ public:
 		this->stem_height = stem_height;
 		type = PIRANHA_PLANT_TYPE;
 		y0 = y;
+		piranhaPlantHeadX = x;
+		piranhaPlantHeadY = y + PIRANHA_PLANT_STEM_HEIGHT / 2 - PIRANHA_PLANT_STEM_HEIGHT * stem_height - PIRANHA_PLANT_HEAD_HEIGHT / 2;
 		SetState(PIRANHA_PLANT_STATE_HIDDEN);
 	}
 

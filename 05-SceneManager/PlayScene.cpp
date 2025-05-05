@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include "AssetIDs.h"
-
 #include "PlayScene.h"
 
 
@@ -272,7 +271,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int type = atoi(tokens[4].c_str());
 
 		objs.push_back(new CPiranhaPlant(x, y, stem_height, type));
-
 		break;
 	}
 

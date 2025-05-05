@@ -125,6 +125,11 @@
     <ClCompile Include="Koopa.cpp">
       <Filter>NPC</Filter>
     </ClCompile>
+    <ClCompile Include="Pipe.cpp" />
+    <ClCompile Include="PiranhaPlant.cpp" />
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Map\Interactable\Functional</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -231,6 +236,11 @@
     </ClInclude>
     <ClInclude Include="Koopa.h">
       <Filter>NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipe.h" />
+    <ClInclude Include="PiranhaPlant.h" />
+    <ClInclude Include="Bullet.h">
+      <Filter>Map\Interactable\Functional</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
