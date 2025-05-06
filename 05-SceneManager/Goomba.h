@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Platform.h"
 #include "DeltaTimer.h"
+#include "Koopa.h"
 
 #define GOOMBA_GRAVITY GRAVITY
 #define GOOMBA_WALKING_SPEED 0.05f
@@ -15,9 +16,11 @@
 
 #define GOOMBA_STATE_WALKING 100
 #define GOOMBA_STATE_DIE 200
+#define GOOMBA_STATE_DIE_WITH_BOUNCE  300
 
 #define ID_ANI_GOOMBA_WALKING 5000
 #define ID_ANI_GOOMBA_DIE 5001
+#define ID_ANI_GOOMBA_DIE_WITH_BOUNCE 5002
 
 class CGoomba : public CGameObject, public CMoveable
 {
@@ -29,7 +32,7 @@ protected:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();
 
-	virtual int IsCollidable() { return state != GOOMBA_STATE_DIE; };
+	virtual int IsCollidable() { return state != GOOMBA_STATE_DIE && state != GOOMBA_STATE_DIE_WITH_BOUNCE; };
 	virtual int IsBlocking() { return 0; }
 	virtual void OnNoCollision(DWORD dt);
 

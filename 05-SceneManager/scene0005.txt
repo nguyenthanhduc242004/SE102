@@ -161,8 +161,8 @@ bullet.txt
 10	2356	312	16	16	2	130001	130001	130001
 
 #Koopa // on ground for testing
-3	400	400
-3	620	400
+2	600	400
+2	620	400
 
 #QuestionBlock
 11	276	360	2	1	16	16	0

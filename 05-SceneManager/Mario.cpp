@@ -117,12 +117,8 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	// Right now, Mario can be hit immediately after kicking shell, which is unideal--->kicking timer for animation and invincibility
 	if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
 		if (!isReadyToHold || e->ny != 0) {
-			if (nx < 0) {
-				koopa->SetState(KOOPAS_STATE_SPINNING_LEFT);
-			}
-			else if (nx > 0) {
-				koopa->SetState(KOOPAS_STATE_SPINNING_RIGHT);
-			}
+			koopa->SetDirection(nx);
+			koopa->SetState(KOOPAS_STATE_SPINNING);
 			Kick();
 		}
 		else {
@@ -133,7 +129,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	//hit koopa not in shell on top, can turn koopa ---> shell
 	else if (e->ny < 0)
 	{
-		if (koopa->GetState() == KOOPAS_STATE_WALKING_LEFT || koopa->GetState() == KOOPAS_STATE_WALKING_RIGHT || koopa->GetState() == KOOPAS_STATE_SPINNING_LEFT || koopa->GetState() == KOOPAS_STATE_SPINNING_RIGHT) {
+		if (koopa->GetState() == KOOPAS_STATE_WALKING || koopa->GetState() == KOOPAS_STATE_SPINNING) {
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 			koopa->SetState(KOOPAS_STATE_SHELL);
 		}

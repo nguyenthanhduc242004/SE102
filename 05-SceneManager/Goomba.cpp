@@ -3,6 +3,7 @@
 CGoomba::CGoomba(float x, float y) :CGameObject(x, y)
 {
 	this->ay = GOOMBA_GRAVITY;
+	nx = -1;
 	SetState(GOOMBA_STATE_WALKING);
 }
 
@@ -32,6 +33,9 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	// Mario will handle logic of colliding with Goomba, skip for no duplication (since being collided will now call events too)
+	if (dynamic_cast<CMario*>(e->obj)) return;
+
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0)
 	{
@@ -88,14 +92,18 @@ void CGoomba::SetState(int state)
 	switch (state)
 	{
 	case GOOMBA_STATE_DIE:
-		dyingTimer.Start();
 		y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE) / 2;
-		ay = 0.0f;
 		vx = 0.0f;
 		vy = 0.0f;
+		ay = 0.0f;
+		dyingTimer.Start();
+		break;
+	case GOOMBA_STATE_DIE_WITH_BOUNCE:
+		vx = nx * KOOPAS_WALKING_SPEED;
+		vy = -KOOPAS_KILL_Y_BOUNCE;
 		break;
 	case GOOMBA_STATE_WALKING:
-		vx = -GOOMBA_WALKING_SPEED;
+		vx = nx * GOOMBA_WALKING_SPEED;
 		break;
 	}
 }

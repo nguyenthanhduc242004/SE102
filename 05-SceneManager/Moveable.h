@@ -12,8 +12,9 @@ protected:
     int nx = 1;
 
 public:
-    virtual void SetSpeed(float vx, float vy) = 0;
     virtual void GetSpeed(float& vx, float& vy) = 0;
+    virtual void SetSpeed(float vx, float vy) = 0;
     int GetDirection() { return nx; }
+    void SetDirection(int nx) { this->nx = nx; }
 };
 

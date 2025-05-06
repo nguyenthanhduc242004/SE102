@@ -5,11 +5,14 @@
 #include "QuestionBlock.h"
 #include "Brick.h"
 #include "PlayScene.h"
-
+#include "debug.h"
+#include "Game.h"
+#include "Platform.h"
 
 #define KOOPAS_GRAVITY             GRAVITY
 #define KOOPAS_WALKING_SPEED       0.05f
 #define KOOPAS_SPINNING_SPEED      0.2f
+#define KOOPAS_KILL_Y_BOUNCE   0.3f
 
 #define KOOPAS_BBOX_WIDTH          16
 #define KOOPAS_BBOX_HEIGHT         24
@@ -18,25 +21,25 @@
 #define KOOPAS_HOLDING_Y_OFFSET		KOOPAS_BBOX_HEIGHT_SHELL / 3
 #define KOOPAS_HOLDING_SMALL_MARIO_Y_ADJUST		(MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2
 
-#define KOOPAS_KILL_VERTICAL_BOUNCE   0.3f
 #define KOOPAS_DYING_TIMEOUT 500.0f
-#define KOOPAS_SHELL_TIMEOUT       4000.0f
-#define KOOPAS_REVIVING_TIMEOUT		2000.0f
+#define KOOPAS_SHELL_TIMEOUT 4000.0f
+#define KOOPAS_REVIVING_TIMEOUT 2000.0f
 
-#define KOOPAS_STATE_WALKING_LEFT   100
-#define KOOPAS_STATE_WALKING_RIGHT  101
-#define KOOPAS_STATE_SHELL          200
-#define KOOPAS_STATE_REVIVING		300
-#define KOOPAS_STATE_SPINNING_LEFT       400
-#define KOOPAS_STATE_SPINNING_RIGHT       500
-#define KOOPAS_STATE_DIE            600
+#define KOOPAS_STATE_WALKING    100
+#define KOOPAS_STATE_SHELL      200
+#define KOOPAS_STATE_REVIVING   300
+#define KOOPAS_STATE_SPINNING   400
+#define KOOPAS_STATE_DIE        500
+#define KOOPAS_STATE_DIE_WITH_BOUNCE  600
 
-#define ID_ANI_KOOPAS_WALKING_LEFT      6000
-#define ID_ANI_KOOPAS_WALKING_RIGHT      6100
-#define ID_ANI_KOOPAS_SHELL        6200
+#define ID_ANI_KOOPAS_WALKING_LEFT    6000
+#define ID_ANI_KOOPAS_WALKING_RIGHT   6100
+#define ID_ANI_KOOPAS_SHELL           6200
 #define ID_ANI_KOOPAS_REVIVING        6300
-#define ID_ANI_KOOPAS_SPINNING     6400
-#define ID_ANI_KOOPAS_DIE          6500
+#define ID_ANI_KOOPAS_SPINNING_LEFT   6400
+#define ID_ANI_KOOPAS_SPINNING_RIGHT  6500
+#define ID_ANI_KOOPAS_DIE             6600
+#define ID_ANI_KOOPAS_DIE_WITH_BOUNCE   6700
 
 class CKoopa : public CGameObject, public CMoveable
 {
@@ -45,48 +48,40 @@ protected:
 	CDeltaTimer shellTimer;
 	CDeltaTimer revivingTimer;
 	CDeltaTimer dyingTimer;
-	//CDeltaTimer respawnTimer;
 
-	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	virtual void Render();
+	// core overrides
+	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) override;
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override;
+	virtual void Render() override;
 
-	virtual int IsCollidable() { return state != KOOPAS_STATE_DIE; };
-	virtual int IsBlocking() { return 0; }
-	virtual void OnNoCollision(DWORD dt);
+	// collisions
+	virtual int  IsCollidable() override { return state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_DIE_WITH_BOUNCE; }
+	virtual int  IsBlocking()   override { return 0; }
+	virtual void OnNoCollision(DWORD dt) override;
+	virtual void OnCollisionWith(LPCOLLISIONEVENT e) override;
 
-	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
+	// specific collision handlers
 	virtual void OnCollisionWithPlatform(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 
-	virtual bool IsGroundAhead(LPCOLLISIONEVENT e);
+	bool IsGroundAhead(LPCOLLISIONEVENT e);
+
 	void HandleTimer(DWORD dt);
+	void HandleBeingHeld();
+
 public:
 	CKoopa(float x, float y) : CGameObject(x, y) {
-		vx = -KOOPAS_WALKING_SPEED;
-		ay = KOOPAS_GRAVITY;
 		nx = -1;
-		SetState(KOOPAS_STATE_WALKING_LEFT);
-		vx = 0;
-	}
-	virtual void SetState(int state);
-
-	virtual void SetSpeed(float vx, float vy) override {
-		this->vx = vx;
-		this->vy = vy;
+		SetState(KOOPAS_STATE_WALKING);
+		isHeld = false;
 	}
 
-	virtual void GetSpeed(float& vx, float& vy) override {
-		vx = this->vx;
-		vy = this->vy;
-	}
-	void SetIsHeld(BOOLEAN isHeld) {
-		this->isHeld = isHeld;
-	}
-	BOOLEAN IsHeld() {
-		return isHeld;
-	}
+	virtual void SetState(int state) override;
+	virtual void SetSpeed(float vx, float vy) override { this->vx = vx; this->vy = vy; }
+	virtual void GetSpeed(float& vx, float& vy) override { vx = this->vx; vy = this->vy; }
+	void SetIsHeld(BOOLEAN held) { isHeld = held; }
+	BOOLEAN IsHeld() const { return isHeld; }
 };
