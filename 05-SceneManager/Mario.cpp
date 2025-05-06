@@ -37,7 +37,6 @@ void CMario::OnNoCollision(DWORD dt)
 }
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
-
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0.0f;
@@ -114,7 +113,8 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	// hit koopa in shell in any direction
 	// doesnt handle kicking, since this is collision event, when mario collides with a koopa. Mario can kick the koopa right away, or hold on to it, but if Mario wants to kick later, it's not a collision event, just an event.
 	// koopa existing in Mario's context right now is for collision, in the logic where Mario stores the object he holds, koopa will exist for the kicking action later, but this is not it. so kicking will be handle on the koopa.
-	// Mario releases a will make him not ready for holding anymore, 
+	// Mario releases a will make him not ready for holding anymore
+	// Right now, Mario can be hit immediately after kicking shell, which is unideal--->kicking timer for animation and invincibility
 	if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
 		if (!isReadyToHold || e->ny != 0) {
 			if (nx < 0) {
@@ -123,6 +123,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 			else if (nx > 0) {
 				koopa->SetState(KOOPAS_STATE_SPINNING_RIGHT);
 			}
+			Kick();
 		}
 		else {
 			isHolding = true;
@@ -137,7 +138,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 			koopa->SetState(KOOPAS_STATE_SHELL);
 		}
 	}
-	//hit koopa not in shell, not hit on top, koopa can be any other state, just not dead
+	//touch koopa not in shell, not hit on top, koopa can be any other state, just not dead
 	else if (koopa->GetState() != KOOPAS_STATE_DIE)
 	{
 		if (untouchable == 0)
@@ -494,10 +495,17 @@ void CMario::HandleTimer(DWORD dt)
 	if (invincibleTimer.IsRunning()) {
 		invincibleTimer.Tick(dt);
 	}
+	if (kickTimer.IsRunning()) {
+		kickTimer.Tick(dt);
+	}
 	// reset timer if time has passed
 	if (invincibleTimer.HasPassed(MARIO_UNTOUCHABLE_TIME))
 	{
 		invincibleTimer.Reset();
+		untouchable = 0;
+	}
+	if (kickTimer.HasPassed(MARIO_KICK_TIME)) {
+		kickTimer.Reset();
 		untouchable = 0;
 	}
 }

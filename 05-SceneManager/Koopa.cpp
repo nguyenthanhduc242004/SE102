@@ -28,32 +28,36 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// timer handling funtion seperately
 	HandleTimer(dt);
 
-	//shell is held
+	//shell is held ---> will make a HandleBeingHeld
 	if (isHeld)
 	{
+		//directly setting the koopa's position, not ideal for collision 
 		CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		//Get mario to check if he wants to hold or kick
 		//if shell is held, most of time, mario is holding
+		//collision only works on objects with velocity!!! if Koopa is a shell, collison is called from others who, collide with it
 		if (mario->IsHolding()) {
+			nx = mario->GetDirection();
 			float mX, mY;
 			mario->GetPosition(mX, mY);
 			y = mY + KOOPAS_HOLDING_Y_OFFSET;
 
-			x = mX + mario->GetDirection() * (MARIO_BIG_BBOX_WIDTH);
+			x = mX + nx * (MARIO_BIG_BBOX_WIDTH);
 			if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			{
-				x = mX + mario->GetDirection() * (MARIO_SMALL_BBOX_WIDTH);
+				x = mX + nx * (MARIO_SMALL_BBOX_WIDTH);
 				y -= KOOPAS_HOLDING_SMALL_MARIO_Y_ADJUST;
 			}
 		}
 		else
 		{
 			//mario stops holding, koopa will be kicked
-			isHeld = false;
-			if (mario->GetDirection() < 0) {
+			//trigger Mario kicking animation and effect
+			mario->Kick();
+			if (nx < 0) {
 				SetState(KOOPAS_STATE_SPINNING_LEFT);
 			}
-			else if (mario->GetDirection() > 0) {
+			else if (nx > 0) {
 				SetState(KOOPAS_STATE_SPINNING_RIGHT);
 			}
 		}
@@ -102,7 +106,9 @@ void CKoopa::OnNoCollision(DWORD dt)
 
 void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	//check all npc / which this npc can go through/interact ---> solve Mario triggering collision event multiple times
+	// Mario will handle logic of colliding with Koopa, so skip for no duplication
+	if (dynamic_cast<CMario*>(e->obj)) return;
+	//check all npc / which this npc can go through/interact ---> solve Mario triggering collision event multiple times because of IsBlocking setting
 	if (dynamic_cast<CKoopa*>(e->obj)) {
 		OnCollisionWithKoopa(e);
 		return;
@@ -112,11 +118,27 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		return;
 	}
 
-	//IsBlocking will be used only to check map objects ---> NPCs are not blocking, then Mario can finally go through it.
+	//IsBlocking will be used only to check map objects ---> NPCs are not blocking, Mario can go through them.
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0)
 	{
 		vy = 0;
+	}
+
+	//static overlap arguments, when Koopa is collided, or it is overlapping
+	//use for when Mario kicking it directly into a block
+	//works with many unintended bounces, and Koopa dies with bounce will always trigger this for some reasons.
+	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
+		// all block objects will kill Koopa, except platform, but not all platform,
+		// sidecollidableplatform will still kill, so check platform, then check sidecollidableplatform
+		if (isHeld) return;
+		if (dynamic_cast<CPlatform*>(e->obj) != NULL && dynamic_cast<CSideCollidablePlatform*>(e->obj) == NULL) return;
+		SetState(KOOPAS_STATE_DIE);
+		SetSpeed(nx * KOOPAS_WALKING_SPEED, -KOOPAS_KILL_VERTICAL_BOUNCE);
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+		DebugOut(L"%d", IsCollidable());
+		return;
 	}
 
 	if (dynamic_cast<CQuestionBlock*>(e->obj)) {
@@ -139,7 +161,7 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 }
 void CKoopa::OnCollisionWithPlatform(LPCOLLISIONEVENT e) {
-	if (state != KOOPAS_STATE_SPINNING_LEFT && state != KOOPAS_STATE_SPINNING_RIGHT) {
+	if (state != KOOPAS_STATE_SPINNING_LEFT && state != KOOPAS_STATE_SPINNING_RIGHT && state != KOOPAS_STATE_DIE) {
 		if (!IsGroundAhead(e)) {
 			nx = -nx;
 			vx = -vx;
@@ -189,23 +211,23 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	bool otherWalking = (otherState == KOOPAS_STATE_WALKING_LEFT || otherState == KOOPAS_STATE_WALKING_RIGHT);
 	bool otherShell = (otherState == KOOPAS_STATE_SHELL);
 
-	if (thisSpinning && otherSpinning)
+	if ((thisSpinning || isHeld) && (otherSpinning || otherShell))
 	{
-		this->SetState(KOOPAS_STATE_SHELL);
-		koopa->SetState(KOOPAS_STATE_SHELL);
+		//kill both
+		this->SetState(KOOPAS_STATE_DIE);
+		koopa->SetState(KOOPAS_STATE_DIE);
+		koopa->SetSpeed(nx * KOOPAS_WALKING_SPEED, -KOOPAS_KILL_VERTICAL_BOUNCE);
+		this->SetSpeed(-nx * KOOPAS_WALKING_SPEED, -KOOPAS_KILL_VERTICAL_BOUNCE);
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_200, true);
 	}
-	else if (thisSpinning && otherWalking)
+	else if ((thisSpinning || isHeld) && otherWalking)
 	{
 		koopa->SetState(KOOPAS_STATE_DIE);
-		koopa->SetSpeed(vx, -KOOPAS_KILL_VERTICAL_BOUNCE);
+		koopa->SetSpeed(nx * KOOPAS_WALKING_SPEED, -KOOPAS_KILL_VERTICAL_BOUNCE);
 		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
 		return;
-	}
-	else if (thisSpinning && otherShell)
-	{
-		//spinning the opposite direction
-		koopa->SetState(nx < 0 ? KOOPAS_STATE_SPINNING_LEFT : KOOPAS_STATE_SPINNING_RIGHT);
 	}
 }
 void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -215,12 +237,16 @@ void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	if ((state == KOOPAS_STATE_SPINNING_LEFT || state == KOOPAS_STATE_SPINNING_RIGHT) || isHeld) {
 		// kill the goomba
 		goomba->SetState(GOOMBA_STATE_DIE);
-		goomba->SetSpeed(vx, -KOOPAS_KILL_VERTICAL_BOUNCE);
+		goomba->SetSpeed(nx * KOOPAS_WALKING_SPEED, -KOOPAS_KILL_VERTICAL_BOUNCE);
 		float x, y;
 		goomba->GetPosition(x, y);
 		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->AddScore(x, y - (GOOMBA_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, 100, true);
 		return;
+	}
+	if (e->nx != 0) {
+		nx = -nx;
+		vx = -vx;
 	}
 }
 //void CKoopa::OnCollisionWithPlant(LPCOLLISIONEVENT e)
@@ -341,11 +367,10 @@ void CKoopa::SetState(int state)
 		break;
 	case KOOPAS_STATE_DIE:
 		dyingTimer.Start();
-		//ay = 0.0f;
 		vx = 0.0f;
 		vy = 0.0f;
-		//DebugOut(L"this is dead");
-		vx = 0;
+		ay = KOOPAS_GRAVITY;
+		isHeld = false;
 		break;
 	}
 }

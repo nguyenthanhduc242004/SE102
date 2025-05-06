@@ -12,6 +12,7 @@ public:
 		:CPlatform(x, y, cell_width, cell_height, length, sprite_id_begin, sprite_id_middle, sprite_id_end) {}
 
 	void Render();
+	int IsCollidable() { return 0; };
 	int IsDirectionCollidable(float nx, float ny);
 };
 

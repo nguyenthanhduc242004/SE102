@@ -104,6 +104,7 @@
 
 
 #define MARIO_UNTOUCHABLE_TIME 2500
+#define MARIO_KICK_TIME	200	
 
 
 class CMario : public CGameObject, public CMoveable
@@ -171,7 +172,10 @@ public:
 		untouchable = 1;
 		invincibleTimer.Start();
 	}
-
+	void Kick() {
+		untouchable = 1;
+		kickTimer.Start();
+	}
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
 	virtual void SetSpeed(float vx, float vy) override {
