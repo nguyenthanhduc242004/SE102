@@ -186,8 +186,7 @@ void CCollision::Scan(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* objDe
 		if (objDest == objSrc) continue;
 
 		//  FIX: Skip deleted or non-collidable objects
-		//	-> FIX: Need to process non-collidable objects like Bullet and PiranhaPlant
-		if (objDest->IsDeleted()) continue;
+		if (objDest->IsDeleted() || !objDest->IsCollidable()) continue;
 
 		// Run SweptAABB only for valid targets
 		LPCOLLISIONEVENT e = SweptAABB(objSrc, dt, objDest);

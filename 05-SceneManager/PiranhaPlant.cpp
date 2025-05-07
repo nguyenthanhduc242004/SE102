@@ -5,6 +5,10 @@
 
 void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//CPiranhaPlant is also a slap-on-like object, it can go through blocking objects(pipe) ---> update its position here, so when it's colliding with the pipe, it wont stop, OnNoCollision causes the stuck bug
+	x += vx * dt;
+	y += vy * dt;
+
 	CGame* game = CGame::GetInstance();
 
 	CMario* mario;
@@ -144,32 +148,7 @@ void CPiranhaPlant::Render()
 	//RenderBoundingBox();
 }
 
-void CPiranhaPlant::OnNoCollision(DWORD dt)
-{
-	x += vx * dt;
-	y += vy * dt;
-};
 
-void CPiranhaPlant::OnCollisionWith(LPCOLLISIONEVENT e)
-{
-//	if (!e->obj->IsBlocking()) return;
-//	if (dynamic_cast<CPiranhaPlant*>(e->obj)) return;
-//	if (state != PiranhaPlant_STATE_WALKING) return;
-//	//if (state == PiranhaPlant_STATE_IDLE)
-//		//return;
-//	//if (e->ny < 0 && state == PiranhaPlant_STATE_SPAWNING)
-//		//SetState(PiranhaPlant_STATE_WALKING);
-////}
-//
-//	if (e->ny != 0)
-//	{
-//		vy = 0;
-//	}
-//	else if (e->nx != 0)
-//	{
-//		vx = -vx;
-//	}
-}
 
 void CPiranhaPlant::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {

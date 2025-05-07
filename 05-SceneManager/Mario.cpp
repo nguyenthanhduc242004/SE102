@@ -398,96 +398,96 @@ int CMario::GetAniIdBig()
 	return aniId;
 }
 
-int CMario::GetAniIdBig()
-{
-	int aniId = -1;
-	// is jumping
-	if (!isOnPlatform)
-	{
-		if (isHolding) {
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_BIG_HOLD_JUMP_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_BIG_HOLD_JUMP_LEFT;
-		}
-		else if (abs(vx) >= MARIO_RUNNING_SPEED)
-		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_BIG_DIVE_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_BIG_DIVE_LEFT;
-		}
-		else
-		{
-			if (nx >= 0) {
-				aniId = ID_ANI_MARIO_BIG_JUMP_DOWN_RIGHT;
-				if (vy <= 0.0f)
-					aniId = ID_ANI_MARIO_BIG_JUMP_UP_RIGHT;
-			}
-			else {
-				aniId = ID_ANI_MARIO_BIG_JUMP_DOWN_LEFT;
-				if (vy <= 0.0f)
-					aniId = ID_ANI_MARIO_BIG_JUMP_UP_LEFT;
-			}
-		}
-	}
-	//is sitting on the ground
-	else
-		if (isSitting)
-		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_BIG_SIT_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_BIG_SIT_LEFT;
-		}
-	//is not sitting on the ground, can hold, can kick
-	// idle, can hold
-		else
-			if (vx == 0.0f)
-			{
-				if (nx >= 0) {
-					aniId = ID_ANI_MARIO_BIG_IDLE_RIGHT;
-					if (isHolding) aniId = ID_ANI_MARIO_BIG_HOLD_IDLE_RIGHT;
-				}
-				else {
-					aniId = ID_ANI_MARIO_BIG_IDLE_LEFT;
-					if (isHolding) aniId = ID_ANI_MARIO_BIG_HOLD_IDLE_LEFT;
-				}
-			}
-	//move right, can hold
-			else if (vx > 0.0f)
-			{
-				if (isHolding)
-					aniId = ID_ANI_MARIO_BIG_HOLD_WALK_RIGHT;
-				else if (ax < 0)
-					aniId = ID_ANI_MARIO_BIG_BRACE_RIGHT;
-				else if (vx >= MARIO_RUNNING_SPEED)
-					aniId = ID_ANI_MARIO_BIG_RUNNING_RIGHT;
-				else
-					aniId = ID_ANI_MARIO_BIG_WALKING_RIGHT;
-			}
-	//move left, can hold
-			else // vx < 0
-			{
-				if (isHolding)
-					aniId = ID_ANI_MARIO_BIG_HOLD_WALK_LEFT;
-				else if (ax > 0.0f)
-					aniId = ID_ANI_MARIO_BIG_BRACE_LEFT;
-				else if (vx <= -MARIO_RUNNING_SPEED)
-					aniId = ID_ANI_MARIO_BIG_RUNNING_LEFT;
-				else
-					aniId = ID_ANI_MARIO_BIG_WALKING_LEFT;
-			}
-	if (kickTimer.IsRunning()) {
-		if (nx >= 0)
-			aniId = ID_ANI_MARIO_BIG_KICK_RIGHT;
-		else
-			aniId = ID_ANI_MARIO_BIG_KICK_LEFT;
-	}
-	if (aniId == -1) aniId = ID_ANI_MARIO_BIG_IDLE_RIGHT;
-
-	return aniId;
-}
+//int CMario::GetAniIdBig()
+//{
+//	int aniId = -1;
+//	// is jumping
+//	if (!isOnPlatform)
+//	{
+//		if (isHolding) {
+//			if (nx >= 0)
+//				aniId = ID_ANI_MARIO_BIG_HOLD_JUMP_RIGHT;
+//			else
+//				aniId = ID_ANI_MARIO_BIG_HOLD_JUMP_LEFT;
+//		}
+//		else if (abs(vx) >= MARIO_RUNNING_SPEED)
+//		{
+//			if (nx >= 0)
+//				aniId = ID_ANI_MARIO_BIG_DIVE_RIGHT;
+//			else
+//				aniId = ID_ANI_MARIO_BIG_DIVE_LEFT;
+//		}
+//		else
+//		{
+//			if (nx >= 0) {
+//				aniId = ID_ANI_MARIO_BIG_JUMP_DOWN_RIGHT;
+//				if (vy <= 0.0f)
+//					aniId = ID_ANI_MARIO_BIG_JUMP_UP_RIGHT;
+//			}
+//			else {
+//				aniId = ID_ANI_MARIO_BIG_JUMP_DOWN_LEFT;
+//				if (vy <= 0.0f)
+//					aniId = ID_ANI_MARIO_BIG_JUMP_UP_LEFT;
+//			}
+//		}
+//	}
+//	//is sitting on the ground
+//	else
+//		if (isSitting)
+//		{
+//			if (nx >= 0)
+//				aniId = ID_ANI_MARIO_BIG_SIT_RIGHT;
+//			else
+//				aniId = ID_ANI_MARIO_BIG_SIT_LEFT;
+//		}
+//	//is not sitting on the ground, can hold, can kick
+//	// idle, can hold
+//		else
+//			if (vx == 0.0f)
+//			{
+//				if (nx >= 0) {
+//					aniId = ID_ANI_MARIO_BIG_IDLE_RIGHT;
+//					if (isHolding) aniId = ID_ANI_MARIO_BIG_HOLD_IDLE_RIGHT;
+//				}
+//				else {
+//					aniId = ID_ANI_MARIO_BIG_IDLE_LEFT;
+//					if (isHolding) aniId = ID_ANI_MARIO_BIG_HOLD_IDLE_LEFT;
+//				}
+//			}
+//	//move right, can hold
+//			else if (vx > 0.0f)
+//			{
+//				if (isHolding)
+//					aniId = ID_ANI_MARIO_BIG_HOLD_WALK_RIGHT;
+//				else if (ax < 0)
+//					aniId = ID_ANI_MARIO_BIG_BRACE_RIGHT;
+//				else if (vx >= MARIO_RUNNING_SPEED)
+//					aniId = ID_ANI_MARIO_BIG_RUNNING_RIGHT;
+//				else
+//					aniId = ID_ANI_MARIO_BIG_WALKING_RIGHT;
+//			}
+//	//move left, can hold
+//			else // vx < 0
+//			{
+//				if (isHolding)
+//					aniId = ID_ANI_MARIO_BIG_HOLD_WALK_LEFT;
+//				else if (ax > 0.0f)
+//					aniId = ID_ANI_MARIO_BIG_BRACE_LEFT;
+//				else if (vx <= -MARIO_RUNNING_SPEED)
+//					aniId = ID_ANI_MARIO_BIG_RUNNING_LEFT;
+//				else
+//					aniId = ID_ANI_MARIO_BIG_WALKING_LEFT;
+//			}
+//	if (kickTimer.IsRunning()) {
+//		if (nx >= 0)
+//			aniId = ID_ANI_MARIO_BIG_KICK_RIGHT;
+//		else
+//			aniId = ID_ANI_MARIO_BIG_KICK_LEFT;
+//	}
+//	if (aniId == -1) aniId = ID_ANI_MARIO_BIG_IDLE_RIGHT;
+//
+//	return aniId;
+//}
 
 void CMario::Render()
 {
