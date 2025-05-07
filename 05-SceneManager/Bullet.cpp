@@ -1,4 +1,5 @@
 #include "Bullet.h"
+#include "Game.h"
 
 void CBullet::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -16,6 +17,14 @@ void CBullet::OnNoCollision(DWORD dt)
 
 void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	CGame* game = CGame::GetInstance();
+
+	if (!(game->IsInCamera(x - BULLET_WIDTH, y + BULLET_HEIGHT) || game->IsInCamera(x - BULLET_WIDTH, y - BULLET_HEIGHT)
+		&& game->IsInCamera(x + BULLET_WIDTH, y + BULLET_HEIGHT) || game->IsInCamera(x + BULLET_WIDTH, y - BULLET_HEIGHT))) 
+	{
+		isDeleted = true;
+	}
+
 	vy += ay * dt;
 	vx += ax * dt;
 

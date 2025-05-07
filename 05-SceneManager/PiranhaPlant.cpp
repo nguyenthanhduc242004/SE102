@@ -13,7 +13,9 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	float marioX, marioY;
 	mario->GetPosition(marioX, marioY);
 
-	if (!game->IsInCamera(x + 16, y) && !game->IsInCamera(x - 16, y)) {
+	float piranhaPlantHeight = PIRANHA_PLANT_HEAD_HEIGHT + PIRANHA_PLANT_STEM_HEIGHT * stem_height;
+	if (!(game->IsInCamera(x - PIRANHA_PLANT_WIDTH, y + piranhaPlantHeight) || game->IsInCamera(x - PIRANHA_PLANT_WIDTH, y - piranhaPlantHeight)
+		&& game->IsInCamera(x + PIRANHA_PLANT_WIDTH, y + piranhaPlantHeight) || game->IsInCamera(x + PIRANHA_PLANT_WIDTH, y - piranhaPlantHeight))) {
 		if (state != PIRANHA_PLANT_STATE_HIDDEN) {
 			SetState(PIRANHA_PLANT_STATE_HIDDEN);
 			// To make piranha plant ascend as soon as it's in camera again

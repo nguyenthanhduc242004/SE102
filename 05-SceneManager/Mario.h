@@ -118,12 +118,15 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	CDeltaTimer kickTimer;
 	int score;
 
+
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
+	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -187,6 +190,7 @@ public:
 	}
 
 	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override {
+		if (untouchable) return;
 		if (level > MARIO_LEVEL_SMALL)
 		{
 			level = MARIO_LEVEL_SMALL;
