@@ -193,6 +193,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Damageable.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="DeltaTimer.h" />
     <ClInclude Include="FlyingScore.h" />

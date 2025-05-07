@@ -9,6 +9,7 @@
 #include "Sprites.h"
 #include "Collision.h"
 #include "Moveable.h"
+#include "Damageable.h"
 
 using namespace std;
 

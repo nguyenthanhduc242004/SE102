@@ -180,15 +180,22 @@ void CCollision::Scan(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* objDe
 {
 	for (UINT i = 0; i < objDests->size(); i++)
 	{
-		LPCOLLISIONEVENT e = SweptAABB(objSrc, dt, objDests->at(i));
+		LPGAMEOBJECT objDest = objDests->at(i);
+
+		// Skip self-collision
+		if (objDest == objSrc) continue;
+
+		//  FIX: Skip deleted or non-collidable objects
+		if (objDest->IsDeleted() || !objDest->IsCollidable()) continue;
+
+		// Run SweptAABB only for valid targets
+		LPCOLLISIONEVENT e = SweptAABB(objSrc, dt, objDest);
 
 		if (e->WasCollided() == 1)
 			coEvents.push_back(e);
 		else
 			delete e;
 	}
-
-	//std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
 }
 
 void CCollision::Filter(LPGAMEOBJECT objSrc,

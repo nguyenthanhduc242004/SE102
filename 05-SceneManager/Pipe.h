@@ -19,7 +19,7 @@ protected:
 
 public:
 	CPipe(float x, float y) : CGameObject(x, y) {}
-	CPipe(float x, float y,	int height) :CGameObject(x, y)
+	CPipe(float x, float y, int height) :CGameObject(x, y)
 	{
 		this->height = height;
 	}
@@ -28,7 +28,7 @@ public:
 	void Update(DWORD dt) {}
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void RenderBoundingBox();
-
+	int IsCollidable() { return 1; };
 	int IsDirectionCollidable(float nx, float ny);
 };
 

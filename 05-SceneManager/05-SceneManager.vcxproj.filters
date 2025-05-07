@@ -242,5 +242,8 @@
     <ClInclude Include="Bullet.h">
       <Filter>Map\Interactable\Functional</Filter>
     </ClInclude>
+    <ClInclude Include="Damageable.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
