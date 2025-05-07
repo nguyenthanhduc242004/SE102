@@ -29,6 +29,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
+void CMario::HandleMarioGotHit() {
+	if (untouchable == 0)
+	{
+		if (level > MARIO_LEVEL_SMALL)
+		{
+			level = MARIO_LEVEL_SMALL;
+			StartUntouchable();
+		}
+		else
+		{
+			DebugOut(L">>> Mario DIE >>> \n");
+			SetState(MARIO_STATE_DIE);
+		}
+	}
+}
+
 void CMario::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
@@ -71,6 +87,12 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		OnCollisionWithMushroom(e);
 		return;
 	}
+	if (dynamic_cast<CPiranhaPlant*>(e->obj)) {
+		OnCollisionWithPiranhaPlant(e);
+	}
+	if (dynamic_cast<CBullet*>(e->obj)) {
+		OnCollisionWithBullet(e);
+	}
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -88,21 +110,9 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	}
 	else // hit by Goomba
 	{
-		if (untouchable == 0)
+		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
-			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
-			}
+			HandleMarioGotHit();
 		}
 	}
 }
@@ -137,19 +147,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	//touch koopa not in shell, not hit on top, koopa can be any other state, just not dead
 	else if (koopa->GetState() != KOOPAS_STATE_DIE)
 	{
-		if (untouchable == 0)
-		{
-			if (level > MARIO_LEVEL_SMALL)
-			{
-				level = MARIO_LEVEL_SMALL;
-				StartUntouchable();
-			}
-			else
-			{
-				DebugOut(L">>> Mario DIE >>> \n");
-				SetState(MARIO_STATE_DIE);
-			}
-		}
+		HandleMarioGotHit();
 	}
 }
 
@@ -196,6 +194,21 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		//add score later
 	}
 	mushroom->Delete();
+}
+
+void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
+{
+	CPiranhaPlant* piranhaPlant = dynamic_cast<CPiranhaPlant*>(e->obj);
+
+	if (piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN)
+	{
+		HandleMarioGotHit();
+	}
+}
+
+void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e)
+{
+	HandleMarioGotHit();
 }
 
 //
