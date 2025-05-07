@@ -1,7 +1,6 @@
+#include "Mario.h"
 #include <algorithm>
 #include "debug.h"
-
-#include "Mario.h"
 #include "Game.h"
 #include "PlayScene.h"
 
@@ -80,28 +79,15 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	// jump on top >> kill Goomba and deflect a bit 
 	if (e->ny < 0)
 	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
-		{
-			goomba->SetState(GOOMBA_STATE_DIE);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
-		}
+		goomba->TakeDamageFrom(this);
 	}
 	else // hit by Goomba
 	{
 		if (untouchable == 0)
 		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
+			if (goomba->GetState() != GOOMBA_STATE_DIE && goomba->GetState() != GOOMBA_STATE_DIE_WITH_BOUNCE)
 			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
+				TakeDamageFrom(goomba);
 			}
 		}
 	}
@@ -111,15 +97,11 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 
 	// hit koopa in shell in any direction
-	// doesnt handle kicking, since this is collision event, when mario collides with a koopa. Mario can kick the koopa right away, or hold on to it, but if Mario wants to kick later, it's not a collision event, just an event.
-	// koopa existing in Mario's context right now is for collision, in the logic where Mario stores the object he holds, koopa will exist for the kicking action later, but this is not it. so kicking will be handle on the koopa.
-	// Mario releases a will make him not ready for holding anymore
-	// Right now, Mario can be hit immediately after kicking shell, which is unideal--->kicking timer for animation and invincibility
 	if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
 		if (!isReadyToHold || e->ny != 0) {
+			Kick();
 			koopa->SetDirection(nx);
 			koopa->SetState(KOOPAS_STATE_SPINNING);
-			Kick();
 		}
 		else {
 			isHolding = true;
@@ -129,26 +111,14 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	//hit koopa not in shell on top, can turn koopa ---> shell
 	else if (e->ny < 0)
 	{
-		if (koopa->GetState() == KOOPAS_STATE_WALKING || koopa->GetState() == KOOPAS_STATE_SPINNING) {
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
-			koopa->SetState(KOOPAS_STATE_SHELL);
-		}
+		koopa->TakeDamageFrom(this);
 	}
 	//touch koopa not in shell, not hit on top, koopa can be any other state, just not dead
-	else if (koopa->GetState() != KOOPAS_STATE_DIE)
+	else if (koopa->GetState() != KOOPAS_STATE_DIE && koopa->GetState() != KOOPAS_STATE_DIE_WITH_BOUNCE)
 	{
 		if (untouchable == 0)
 		{
-			if (level > MARIO_LEVEL_SMALL)
-			{
-				level = MARIO_LEVEL_SMALL;
-				StartUntouchable();
-			}
-			else
-			{
-				DebugOut(L">>> Mario DIE >>> \n");
-				SetState(MARIO_STATE_DIE);
-			}
+			TakeDamageFrom(koopa);
 		}
 	}
 }

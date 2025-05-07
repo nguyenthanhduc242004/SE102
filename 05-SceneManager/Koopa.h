@@ -8,6 +8,7 @@
 #include "debug.h"
 #include "Game.h"
 #include "Platform.h"
+#include "Mario.h"
 
 #define KOOPAS_GRAVITY             GRAVITY
 #define KOOPAS_WALKING_SPEED       0.05f
@@ -22,7 +23,7 @@
 #define KOOPAS_HOLDING_SMALL_MARIO_Y_ADJUST		(MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2
 
 #define KOOPAS_DYING_TIMEOUT 500.0f
-#define KOOPAS_SHELL_TIMEOUT 4000.0f
+#define KOOPAS_SHELL_TIMEOUT 40000.0f
 #define KOOPAS_REVIVING_TIMEOUT 2000.0f
 
 #define KOOPAS_STATE_WALKING    100
@@ -41,7 +42,7 @@
 #define ID_ANI_KOOPAS_DIE             6600
 #define ID_ANI_KOOPAS_DIE_WITH_BOUNCE   6700
 
-class CKoopa : public CGameObject, public CMoveable
+class CKoopa : public CGameObject, public CMoveable, public CDamageable
 {
 protected:
 	bool isHeld;
@@ -82,6 +83,10 @@ public:
 	virtual void SetState(int state) override;
 	virtual void SetSpeed(float vx, float vy) override { this->vx = vx; this->vy = vy; }
 	virtual void GetSpeed(float& vx, float& vy) override { vx = this->vx; vy = this->vy; }
-	void SetIsHeld(BOOLEAN held) { isHeld = held; }
+	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override;
+	void SetIsHeld(BOOLEAN held) { 
+		isHeld = held;
+		ay = 0.0f;
+	}
 	BOOLEAN IsHeld() const { return isHeld; }
 };

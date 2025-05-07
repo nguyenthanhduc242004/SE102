@@ -22,11 +22,10 @@
 #define ID_ANI_GOOMBA_DIE 5001
 #define ID_ANI_GOOMBA_DIE_WITH_BOUNCE 5002
 
-class CGoomba : public CGameObject, public CMoveable
+class CGoomba : public CGameObject, public CMoveable, public CDamageable
 {
 protected:
 	CDeltaTimer dyingTimer;
-	//CDeltaTimer respawnTimer;
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -37,6 +36,8 @@ protected:
 	virtual void OnNoCollision(DWORD dt);
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
+	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
+	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void HandleTimer(DWORD dt);
 public: 	
 	CGoomba(float x, float y);
@@ -50,5 +51,5 @@ public:
 		vx = this->vx;
 		vy = this->vy;
 	}
-
+	void TakeDamageFrom(LPGAMEOBJECT obj) override;
 };

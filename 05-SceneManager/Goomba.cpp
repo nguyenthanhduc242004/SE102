@@ -11,18 +11,16 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 {
 	if (state == GOOMBA_STATE_DIE)
 	{
-		left = x - GOOMBA_BBOX_WIDTH / 2;
 		top = y - GOOMBA_BBOX_HEIGHT_DIE / 2;
-		right = left + GOOMBA_BBOX_WIDTH;
 		bottom = top + GOOMBA_BBOX_HEIGHT_DIE;
 	}
 	else
 	{
-		left = x - GOOMBA_BBOX_WIDTH / 2;
 		top = y - GOOMBA_BBOX_HEIGHT / 2;
-		right = left + GOOMBA_BBOX_WIDTH;
 		bottom = top + GOOMBA_BBOX_HEIGHT;
 	}
+	left = x - GOOMBA_BBOX_WIDTH / 2;
+	right = left + GOOMBA_BBOX_WIDTH;
 }
 
 void CGoomba::OnNoCollision(DWORD dt)
@@ -33,9 +31,9 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	// Mario will handle logic of colliding with Goomba, skip for no duplication (since being collided will now call events too)
-	if (dynamic_cast<CMario*>(e->obj)) return;
-
+	if (dynamic_cast<CGoomba*>(e->obj)) {
+		OnCollisionWithGoomba(e);
+	}
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0)
 	{
@@ -46,6 +44,29 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		nx = -nx;
 		vx = -vx;
+	}
+}
+
+void CGoomba::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
+{
+	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+	if (e->nx != 0) {
+		nx = -nx;
+		vx = -vx;
+		goomba->nx = -goomba->nx;
+		goomba->vx = -goomba->vx;
+	}
+}
+
+void CGoomba::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
+{
+	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
+	if (e->nx != 0) {
+		nx = -nx;
+		vx = -vx;
+		if (koopa->GetState() != KOOPAS_STATE_WALKING) return;
+		koopa->SetDirection(-koopa->GetDirection());
+		koopa->SetState(KOOPAS_STATE_WALKING);
 	}
 }
 
@@ -105,5 +126,27 @@ void CGoomba::SetState(int state)
 	case GOOMBA_STATE_WALKING:
 		vx = nx * GOOMBA_WALKING_SPEED;
 		break;
+	}
+}
+
+void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
+{
+	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
+		if (state != GOOMBA_STATE_DIE)
+		{
+			float vx, vy;
+			mario->GetSpeed(vx, vy);
+			mario->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
+			CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+			mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+			SetState(GOOMBA_STATE_DIE);
+		}
+		return;
+	}
+	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		mario->AddScore(x, y - (GOOMBA_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, 100, true);
+		SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
+		return;
 	}
 }

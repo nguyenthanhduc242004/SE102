@@ -107,8 +107,7 @@
 #define MARIO_KICK_TIME	200	
 
 
-class CMario : public CGameObject, public CMoveable
-{
+class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isHolding;
@@ -185,6 +184,19 @@ public:
 	virtual void GetSpeed(float& vx, float& vy) override {
 		vx = this->vx;
 		vy = this->vy;
+	}
+
+	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override {
+		if (level > MARIO_LEVEL_SMALL)
+		{
+			level = MARIO_LEVEL_SMALL;
+			StartUntouchable();
+		}
+		else
+		{
+			DebugOut(L">>> Mario DIE >>> \n");
+			SetState(MARIO_STATE_DIE);
+		}
 	}
 	//will only be called when Mario fall out of bound
 	virtual void Delete() override {
