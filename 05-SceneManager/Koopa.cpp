@@ -22,6 +22,10 @@ void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (!CGame::GetInstance()->IsInCamera(x - 30, DEFAULT_CAM_Y) &&
+		!CGame::GetInstance()->IsInCamera(x + 30, DEFAULT_CAM_Y))
+		return;
+
 	vy += ay * dt;
 
 	HandleTimer(dt);
@@ -275,7 +279,6 @@ void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 		if (e->nx != 0) {
 			e->obj->Delete();
 			//will create break state later
-			return;
 		}
 	}
 	if (e->nx != 0) {
@@ -378,7 +381,7 @@ void CKoopa::HandleTimer(DWORD dt) {
 
 	}
 	// die
-	if ((state == KOOPAS_STATE_DIE) && (dyingTimer.HasPassed(KOOPAS_DYING_TIMEOUT)))
+	if ((state == KOOPAS_STATE_DIE_WITH_BOUNCE) && (dyingTimer.HasPassed(KOOPAS_DYING_TIMEOUT)))
 	{
 		dyingTimer.Reset();
 		isDeleted = true;

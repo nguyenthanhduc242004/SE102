@@ -17,7 +17,7 @@
 #define KOOPAS_KILL_Y_BOUNCE   0.3f
 #define KOOPAS_JUMPING_SPEED		0.2f
 
-#define KOOPAS_BBOX_WIDTH          16
+#define KOOPAS_BBOX_WIDTH          14
 #define KOOPAS_BBOX_HEIGHT         24
 #define KOOPAS_BBOX_HEIGHT_SHELL   14
 
@@ -100,13 +100,6 @@ protected:
 	int GetAniIdRed();
 
 public:
-	CKoopa(float x, float y) : CGameObject(x, y) {
-		color = KOOPAS_COLOR_GREEN;
-		type = KOOPAS_TYPE_NORMAL;
-		nx = -1;
-		SetState(KOOPAS_STATE_WALKING);
-		isHeld = false;
-	}
 	CKoopa(float x, float y, int color, int type) : CGameObject(x, y) {
 		this->color = color;
 		this->type = type;
@@ -114,7 +107,6 @@ public:
 		SetState(KOOPAS_STATE_WALKING);
 		isHeld = false;
 	}
-
 	virtual void SetState(int state) override;
 	virtual void SetSpeed(float vx, float vy) override { this->vx = vx; this->vy = vy; }
 	virtual void GetSpeed(float& vx, float& vy) override { vx = this->vx; vy = this->vy; }

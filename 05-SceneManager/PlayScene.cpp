@@ -91,6 +91,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
+	{
 		if (player != NULL)
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
@@ -101,10 +102,16 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
+	}
 	case OBJECT_TYPE_GOOMBA: objs.push_back(new CGoomba(x, y)); break;
 
-	case OBJECT_TYPE_KOOPA: objs.push_back(new CKoopa(x, y)); break;
-
+	case OBJECT_TYPE_KOOPA:
+	{
+		int color = (int)atof(tokens[3].c_str());
+		int type = (int)atof(tokens[4].c_str());
+		objs.push_back(new CKoopa(x, y, color, type));
+		break;
+	}
 	case OBJECT_TYPE_BRICK:
 	{
 		// number of iterations into a maze

@@ -88,6 +88,10 @@ void CGoomba::HandleTimer(DWORD dt)
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (!CGame::GetInstance()->IsInCamera(x - 30, DEFAULT_CAM_Y) &&
+		!CGame::GetInstance()->IsInCamera(x + 30, DEFAULT_CAM_Y))
+		return;
+
 	vy += ay * dt;
 	vx += ax * dt;
 
