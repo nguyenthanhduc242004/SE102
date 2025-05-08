@@ -14,11 +14,12 @@
 #define MARIO_ACCEL_RUN_X	0.0003f
 
 #define MARIO_DRAG_X		0.0002f
+#define MARIO_AIR_DRAG_X		0.00003f
 
 #define MARIO_JUMP_SPEED_Y		0.25f
 #define MARIO_JUMP_RUN_SPEED_Y	0.28f
 
-#define MARIO_FALL_SPEED_Y		0.28f
+#define MARIO_FALL_SPEED_Y		0.25f
 
 #define MARIO_GRAVITY			GRAVITY
 #define MARIO_LIFTED_GRAVITY	0.00045f
@@ -117,8 +118,8 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	CDeltaTimer invincibleTimer;
 	CDeltaTimer kickTimer;
 	int score;
-
-
+	int coin;
+	float dragX;
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
@@ -143,6 +144,8 @@ public:
 		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
 		score = 0;
+		coin = 0;
+		dragX = MARIO_DRAG_X;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
