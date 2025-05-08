@@ -423,8 +423,9 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_DIE:
+		vx = 0.0f;
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
-		ax = 0;
+		ax = 0.0f;
 		ay = MARIO_LIFTED_GRAVITY;
 		break;
 	}

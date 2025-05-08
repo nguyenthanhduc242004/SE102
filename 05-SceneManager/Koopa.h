@@ -11,9 +11,11 @@
 #include "Mario.h"
 
 #define KOOPAS_GRAVITY             GRAVITY
+#define KOOPAS_WING_GRAVITY				0.0005f
 #define KOOPAS_WALKING_SPEED       0.05f
 #define KOOPAS_SPINNING_SPEED      0.2f
 #define KOOPAS_KILL_Y_BOUNCE   0.3f
+#define KOOPAS_JUMPING_SPEED		0.2f
 
 #define KOOPAS_BBOX_WIDTH          16
 #define KOOPAS_BBOX_HEIGHT         24
@@ -23,7 +25,7 @@
 #define KOOPAS_HOLDING_SMALL_MARIO_Y_ADJUST		(MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2
 
 #define KOOPAS_DYING_TIMEOUT 500.0f
-#define KOOPAS_SHELL_TIMEOUT 40000.0f
+#define KOOPAS_SHELL_TIMEOUT 4000.0f
 #define KOOPAS_REVIVING_TIMEOUT 2000.0f
 
 #define KOOPAS_STATE_WALKING    100
@@ -33,18 +35,39 @@
 #define KOOPAS_STATE_DIE        500
 #define KOOPAS_STATE_DIE_WITH_BOUNCE  600
 
-#define ID_ANI_KOOPAS_WALKING_LEFT    6000
-#define ID_ANI_KOOPAS_WALKING_RIGHT   6100
-#define ID_ANI_KOOPAS_SHELL           6200
-#define ID_ANI_KOOPAS_REVIVING        6300
-#define ID_ANI_KOOPAS_SPINNING_LEFT   6400
-#define ID_ANI_KOOPAS_SPINNING_RIGHT  6500
-#define ID_ANI_KOOPAS_DIE             6600
-#define ID_ANI_KOOPAS_DIE_WITH_BOUNCE   6700
+#define KOOPAS_COLOR_GREEN	0
+#define KOOPAS_COLOR_RED	1
+
+#define KOOPAS_TYPE_NORMAL	0
+#define KOOPAS_TYPE_WING	1
+
+// Red Koopas Animations
+#define ID_ANI_KOOPAS_RED_WALKING_RIGHT				  36000
+#define ID_ANI_KOOPAS_RED_SPINNING_RIGHT			  36020
+#define ID_ANI_KOOPAS_RED_PARATROOPA_WALKING_RIGHT    36200
+#define ID_ANI_KOOPAS_RED_WALKING_LEFT				  36001
+#define ID_ANI_KOOPAS_RED_SPINNING_LEFT				  36021
+#define ID_ANI_KOOPAS_RED_PARATROOPA_WALKING_LEFT     36201
+#define ID_ANI_KOOPAS_RED_SHELL					      36070
+#define ID_ANI_KOOPAS_RED_SHAKE						  36083
+#define ID_ANI_KOOPAS_RED_DIE_UP				      36093
+
+// Green Koopas Animations
+#define ID_ANI_KOOPAS_GREEN_WALKING_RIGHT			   36100
+#define ID_ANI_KOOPAS_GREEN_SPINNING_RIGHT		       36120
+#define ID_ANI_KOOPAS_GREEN_PARATROOPA_WALKING_RIGHT   36300
+#define ID_ANI_KOOPAS_GREEN_WALKING_LEFT		       36101
+#define ID_ANI_KOOPAS_GREEN_SPINNING_LEFT			   36121
+#define ID_ANI_KOOPAS_GREEN_PARATROOPA_WALKING_LEFT    36301
+#define ID_ANI_KOOPAS_GREEN_SHELL				       36170
+#define ID_ANI_KOOPAS_GREEN_SHAKE				       36183
+#define ID_ANI_KOOPAS_GREEN_DIE_UP				       36193
 
 class CKoopa : public CGameObject, public CMoveable, public CDamageable
 {
 protected:
+	int color;
+	int type;
 	bool isHeld;
 	CDeltaTimer shellTimer;
 	CDeltaTimer revivingTimer;
@@ -73,8 +96,20 @@ protected:
 	void HandleTimer(DWORD dt);
 	void HandleBeingHeld();
 
+	int GetAniIdGreen();
+	int GetAniIdRed();
+
 public:
 	CKoopa(float x, float y) : CGameObject(x, y) {
+		color = KOOPAS_COLOR_GREEN;
+		type = KOOPAS_TYPE_NORMAL;
+		nx = -1;
+		SetState(KOOPAS_STATE_WALKING);
+		isHeld = false;
+	}
+	CKoopa(float x, float y, int color, int type) : CGameObject(x, y) {
+		this->color = color;
+		this->type = type;
 		nx = -1;
 		SetState(KOOPAS_STATE_WALKING);
 		isHeld = false;
