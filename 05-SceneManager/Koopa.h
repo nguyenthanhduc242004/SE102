@@ -17,7 +17,7 @@
 #define KOOPAS_KILL_Y_BOUNCE   0.3f
 #define KOOPAS_JUMPING_SPEED		0.2f
 
-#define KOOPAS_BBOX_WIDTH          14
+#define KOOPAS_BBOX_WIDTH          16
 #define KOOPAS_BBOX_HEIGHT         24
 #define KOOPAS_BBOX_HEIGHT_SHELL   14
 

@@ -275,6 +275,12 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	}
 }
 void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
+	if (state != KOOPAS_STATE_SPINNING && state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_DIE_WITH_BOUNCE) {
+		if (color == KOOPAS_COLOR_RED && type == KOOPAS_TYPE_NORMAL && !IsGroundAhead(e)) {
+			nx = -nx;
+			vx = -vx;
+		}
+	}
 	if (state == KOOPAS_STATE_SPINNING) {
 		if (e->nx != 0) {
 			e->obj->Delete();
@@ -340,7 +346,7 @@ void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 }
 bool CKoopa::IsGroundAhead(LPCOLLISIONEVENT e)
 {
-	float probeX = x + (vx > 0 ? KOOPAS_BBOX_WIDTH / 2 : -KOOPAS_BBOX_WIDTH / 2);
+	float probeX = x + (nx > 0 ? KOOPAS_BBOX_WIDTH / 2 - 3 : -KOOPAS_BBOX_WIDTH / 2 + 3);
 	float probeY = y + KOOPAS_BBOX_HEIGHT / 2 + 1; // 1 pixel below the bottom
 
 	float l, t, r, b;
