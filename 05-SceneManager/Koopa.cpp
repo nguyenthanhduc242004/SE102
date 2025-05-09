@@ -2,6 +2,12 @@
 
 #include <typeinfo>
 
+CKoopa::CKoopa(float x, float y, int color, int type) : CGameObject(x, y) {
+	this->color = color;
+	this->type = type;
+	nx = -1;
+	SetState(KOOPAS_STATE_WALKING);
+}
 
 void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -22,9 +28,11 @@ void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!CGame::GetInstance()->IsInCamera(x - 30, DEFAULT_CAM_Y) &&
-		!CGame::GetInstance()->IsInCamera(x + 30, DEFAULT_CAM_Y))
+	if (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
+		!CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y)) {
+		isDeleted = true;
 		return;
+	}
 
 	vy += ay * dt;
 

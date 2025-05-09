@@ -2,7 +2,6 @@
 
 CGoomba::CGoomba(float x, float y) :CGameObject(x, y)
 {
-	this->ay = GOOMBA_GRAVITY;
 	nx = -1;
 	SetState(GOOMBA_STATE_WALKING);
 }
@@ -88,12 +87,13 @@ void CGoomba::HandleTimer(DWORD dt)
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!CGame::GetInstance()->IsInCamera(x - 30, DEFAULT_CAM_Y) &&
-		!CGame::GetInstance()->IsInCamera(x + 30, DEFAULT_CAM_Y))
+	if (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
+		!CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y)) {
+		isDeleted = true;
 		return;
+	}
 
 	vy += ay * dt;
-	vx += ax * dt;
 
 	HandleTimer(dt);
 
@@ -129,9 +129,11 @@ void CGoomba::SetState(int state)
 	case GOOMBA_STATE_DIE_WITH_BOUNCE:
 		vx = nx * KOOPAS_WALKING_SPEED;
 		vy = -KOOPAS_KILL_Y_BOUNCE;
+		dyingTimer.Start();
 		break;
 	case GOOMBA_STATE_WALKING:
 		vx = nx * GOOMBA_WALKING_SPEED;
+		ay = GOOMBA_GRAVITY;
 		break;
 	}
 }

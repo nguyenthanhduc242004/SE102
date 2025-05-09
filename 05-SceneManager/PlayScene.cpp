@@ -103,13 +103,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	}
-	case OBJECT_TYPE_GOOMBA: objs.push_back(new CGoomba(x, y)); break;
+	case OBJECT_TYPE_GOOMBA: objs.push_back(new CSpawner(x, y, OBJECT_TYPE_GOOMBA)); break;
 
 	case OBJECT_TYPE_KOOPA:
 	{
 		int color = (int)atof(tokens[3].c_str());
 		int type = (int)atof(tokens[4].c_str());
-		objs.push_back(new CKoopa(x, y, color, type));
+		objs.push_back(new CSpawner(x, y, OBJECT_TYPE_KOOPA, color, type));
 		break;
 	}
 	case OBJECT_TYPE_BRICK:

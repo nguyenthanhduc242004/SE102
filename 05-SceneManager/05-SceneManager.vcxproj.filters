@@ -130,6 +130,7 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>Map\Interactable\Functional</Filter>
     </ClCompile>
+    <ClCompile Include="Spawner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -245,5 +246,6 @@
     <ClInclude Include="Damageable.h">
       <Filter>Interface</Filter>
     </ClInclude>
+    <ClInclude Include="Spawner.h" />
   </ItemGroup>
 </Project>
