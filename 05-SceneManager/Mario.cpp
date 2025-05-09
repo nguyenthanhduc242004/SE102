@@ -37,6 +37,7 @@ void CMario::OnNoCollision(DWORD dt)
 }
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
+
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0.0f;
@@ -391,6 +392,7 @@ void CMario::SetState(int state)
 			//airborn, gravity will be lifted, drag reduces
 			ay = MARIO_LIFTED_GRAVITY;
 			dragX = MARIO_AIR_DRAG_X;
+			isOnPlatform = false;
 		}
 		break;
 	case MARIO_STATE_RELEASE_JUMP:
