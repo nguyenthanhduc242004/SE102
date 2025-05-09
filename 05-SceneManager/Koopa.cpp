@@ -221,7 +221,7 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		// Shell is held, basically invincible
 		if (isHeld) return;
 		// overlapping platforms are allowed, except CSideCollidablePlatform
-		if (dynamic_cast<CPlatform*>(e->obj) != NULL && dynamic_cast<CSideCollidablePlatform*>(e->obj) == NULL) return;
+		if (dynamic_cast<CPlatform*>(e->obj) != NULL && dynamic_cast<CSideCollidablePlatform*>(e->obj) == NULL && dynamic_cast<CBlockPlatform*>(e->obj) == NULL) return;
 		// center of shell goes inside bounding box, kill, else, dont, still count as hitting against surface
 		float l, t, r, b;
 		e->obj->GetBoundingBox(l, t, r, b);
@@ -250,20 +250,17 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 	// process all blocks, handle the turning seperately depending on the type and state, if not falling into any of the cases, turn automatically.
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithPlatform(LPCOLLISIONEVENT e) {
 	if (state != KOOPAS_STATE_SPINNING && state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_DIE_WITH_BOUNCE) {
 		if (color == KOOPAS_COLOR_RED && type == KOOPAS_TYPE_NORMAL && !IsGroundAhead(e)) {
-			nx = -nx;
-			vx = -vx;
+			ReverseDirection();
 		}
 	}
-	if (e->nx != 0 && dynamic_cast<CSideCollidablePlatform*>(e->obj)) {
-		nx = -nx;
-		vx = -vx;
+	if (e->nx != 0 && (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CBlockPlatform*>(e->obj))) {
+		ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
@@ -278,15 +275,13 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		}
 	}
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 	if (state != KOOPAS_STATE_SPINNING && state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_DIE_WITH_BOUNCE) {
 		if (color == KOOPAS_COLOR_RED && type == KOOPAS_TYPE_NORMAL && !IsGroundAhead(e)) {
-			nx = -nx;
-			vx = -vx;
+			ReverseDirection();
 		}
 	}
 	if (state == KOOPAS_STATE_SPINNING) {
@@ -296,8 +291,7 @@ void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 		}
 	}
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
@@ -328,12 +322,9 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}
 	// clearly this is not spinning, thus it is walking, but for other koopa, we dont know, and remember, we only turn koopa if koopa is WALKING into this koopa
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 		if (!otherWalking) return;
-		koopa->nx = -koopa->nx;
-		koopa->vx = -koopa->vx;
-
+		koopa->ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -346,10 +337,8 @@ void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		return;
 	}
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
-		goomba->SetDirection(-goomba->GetDirection());
-		goomba->SetState(GOOMBA_STATE_WALKING);
+		ReverseDirection();
+		goomba->ReverseDirection();
 	}
 }
 bool CKoopa::IsGroundAhead(LPCOLLISIONEVENT e)

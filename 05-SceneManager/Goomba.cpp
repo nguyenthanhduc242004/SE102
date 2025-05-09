@@ -44,8 +44,7 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (e->nx != 0)
 	{
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 	}
 }
 
@@ -53,10 +52,8 @@ void CGoomba::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
-		goomba->nx = -goomba->nx;
-		goomba->vx = -goomba->vx;
+		ReverseDirection();
+		goomba->ReverseDirection();
 	}
 }
 
@@ -64,11 +61,9 @@ void CGoomba::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 		if (koopa->GetState() != KOOPAS_STATE_WALKING) return;
-		koopa->SetDirection(-koopa->GetDirection());
-		koopa->SetState(KOOPAS_STATE_WALKING);
+		koopa->ReverseDirection();
 	}
 }
 
