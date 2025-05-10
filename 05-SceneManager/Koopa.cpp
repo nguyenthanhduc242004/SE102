@@ -101,6 +101,7 @@ void CKoopa::HandleBeingHeld()
 	{
 		// Keep shell attached to Mario’s hand
 		nx = mario->GetDirection();
+		//DebugOut(L"%d\n", nx);
 		float mX, mY;
 		mario->GetPosition(mX, mY);
 		y = mY + KOOPAS_HOLDING_Y_OFFSET;
@@ -204,7 +205,11 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithGoomba(e);
 		return;
 	}
-
+	if (dynamic_cast<CPiranhaPlant*>(e->obj)) {
+		//kill CPiranhaPlant properly later
+		e->obj->Delete();
+		return;
+	}
 	//IsBlocking will be used only to check map objects ---> NPCs are not blocking, Koopa can go through them.
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0)
@@ -230,10 +235,9 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		if (x > r) return;
 		if (y - KOOPAS_HOLDING_Y_OFFSET > b) return;
 		// judge overlaping vertical more harshly
+		// killed by overlapping kick
+		nx = 0;
 		TakeDamageFrom(NULL);
-		SetState(KOOPAS_STATE_DIE_WITH_BOUNCE);
-		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
 		return;
 	}
 	if (dynamic_cast<CQuestionBlock*>(e->obj)) {
@@ -301,22 +305,21 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	bool thisSpinning = (state == KOOPAS_STATE_SPINNING);
 	bool otherSpinning = (koopa->state == KOOPAS_STATE_SPINNING);
 	bool otherWalking = (koopa->state == KOOPAS_STATE_WALKING);
-	bool otherShell = (koopa->state == KOOPAS_STATE_SHELL || koopa->state == KOOPAS_STATE_REVIVING);
-	if ((thisSpinning || isHeld) && (otherSpinning || otherShell))
-	{
+	if (thisSpinning) {
+		if (otherSpinning) {
+			nx = -nx;
+			TakeDamageFrom(koopa);
+		}
+		koopa->nx = -nx;
+		koopa->TakeDamageFrom(this);
+		return;
+	}
+	if (isHeld) {
 		//this bounces backward
 		nx = -nx;
 		TakeDamageFrom(koopa);
 		//koopa bounces away from this
 		koopa->nx = -nx;
-		koopa->TakeDamageFrom(this);
-
-		return;
-	}
-	if ((thisSpinning || isHeld) && otherWalking)
-	{
-		//koopa bounces in this's direction
-		koopa->nx = nx;
 		koopa->TakeDamageFrom(this);
 		return;
 	}
@@ -331,8 +334,18 @@ void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	if (state == KOOPAS_STATE_SPINNING || isHeld) {
+	if (state == KOOPAS_STATE_SPINNING) {
+		//DebugOut(L"Koopa direction when hit: %d\n", nx);
 		goomba->SetDirection(nx);
+		goomba->TakeDamageFrom(this);
+		return;
+	}
+	if (isHeld) {
+		//this bounces backward
+		nx = -nx;
+		TakeDamageFrom(goomba);
+		//goomba bounces away from this
+		goomba->SetDirection(-nx);
 		goomba->TakeDamageFrom(this);
 		return;
 	}
@@ -412,14 +425,13 @@ void CKoopa::SetState(int state)
 		isHeld = false;
 		shellTimer.Start();
 		break;
-
 	case KOOPAS_STATE_REVIVING:
 		vx = 0.0f;
 		revivingTimer.Start();
 		break;
 	case KOOPAS_STATE_SPINNING:
 		vx = nx * KOOPAS_SPINNING_SPEED;
-		ay = KOOPAS_GRAVITY;
+		ay = KOOPAS_WING_GRAVITY;
 		isHeld = false;
 		break;
 	case KOOPAS_STATE_DIE:
@@ -459,12 +471,6 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 			SetState(KOOPAS_STATE_SHELL);
 			return;
 		}
-		return;
-	}
-	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
-		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
-		SetState(KOOPAS_STATE_DIE_WITH_BOUNCE);
 		return;
 	}
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();

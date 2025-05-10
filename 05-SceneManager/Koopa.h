@@ -11,11 +11,11 @@
 #include "Mario.h"
 
 #define KOOPAS_GRAVITY             GRAVITY
-#define KOOPAS_WING_GRAVITY				0.0005f
-#define KOOPAS_WALKING_SPEED       0.05f
+#define KOOPAS_WING_GRAVITY				0.0007f
+#define KOOPAS_WALKING_SPEED       0.036f
 #define KOOPAS_SPINNING_SPEED      0.2f
-#define KOOPAS_KILL_Y_BOUNCE   0.3f
-#define KOOPAS_JUMPING_SPEED		0.2f
+#define KOOPAS_KILL_Y_BOUNCE   0.4f
+#define KOOPAS_JUMPING_SPEED		0.22f
 
 #define KOOPAS_BBOX_WIDTH          15
 #define KOOPAS_BBOX_HEIGHT         24

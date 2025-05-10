@@ -38,14 +38,14 @@
 
 #define DEFAULT_CAM_Y 244.0f
 #define LEFT_BOUND_CAM_X 93
-#define RESPAWN_OFFSET_CAM_X 30
+#define RESPAWN_OFFSET_CAM_X 70
 #define LOWER_BOUND_DEATHZONE 700.0f
 
-class CPlayScene: public CScene
+class CPlayScene : public CScene
 {
-protected: 
+protected:
 	// A play scene has to have player, right? 
-	LPGAMEOBJECT player;					
+	LPGAMEOBJECT player;
 
 	vector<LPGAMEOBJECT> objects;
 
@@ -57,9 +57,9 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 
-	
-	
-public: 
+
+
+public:
 	CPlayScene(int id, LPCWSTR filePath);
 
 	virtual void Load();

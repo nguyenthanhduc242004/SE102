@@ -402,6 +402,7 @@ void CMario::SetState(int state)
 
 	case MARIO_STATE_SIT:
 		if (ax != 0) break;
+		if (isHolding) break;
 		if (isOnPlatform && level != MARIO_LEVEL_SMALL)
 		{
 			state = MARIO_STATE_IDLE;
@@ -432,7 +433,8 @@ void CMario::SetState(int state)
 		vx = 0.0f;
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		ax = 0.0f;
-		ay = MARIO_LIFTED_GRAVITY;
+		ay = MARIO_LIFTED_GRAVITY * 2;
+		isHolding = false;
 		break;
 	}
 
