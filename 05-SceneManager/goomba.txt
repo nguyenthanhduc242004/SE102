@@ -1,13 +1,50 @@
 # id	left	top	right	bottom	texture_id
 [SPRITES]
-#WALK
-31001	4	13	22	30	10
-31002	24	13	42	30	10
+#Brown
+##Wingless
+31001	5	14	20	29	10
+31002	25	14	40	29	10
 
-#DIE
-32001	44	19	62	30	10
+#Red
+##Wingless
+32101	104	70	119	85	70
+32102	125	70	140	85	70
+
+##Winged
+###Wings opened
+32211	66	35	85	58	70	
+32212	90	35	109	58	70
+###Wings closed
+32221	116	35	135	58	70
+32222	140	35	159	58	70
+
+#Die
+##Brown
+###Normal
+33101	45	12	60	29	10
+###Die upside down
+33102	185	42	200	57	10
+
+##Red
+###Normal
+33201	145	70	160	85	70
+###Die upside down
+33202	206	70	221	85	60
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
-5000	31001	100	31002	100
-5001	32001	100
+#Brown
+##Wingless
+5101	31001	100	31002	100
+
+#Red
+##Wingless
+5211	32101 	100	32102	100
+##Winged
+###Walking
+5221	32221	100	32222	100
+###Pre-fly
+5222	32212	50	32211	50	32222	50	32221	50
+###Flying
+5223	32212	25	32211	25	32222	25	32221	25
+	

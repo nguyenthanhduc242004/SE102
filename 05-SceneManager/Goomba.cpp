@@ -1,24 +1,23 @@
 #include "Goomba.h"
 
-CGoomba::CGoomba(float x, float y) :CGameObject(x, y)
+
+CGoomba::CGoomba(float x, float y, int color, boolean isParagoomba) :CGameObject(x, y)
 {
+	this->x0 = x;
+	this->y0 = y;
+	this->color = color;
+	this->isParagoomba = isParagoomba;
+	this->isParagoombaInitially = isParagoomba;
 	this->ay = GOOMBA_GRAVITY;
 	nx = -1;
-	SetState(GOOMBA_STATE_WALKING);
+	this->paragoombaStateTimer.Start();
+	SetState(GOOMBA_STATE_RESPAWNABLE);
 }
 
 void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (state == GOOMBA_STATE_DIE)
-	{
-		top = y - GOOMBA_BBOX_HEIGHT_DIE / 2;
-		bottom = top + GOOMBA_BBOX_HEIGHT_DIE;
-	}
-	else
-	{
-		top = y - GOOMBA_BBOX_HEIGHT / 2;
-		bottom = top + GOOMBA_BBOX_HEIGHT;
-	}
+	top = y - GOOMBA_BBOX_HEIGHT / 2 - 1;
+	bottom = top + GOOMBA_BBOX_HEIGHT;
 	left = x - GOOMBA_BBOX_WIDTH / 2;
 	right = left + GOOMBA_BBOX_WIDTH;
 }
@@ -31,7 +30,7 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (dynamic_cast<CGoomba*>(e->obj)) {
+	if (dynamic_cast<CGoomba*>(e->obj) && !isParagoomba) {
 		OnCollisionWithGoomba(e);
 	}
 	if (dynamic_cast<CKoopa*>(e->obj)) {
@@ -41,6 +40,12 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->ny != 0)
 	{
 		vy = 0;
+		if (e->ny == -1) {
+			if (state == PARAGOOMBA_STATE_FLYING)
+				SetState(PARAGOOMBA_STATE_WALKING);
+			if (state == PARAGOOMBA_STATE_PRE_FLY)
+				vy = -PARAGOOMBA_PRE_FLY_VY;
+		}
 	}
 
 	if (e->nx != 0)
@@ -53,7 +58,7 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 void CGoomba::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-	if (e->nx != 0) {
+	if (e->nx != 0 && !isParagoomba) {
 		nx = -nx;
 		vx = -vx;
 		goomba->nx = -goomba->nx;
@@ -91,6 +96,70 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
+	CGame* game = CGame::GetInstance();
+
+	float goombaWidth, goombaHeight;
+	if (isParagoomba) {
+		goombaWidth = PARAGOOMBA_WIDTH;
+		goombaHeight = PARAGOOMBA_HEIGHT;
+	}
+	else {
+		goombaWidth = GOOMBA_BBOX_WIDTH;
+		goombaHeight = GOOMBA_BBOX_HEIGHT;
+	}
+
+	/*boolean originalPositionIsInCam = game->IsInCamera(x0 - (goombaWidth / 2 + RESPAWN_BUFFER), y0 + (goombaHeight / 2 + RESPAWN_BUFFER)) || game->IsInCamera(x0 - (goombaWidth / 2 + RESPAWN_BUFFER), y0 - ((goombaHeight / 2 + RESPAWN_BUFFER))
+		|| game->IsInCamera(x0 + (goombaWidth / 2 + RESPAWN_BUFFER), y0 + (goombaHeight / 2 + RESPAWN_BUFFER)) || game->IsInCamera(x0 + (goombaWidth / 2 + RESPAWN_BUFFER), y0 - (goombaHeight / 2 + RESPAWN_BUFFER)));*/
+	boolean originalPositionIsInCam = game->IsInCamera(x0, y0);
+	boolean currentPositionIsInCam = game->IsInCamera(x - (goombaWidth / 2 + RESPAWN_BUFFER), y + (goombaHeight / 2 + RESPAWN_BUFFER)) || game->IsInCamera(x - (goombaWidth / 2 + RESPAWN_BUFFER), y - (goombaHeight / 2 + RESPAWN_BUFFER))
+		|| game->IsInCamera(x + (goombaWidth / 2 + RESPAWN_BUFFER), y + (goombaHeight / 2 + RESPAWN_BUFFER)) || game->IsInCamera(x + (goombaWidth / 2 + RESPAWN_BUFFER), y - (goombaHeight / 2 + RESPAWN_BUFFER));
+
+	if (!currentPositionIsInCam && state != GOOMBA_STATE_HIDDEN) {
+		SetState(GOOMBA_STATE_HIDDEN);
+	} 
+	if (state == GOOMBA_STATE_HIDDEN && !originalPositionIsInCam) {
+		SetState(GOOMBA_STATE_RESPAWNABLE);
+	}
+	if (state == GOOMBA_STATE_RESPAWNABLE && originalPositionIsInCam) {
+		if (isParagoomba) {
+			SetState(PARAGOOMBA_STATE_WALKING);
+		}
+		else {
+			SetState(GOOMBA_STATE_WALKING);
+		}
+	} 
+	else if (isParagoomba) {
+		if (state == PARAGOOMBA_STATE_WALKING) {
+			paragoombaStateTimer.Tick(dt);
+			float distanceTraveled = paragoombaStateTimer.getAccumulated() * abs(vx);
+			if (fliesLeft > 0) {
+				if (distanceTraveled >= PARAGOOMBA_WALKING_X_OFFSET * fliesLeft / PARAGOOMBA_TOTAL_FLIES) {
+					CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+					float marioX, marioY;
+					mario->GetPosition(marioX, marioY);
+					if (marioX <= x) {
+						nx = -1;
+					}
+					else {
+						nx = 1;
+					}
+					vx = nx * GOOMBA_WALKING_SPEED;
+				}
+			}
+			if (distanceTraveled >= PARAGOOMBA_WALKING_X_OFFSET) {
+				SetState(PARAGOOMBA_STATE_PRE_FLY);
+			}
+		}
+		else if (state == PARAGOOMBA_STATE_PRE_FLY) {
+			paragoombaStateTimer.Tick(dt);
+			if (paragoombaStateTimer.HasPassed(PARAGOOMBA_PRE_FLY_TIME)) {
+				SetState(PARAGOOMBA_STATE_FLYING);
+			}
+		}
+		else if (state == PARAGOOMBA_STATE_FLYING) {
+		}
+	}
+
 	HandleTimer(dt);
 
 	CGameObject::Update(dt, coObjects);
@@ -100,23 +169,105 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CGoomba::Render()
 {
-	int aniId = ID_ANI_GOOMBA_WALKING;
-	if (state == GOOMBA_STATE_DIE)
-	{
-		aniId = ID_ANI_GOOMBA_DIE;
+	if (state == GOOMBA_STATE_HIDDEN || state == GOOMBA_STATE_RESPAWNABLE) return;
+
+	int aniId;
+	int spriteId;
+	CAnimations* animations = CAnimations::GetInstance();
+	CSprites* s = CSprites::GetInstance();
+
+	// color: 0: brown; 1: red
+	if (state == GOOMBA_STATE_DIE || state == GOOMBA_STATE_DIE_WITH_BOUNCE) {
+		if (state == GOOMBA_STATE_DIE) {
+			if (color == 0) {
+				spriteId = SPRITE_ID_BROWN_GOOMBA_DIE;
+			}
+			else if (color == 1) {
+				spriteId = SPRITE_ID_RED_GOOMBA_DIE;
+			}
+		}
+		else if (state == GOOMBA_STATE_DIE_WITH_BOUNCE) {
+			if (color == 0) {
+				spriteId = SPRITE_ID_YELOW_GOOMBA_DIE_UPSIDE_DOWN;
+			}
+			else if (color == 1) {
+				spriteId = SPRITE_ID_RED_GOOMBA_DIE_UPSIDE_DOWN;
+			}
+		}
+
+		s->Get(spriteId)->Draw(x, y);
+	}
+	else {
+		if (state == GOOMBA_STATE_WALKING) {
+			if (color == 0) {
+				aniId = ID_ANI_BROWN_GOOMBA_WALKING;
+			}
+			else if (color == 1) {
+				aniId = ID_ANI_RED_GOOMBA_WALKING;
+			}
+		}
+		else if (state == PARAGOOMBA_STATE_WALKING) {
+			if (color == 0) {
+				// No brown paragoomba yet -> Use red paragoomba animation to avoid bugs
+				aniId = ID_ANI_RED_PARAGOOMBA_WALKING;
+			}
+			else if (color == 1) {
+				aniId = ID_ANI_RED_PARAGOOMBA_WALKING;
+			}
+		}
+		else if (state == PARAGOOMBA_STATE_PRE_FLY) {
+			if (color == 0) {
+				// No brown paragoomba yet -> Use red paragoomba animation to avoid bugs
+				aniId = ID_ANI_RED_PARAGOOMBA_PRE_FLY;
+			}
+			else if (color == 1) {
+				aniId = ID_ANI_RED_PARAGOOMBA_PRE_FLY;
+			}
+		}
+		else if (state == PARAGOOMBA_STATE_FLYING) {
+			if (color == 0) {
+				// No brown paragoomba yet -> Use red paragoomba animation to avoid bugs
+				aniId = ID_ANI_RED_PARAGOOMBA_FLYING;
+			}
+			else if (color == 1) {
+				aniId = ID_ANI_RED_PARAGOOMBA_FLYING;
+			}
+		}
+
+		if (isParagoomba)
+			animations->Get(aniId)->Render(x, y - (PARAGOOMBA_HEIGHT - GOOMBA_BBOX_HEIGHT) / 2);
+		else
+			animations->Get(aniId)->Render(x, y);
 	}
 
-	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
 	//RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
 {
 	CGameObject::SetState(state);
+
+	CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	float marioX, marioY;
+	mario->GetPosition(marioX, marioY);
+
 	switch (state)
 	{
+	case GOOMBA_STATE_HIDDEN:
+		x = 0;
+		y = 0;
+		vx = 0;
+		vy = 0;
+		ay = 0;
+		ax = 0;
+		break;
+	case GOOMBA_STATE_RESPAWNABLE:
+		x = x0;
+		y = y0;
+		ay = GOOMBA_GRAVITY;
+		isParagoomba = isParagoombaInitially;
+		break;
 	case GOOMBA_STATE_DIE:
-		y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE) / 2;
 		vx = 0.0f;
 		vy = 0.0f;
 		ay = 0.0f;
@@ -127,27 +278,62 @@ void CGoomba::SetState(int state)
 		vy = -KOOPAS_KILL_Y_BOUNCE;
 		break;
 	case GOOMBA_STATE_WALKING:
+		if (marioX <= x0) {
+			nx = -1;
+		}
+		else {
+			nx = 1;
+		}
 		vx = nx * GOOMBA_WALKING_SPEED;
+		break;
+	case PARAGOOMBA_STATE_WALKING:
+		paragoombaStateTimer.Reset();
+		if (marioX <= x0) {
+			nx = -1;
+		}
+		else {
+			nx = 1;
+		}
+		vx = nx * GOOMBA_WALKING_SPEED;
+		break;
+	case PARAGOOMBA_STATE_PRE_FLY:
+		paragoombaStateTimer.Reset();
+		break;
+	case PARAGOOMBA_STATE_FLYING:
+		vy = -PARAGOOMBA_FLY_VY;
+		if (fliesLeft > 0) {
+			fliesLeft--;
+		}
 		break;
 	}
 }
 
 void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
 {
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
 		if (state != GOOMBA_STATE_DIE)
 		{
 			float vx, vy;
 			mario->GetSpeed(vx, vy);
 			mario->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
-			CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-			mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
-			SetState(GOOMBA_STATE_DIE);
+			if (isParagoomba) {
+				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_200, true);
+			}
+			else {
+				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+			}
+			if (isParagoomba) {
+				SetState(GOOMBA_STATE_WALKING);
+				isParagoomba = false;
+			}
+			else {
+				SetState(GOOMBA_STATE_DIE);
+			}
 		}
 		return;
 	}
 	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
-		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->AddScore(x, y - (GOOMBA_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, 100, true);
 		SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
 		return;

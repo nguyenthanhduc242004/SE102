@@ -78,7 +78,7 @@ void CMushroom::HandleTimer(DWORD dt)
 void CMushroom::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x - MUSHROOM_WIDTH / 2;
-	top = y - MUSHROOM_HEIGHT / 2;
+	top = y - MUSHROOM_HEIGHT / 2 - 1;
 	right = left + MUSHROOM_WIDTH;
 	bottom = top + MUSHROOM_HEIGHT;
 }
