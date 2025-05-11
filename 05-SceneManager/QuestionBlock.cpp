@@ -2,6 +2,7 @@
 #include "BouncingCoin.h"
 #include "Mushroom.h"
 #include "Game.h"
+#include "Leaf.h"
 
 CQuestionBlock::CQuestionBlock(float x, float y) :CGameObject(x, y)
 {
@@ -24,7 +25,7 @@ CQuestionBlock::CQuestionBlock(float x, float y, int itemID) : CQuestionBlock(x,
 
 		break;
 	case ITEM_LEAF:
-
+		item = new CLeaf(x, y - QUESTION_BLOCK_ITEM_Y_OFFSET);
 		break;
 	case ITEM_MUSHROOM_GREEN:
 		item = new CMushroom(x, y - QUESTION_BLOCK_ITEM_Y_OFFSET, MUSHROOM_TYPE_GREEN);

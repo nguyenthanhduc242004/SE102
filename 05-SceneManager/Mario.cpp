@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "Game.h"
 #include "PlayScene.h"
+#include "Leaf.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -72,6 +73,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 	if (dynamic_cast<CMushroom*>(e->obj)) {
 		OnCollisionWithMushroom(e);
+		return;
+	}
+	if (dynamic_cast<CLeaf*>(e->obj)) {
+		OnCollisionWithLeaf(e);
 		return;
 	}
 	if (dynamic_cast<CPiranhaPlant*>(e->obj)) {
@@ -165,7 +170,7 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
-	if (mushroom->GetState() != MUSHROOM_STATE_WALKING) return;
+	if (mushroom->GetState() == MUSHROOM_STATE_IDLE) return;
 	int type = mushroom->GetType();
 	if (type == MUSHROOM_TYPE_RED) {
 		if (level < MARIO_LEVEL_BIG) {
@@ -179,6 +184,16 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		//add score later
 	}
 	mushroom->Delete();
+}
+void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
+{
+	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
+	if (leaf->GetState() == LEAF_STATE_IDLE) return;
+	if (level < MARIO_LEVEL_TANOOKI) {
+		SetLevel(MARIO_LEVEL_TANOOKI);
+	}
+	AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, true);
+	leaf->Delete();
 }
 
 void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
@@ -332,7 +347,7 @@ void CMario::Render()
 	animations->Get(aniId)->Render(x, y);
 
 	// for prototype
-	if (tailTimer.IsRunning()) {
+	if (level == MARIO_LEVEL_TANOOKI) {
 		RenderBoundingBox();
 	}
 

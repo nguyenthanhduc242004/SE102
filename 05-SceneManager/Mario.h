@@ -107,7 +107,6 @@
 #define MARIO_TURNING_TAIL_TIME		400
 #define MARIO_TURNING_STATE_TIME	60
 
-
 class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
 	BOOLEAN isOnPlatform;
@@ -134,6 +133,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
 
