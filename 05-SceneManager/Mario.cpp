@@ -28,7 +28,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
-
 void CMario::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
@@ -87,9 +86,13 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
+	if (tailTimer.IsRunning() && e->ny == 0) {
+		goomba->TakeDamageFrom(this);
+	}
 	// jump on top >> kill Goomba and deflect a bit 
-	if (e->ny < 0)
+	else if (e->ny < 0)
 	{
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		goomba->TakeDamageFrom(this);
 	}
 	else // hit by Goomba
@@ -104,8 +107,12 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 
+	if (tailTimer.IsRunning() && e->ny == 0) {
+		//kill right away, hit by tail, thus put mario in and turn it into shell would be illogical
+		koopa->TakeDamageFrom(NULL);
+	}
 	// hit koopa in shell in any direction
-	if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
+	else if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
 		if (!isReadyToHold || e->ny != 0) {
 			Kick();
 			koopa->SetDirection(nx);
@@ -119,6 +126,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	//hit koopa not in shell on top, can turn koopa ---> shell
 	else if (e->ny < 0)
 	{
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		koopa->TakeDamageFrom(this);
 	}
 	//touch koopa not in shell, not hit on top, koopa can be any other state, just not dead
@@ -187,7 +195,6 @@ void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e)
 {
 	TakeDamageFrom(e->obj);
 }
-
 //
 // Get animation ID for small Mario
 //
@@ -249,8 +256,6 @@ int CMario::GetAniIdSmall()
 
 	return aniId;
 }
-
-
 //
 // Get animdation ID for big Mario
 //
@@ -319,14 +324,17 @@ void CMario::Render()
 
 	if (state == MARIO_STATE_DIE)
 		aniId = ID_ANI_MARIO_DIE;
-	else if (level == MARIO_LEVEL_BIG)
+	else if (level >= MARIO_LEVEL_BIG)
 		aniId = GetAniIdBig();
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
 
 	animations->Get(aniId)->Render(x, y);
 
-	//RenderBoundingBox();
+	// for prototype
+	if (tailTimer.IsRunning()) {
+		RenderBoundingBox();
+	}
 
 	//DebugOutTitle(L"Coins: %d", coin);
 }
@@ -443,7 +451,7 @@ void CMario::SetState(int state)
 
 void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (level == MARIO_LEVEL_BIG)
+	if (level >= MARIO_LEVEL_BIG)
 	{
 		if (isSitting)
 		{
@@ -451,6 +459,12 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 			top = y - MARIO_BIG_SITTING_BBOX_HEIGHT / 2;
 			right = left + MARIO_BIG_SITTING_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
+		}
+		else if (tailTimer.IsRunning()) {
+			left = x - (MARIO_BIG_BBOX_WIDTH + 16) / 2;
+			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
+			right = left + (MARIO_BIG_BBOX_WIDTH + 16);
+			bottom = top + MARIO_BIG_BBOX_HEIGHT;
 		}
 		else
 		{
@@ -489,6 +503,17 @@ void CMario::HandleTimer(DWORD dt)
 	if (kickTimer.IsRunning()) {
 		kickTimer.Tick(dt);
 	}
+
+	if (tailFrameTimer.IsRunning())
+	{
+		tailFrameTimer.Tick(dt);
+	}
+
+	if (tailTimer.IsRunning())
+	{
+		tailTimer.Tick(dt);
+	}
+
 	// reset timer if time has passed
 	if (invincibleTimer.HasPassed(MARIO_UNTOUCHABLE_TIME))
 	{
@@ -499,5 +524,31 @@ void CMario::HandleTimer(DWORD dt)
 		kickTimer.Reset();
 		untouchable = 0;
 	}
+
+	if (tailFrameTimer.HasPassed(MARIO_TURNING_STATE_TIME))
+	{
+		tailFrameTimer.Reset();
+		tailFrameTimer.Start();
+		tailFrame = (((tailFrame + 1) < (5)) ? (tailFrame + 1) : (5));
+	}
+
+	if (tailTimer.HasPassed(MARIO_TURNING_TAIL_TIME))
+	{
+		tailTimer.Reset();
+		tailFrameTimer.Reset();
+		tailFrame = 0;
+		//tailSprite->hit_times = 0;  // allow new hits
+	}
 }
 
+void CMario::Attack()
+{
+	if (level == MARIO_LEVEL_TANOOKI      // or a new enum check
+		&& !tailTimer.IsRunning()
+		&& !isSitting)
+	{
+		tailTimer.Start();
+		tailFrameTimer.Start();
+		tailFrame = 1;
+	}
+}

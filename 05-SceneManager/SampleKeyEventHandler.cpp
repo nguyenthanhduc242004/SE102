@@ -28,6 +28,7 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	{
 	case DIK_A:
 		mario->SetIsReadyToHold(true);
+		mario->Attack();
 		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_SIT);
@@ -40,6 +41,9 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_2:
 		mario->SetLevel(MARIO_LEVEL_BIG);
+		break;
+	case DIK_3:
+		mario->SetLevel(MARIO_LEVEL_TANOOKI);
 		break;
 	case DIK_0:
 		mario->SetState(MARIO_STATE_DIE);

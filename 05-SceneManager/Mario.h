@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "GameObject.h"
 #include "PlayScene.h"
 #include "Animation.h"
@@ -39,7 +39,6 @@
 
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
-
 
 #pragma region ANIMATION_ID
 
@@ -89,9 +88,9 @@
 
 #define GROUND_Y 160.0f
 
-
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
+#define MARIO_LEVEL_TANOOKI 3
 
 #define MARIO_BIG_BBOX_WIDTH  14
 #define MARIO_BIG_BBOX_HEIGHT 24
@@ -103,9 +102,10 @@
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 12
 
-
-#define MARIO_UNTOUCHABLE_TIME 2500
+#define MARIO_UNTOUCHABLE_TIME 1000
 #define MARIO_KICK_TIME	200	
+#define MARIO_TURNING_TAIL_TIME		400
+#define MARIO_TURNING_STATE_TIME	60
 
 
 class CMario : public CGameObject, public CMoveable, public CDamageable {
@@ -120,6 +120,14 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	int score;
 	int coin;
 	float dragX;
+
+	// Tail swing timers and state
+	CDeltaTimer    tailTimer;        // total active-window
+	CDeltaTimer    tailFrameTimer;   // per-frame advance
+	int      tailFrame;        // 0 = no swing, 1...5 = which whip sprite
+	//CTanooki* tailSprite;      // the actual whip‐hitbox object
+
+
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
@@ -146,6 +154,9 @@ public:
 		score = 0;
 		coin = 0;
 		dragX = MARIO_DRAG_X;
+
+		tailFrame = 0;
+		//tailSprite = new CTanooki(x, y);
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
@@ -205,7 +216,7 @@ public:
 			SetState(MARIO_STATE_DIE);
 		}
 	}
-	//will only be called when Mario fall out of bound
+	// will only be called when Mario fall out of bound
 	virtual void Delete() override {
 		CGame* game = CGame::GetInstance();
 		if (state != MARIO_STATE_DIE) {
@@ -235,4 +246,6 @@ public:
 	void SetIsReadyToHold(BOOLEAN isReadyToHold) {
 		this->isReadyToHold = isReadyToHold;
 	}
+
+	void Attack();
 };

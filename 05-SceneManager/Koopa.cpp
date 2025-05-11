@@ -196,6 +196,8 @@ int CKoopa::GetAniIdRed()
 
 void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	if (dynamic_cast<CMario*>(e->obj)) return;
+
 	//check all npc / which this npc can go through/interact ---> solve Mario triggering collision event multiple times because of IsBlocking setting
 	if (dynamic_cast<CKoopa*>(e->obj)) {
 		OnCollisionWithKoopa(e);
@@ -210,7 +212,7 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		e->obj->Delete();
 		return;
 	}
-	//IsBlocking will be used only to check map objects ---> NPCs are not blocking, Koopa can go through them.
+	// IsBlocking will be used only to check map objects ---> NPCs are not blocking, Koopa can go through them.
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0)
 	{
@@ -454,9 +456,6 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 {
 	// damage caused directly by Mario's stomping
 	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
-		float vx, vy;
-		mario->GetSpeed(vx, vy);
-		mario->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
 		if (type == KOOPAS_TYPE_WING) {
 			vy = 0;
 			ay = KOOPAS_GRAVITY;

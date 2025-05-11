@@ -30,6 +30,8 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	if (dynamic_cast<CMario*>(e->obj)) return;
+
 	if (dynamic_cast<CGoomba*>(e->obj)) {
 		OnCollisionWithGoomba(e);
 	}
@@ -138,9 +140,6 @@ void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
 	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
 		if (state != GOOMBA_STATE_DIE)
 		{
-			float vx, vy;
-			mario->GetSpeed(vx, vy);
-			mario->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
 			CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 			mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
 			SetState(GOOMBA_STATE_DIE);
