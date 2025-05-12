@@ -490,6 +490,15 @@ int CMario::GetAniIdBig()
 //	return aniId;
 //}
 
+int CMario::GetAniIdTransform(int level) {
+	if (level == MARIO_LEVEL_BIG) {
+		if (nx == -1)
+			return ID_ANI_MARIO_ENLARGING_LEFT;
+		else
+			return ID_ANI_MARIO_ENLARGING_RIGHT;
+	}
+}
+
 void CMario::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
