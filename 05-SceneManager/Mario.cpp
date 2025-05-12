@@ -197,8 +197,8 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 
 	isTransforming = true;
 	CGame::GetInstance()->PauseGame();
-	if (!enlargingTimer->IsRunning())
-		enlargingTimer->Start();
+	if (!transformTimer->IsRunning())
+		transformTimer->Start();
 }
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
@@ -354,6 +354,12 @@ int CMario::GetAniIdTransform(int level) {
 			return ID_ANI_MARIO_ENLARGING_LEFT;
 		else
 			return ID_ANI_MARIO_ENLARGING_RIGHT;
+	} 
+	else if (level == MARIO_LEVEL_SMALL) {
+		if (nx == -1)
+			return ID_ANI_MARIO_SHIRNKING_LEFT;
+		else
+			return ID_ANI_MARIO_SHIRNKING_RIGHT;
 	}
 }
 
@@ -362,8 +368,8 @@ void CMario::Render()
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
 
-	if (isTransforming && GetLevel() == MARIO_LEVEL_BIG) {
-		aniId = GetAniIdTransform(MARIO_LEVEL_BIG);
+	if (isTransforming) {
+		aniId = GetAniIdTransform(level);
 	}
 	else if (state == MARIO_STATE_DIE)
 		aniId = ID_ANI_MARIO_DIE;

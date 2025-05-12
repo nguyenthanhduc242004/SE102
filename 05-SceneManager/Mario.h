@@ -89,6 +89,10 @@
 #define ID_ANI_MARIO_ENLARGING_RIGHT	1701
 #define ID_ANI_MARIO_ENLARGING_LEFT		1702
 
+// SHRINKING
+#define ID_ANI_MARIO_SHIRNKING_RIGHT	1801
+#define ID_ANI_MARIO_SHIRNKING_LEFT		1802
+
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -114,7 +118,7 @@
 #define MARIO_WAGGING_TAIL_TIME		400
 #define MARIO_FLYING_TIME			1750
 
-#define MARIO_ENLARGING_TIME	1200
+#define MARIO_RESIZING_TIME	1200
 
 
 class CMario : public CGameObject, public CMoveable, public CDamageable {
@@ -139,7 +143,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	CDeltaTimer	tailWagTimer;
 	CDeltaTimer flyTimer;
 
-	CDeltaTimer* enlargingTimer = new CDeltaTimer();
+	CDeltaTimer* transformTimer = new CDeltaTimer();
 	bool isTransforming = false;
 
 
@@ -232,6 +236,11 @@ public:
 		{
 			level = MARIO_LEVEL_SMALL;
 			StartUntouchable();
+
+			isTransforming = true;
+			CGame::GetInstance()->PauseGame();
+			if (!transformTimer->IsRunning())
+				transformTimer->Start();
 		}
 		else
 		{
@@ -272,8 +281,8 @@ public:
 
 	void Attack();
 
-	CDeltaTimer* GetEnlargingTimer() {
-		return this->enlargingTimer;
+	CDeltaTimer* GetTransformTimer() {
+		return this->transformTimer;
 	}
 
 	void SetTransforming(boolean isTransforming) {

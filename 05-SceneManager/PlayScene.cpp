@@ -418,16 +418,16 @@ void CPlayScene::Update(DWORD dt)
 
 	CGame::GetInstance()->SetCamPos(cx, DEFAULT_CAM_Y /*cy*/);
 
-	// Mario enlarging timer logic
+	// Mario transform logic
 	CMario* mario = dynamic_cast<CMario*>(player);
-	CDeltaTimer* marioEnlargingTimer = mario->GetEnlargingTimer();
-	if (marioEnlargingTimer->HasPassed(MARIO_ENLARGING_TIME)) {
-		marioEnlargingTimer->Reset();
+	CDeltaTimer* marioTransformTimer = mario->GetTransformTimer();
+	if (marioTransformTimer->HasPassed(MARIO_RESIZING_TIME)) {
+		marioTransformTimer->Reset();
 		CGame::GetInstance()->ResumeGame();
 		mario->SetTransforming(false);
 		
-	} else if (marioEnlargingTimer->IsRunning()) {
-		marioEnlargingTimer->Tick(dt);
+	} else if (marioTransformTimer->IsRunning()) {
+		marioTransformTimer->Tick(dt);
 	}
 
 	PurgeDeletedObjects();
