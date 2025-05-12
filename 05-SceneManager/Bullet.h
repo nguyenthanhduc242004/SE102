@@ -15,7 +15,8 @@ protected:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
-	virtual int IsCollidable() { return 1; };
+
+	virtual int IsCollidable() { return 0; };
 	virtual int IsBlocking() { return 0; }
 public:
 	CBullet(float x, float y, float vx, float vy) : CGameObject(x, y) {

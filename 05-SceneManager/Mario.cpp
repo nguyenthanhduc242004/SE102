@@ -195,6 +195,10 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		//add score later
 	}
 	mushroom->Delete();
+
+	CGame::GetInstance()->PauseGame();
+	if (!enlargingTimer->IsRunning())
+		enlargingTimer->Start();
 }
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)

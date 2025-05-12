@@ -35,8 +35,11 @@ void CSpawner::Spawn()
 {
 	CMoveable *obj = NULL;
 	switch (NPC_ID) {
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x, y); break;
-
+	case OBJECT_TYPE_GOOMBA:
+	{
+		obj = new CGoomba(x, y, token3, token4); 
+		break;
+	}
 	case OBJECT_TYPE_KOOPA:
 	{
 		obj = new CKoopa(x, y, token3, token4);

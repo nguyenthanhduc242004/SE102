@@ -100,7 +100,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	}
-	case OBJECT_TYPE_GOOMBA: objs.push_back(new CSpawner(x, y, OBJECT_TYPE_GOOMBA)); break;
+	case OBJECT_TYPE_GOOMBA: {
+		int color = (int)atof(tokens[3].c_str());
+		boolean isParagoomba = (boolean)atof(tokens[4].c_str());
+		objs.push_back(new CSpawner(x, y, OBJECT_TYPE_GOOMBA, color, isParagoomba));
+		break;
+	}
 
 	case OBJECT_TYPE_KOOPA:
 	{
@@ -371,16 +376,19 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED)
-		return;
+	/*if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED)
+		return;*/
+
 	float x, y;
 
 	// We know that Mario is the first object in the list hence we won't add him into the collidable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
-	vector<LPGAMEOBJECT> coObjects;
+	vector<LPGAMEOBJECT> coObjects; 
 	for (size_t i = 1; i < objects.size(); i++)
 	{
 		objects[i]->GetPosition(x, y);
+		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED && typeid(*objects[i]) != typeid(CFlyingScore))
+			continue;
 		if (y >= LOWER_BOUND_DEATHZONE) {
 			objects[i]->Delete();
 			continue;
@@ -390,6 +398,8 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
+		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED && typeid(*objects[i]) != typeid(CFlyingScore))
+			continue;
 		objects[i]->Update(dt, &coObjects);
 	}
 
@@ -407,6 +417,16 @@ void CPlayScene::Update(DWORD dt)
 	if (cx < LEFT_BOUND_CAM_X) cx = LEFT_BOUND_CAM_X;
 
 	CGame::GetInstance()->SetCamPos(cx, DEFAULT_CAM_Y /*cy*/);
+
+	// Mario enlarging timer logic
+	CDeltaTimer* marioEnlargingTimer = dynamic_cast<CMario*>(player)->GetEnlargingTimer();
+	if (marioEnlargingTimer->HasPassed(MARIO_ENLARGING_TIME)) {
+		marioEnlargingTimer->Reset();
+		CGame::GetInstance()->ResumeGame();
+	} else if (marioEnlargingTimer->IsRunning()) {
+		marioEnlargingTimer->Tick(dt);
+		DebugOut(L"[ERROR] Invalid object type: %f\n", marioEnlargingTimer->getAccumulated());
+	}
 
 	PurgeDeletedObjects();
 }

@@ -121,13 +121,13 @@
     <ClCompile Include="Koopa.cpp">
       <Filter>NPC</Filter>
     </ClCompile>
-    <ClCompile Include="Pipe.cpp" />
-    <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="Bullet.cpp">
       <Filter>Map\Interactable\Functional</Filter>
     </ClCompile>
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="Leaf.cpp" />
+    <ClCompile Include="Pipe.cpp" />
+    <ClCompile Include="PiranhaPlant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -235,8 +235,6 @@
     <ClInclude Include="Koopa.h">
       <Filter>NPC</Filter>
     </ClInclude>
-    <ClInclude Include="Pipe.h" />
-    <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="Bullet.h">
       <Filter>Map\Interactable\Functional</Filter>
     </ClInclude>
@@ -245,5 +243,7 @@
     </ClInclude>
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="Leaf.h" />
+    <ClInclude Include="Pipe.h" />
+    <ClInclude Include="PiranhaPlant.h" />
   </ItemGroup>
 </Project>

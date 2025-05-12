@@ -10,5 +10,6 @@ public:
 	bool HasPassed(float ms) const {
 		return accumulated >= ms;
 	}
+	float getAccumulated() { return accumulated; }
 };
 
