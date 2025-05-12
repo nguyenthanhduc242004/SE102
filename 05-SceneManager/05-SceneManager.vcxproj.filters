@@ -130,6 +130,8 @@
     </ClCompile>
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="Leaf.cpp" />
+    <ClCompile Include="Pipe.cpp" />
+    <ClCompile Include="PiranhaPlant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -245,5 +247,7 @@
     </ClInclude>
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="Leaf.h" />
+    <ClInclude Include="Pipe.h" />
+    <ClInclude Include="PiranhaPlant.h" />
   </ItemGroup>
 </Project>

@@ -110,6 +110,9 @@
 #define MARIO_WAGGING_TAIL_TIME		400
 #define MARIO_FLYING_TIME			1750
 
+#define MARIO_ENLARGING_TIME	1200
+
+
 class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
 	BOOLEAN isOnPlatform;
@@ -131,6 +134,9 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	//CTanooki* tailSprite;      // the actual whip‐hitbox object
 	CDeltaTimer	tailWagTimer;
 	CDeltaTimer flyTimer;
+
+	CDeltaTimer* enlargingTimer = new CDeltaTimer();
+
 
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -259,4 +265,8 @@ public:
 	}
 
 	void Attack();
+
+	CDeltaTimer* GetEnlargingTimer() {
+		return this->enlargingTimer;
+	}
 };

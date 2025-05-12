@@ -217,7 +217,6 @@
     <ClInclude Include="SampleKeyEventHandler.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SideCollidablePlatform.h" />
-    <ClInclude Include="SpawnableNpc.h" />
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprites.h" />
