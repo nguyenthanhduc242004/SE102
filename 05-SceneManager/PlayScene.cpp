@@ -106,7 +106,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA: {
 		int color = (int)atof(tokens[3].c_str());
 		boolean isParagoomba = (boolean)atof(tokens[4].c_str());
-		objs.push_back(new CGoomba(x, y, color, isParagoomba)); break;
+		objs.push_back(new CSpawner(x, y, OBJECT_TYPE_GOOMBA, color, isParagoomba));
+		break;
 	}
 
 	case OBJECT_TYPE_KOOPA:

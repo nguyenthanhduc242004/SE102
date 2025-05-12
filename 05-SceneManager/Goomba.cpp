@@ -3,15 +3,17 @@
 
 CGoomba::CGoomba(float x, float y, int color, boolean isParagoomba) :CGameObject(x, y)
 {
-	this->x0 = x;
-	this->y0 = y;
 	this->color = color;
 	this->isParagoomba = isParagoomba;
-	this->isParagoombaInitially = isParagoomba;
 	this->ay = GOOMBA_GRAVITY;
 	nx = -1;
 	this->paragoombaStateTimer.Start();
-	SetState(GOOMBA_STATE_RESPAWNABLE);
+	if (isParagoomba) {
+		SetState(PARAGOOMBA_STATE_WALKING);
+	}
+	else {
+		SetState(GOOMBA_STATE_WALKING);
+	}
 }
 
 void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -96,39 +98,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	vy += ay * dt;
 
-	CGame* game = CGame::GetInstance();
-
-	float goombaWidth, goombaHeight;
 	if (isParagoomba) {
-		goombaWidth = PARAGOOMBA_WIDTH;
-		goombaHeight = PARAGOOMBA_HEIGHT;
-	}
-	else {
-		goombaWidth = GOOMBA_BBOX_WIDTH;
-		goombaHeight = GOOMBA_BBOX_HEIGHT;
-	}
-
-	/*boolean originalPositionIsInCam = game->IsInCamera(x0 - (goombaWidth / 2 + RESPAWN_BUFFER), y0 + (goombaHeight / 2 + RESPAWN_BUFFER)) || game->IsInCamera(x0 - (goombaWidth / 2 + RESPAWN_BUFFER), y0 - ((goombaHeight / 2 + RESPAWN_BUFFER))
-		|| game->IsInCamera(x0 + (goombaWidth / 2 + RESPAWN_BUFFER), y0 + (goombaHeight / 2 + RESPAWN_BUFFER)) || game->IsInCamera(x0 + (goombaWidth / 2 + RESPAWN_BUFFER), y0 - (goombaHeight / 2 + RESPAWN_BUFFER)));*/
-	boolean originalPositionIsInCam = game->IsInCamera(x0, y0);
-	boolean currentPositionIsInCam = game->IsInCamera(x - (goombaWidth / 2 + RESPAWN_BUFFER), y + (goombaHeight / 2 + RESPAWN_BUFFER)) || game->IsInCamera(x - (goombaWidth / 2 + RESPAWN_BUFFER), y - (goombaHeight / 2 + RESPAWN_BUFFER))
-		|| game->IsInCamera(x + (goombaWidth / 2 + RESPAWN_BUFFER), y + (goombaHeight / 2 + RESPAWN_BUFFER)) || game->IsInCamera(x + (goombaWidth / 2 + RESPAWN_BUFFER), y - (goombaHeight / 2 + RESPAWN_BUFFER));
-
-	if (!currentPositionIsInCam && state != GOOMBA_STATE_HIDDEN) {
-		SetState(GOOMBA_STATE_HIDDEN);
-	} 
-	if (state == GOOMBA_STATE_HIDDEN && !originalPositionIsInCam) {
-		SetState(GOOMBA_STATE_RESPAWNABLE);
-	}
-	if (state == GOOMBA_STATE_RESPAWNABLE && originalPositionIsInCam) {
-		if (isParagoomba) {
-			SetState(PARAGOOMBA_STATE_WALKING);
-		}
-		else {
-			SetState(GOOMBA_STATE_WALKING);
-		}
-	} 
-	else if (isParagoomba) {
 		if (state == PARAGOOMBA_STATE_WALKING) {
 			paragoombaStateTimer.Tick(dt);
 			float distanceTraveled = paragoombaStateTimer.getAccumulated() * abs(vx);
@@ -253,20 +223,6 @@ void CGoomba::SetState(int state)
 
 	switch (state)
 	{
-	case GOOMBA_STATE_HIDDEN:
-		x = 0;
-		y = 0;
-		vx = 0;
-		vy = 0;
-		ay = 0;
-		ax = 0;
-		break;
-	case GOOMBA_STATE_RESPAWNABLE:
-		x = x0;
-		y = y0;
-		ay = GOOMBA_GRAVITY;
-		isParagoomba = isParagoombaInitially;
-		break;
 	case GOOMBA_STATE_DIE:
 		vx = 0.0f;
 		vy = 0.0f;
@@ -279,7 +235,7 @@ void CGoomba::SetState(int state)
 		dyingTimer.Start();
 		break;
 	case GOOMBA_STATE_WALKING:
-		if (marioX <= x0) {
+		if (marioX <= x) {
 			nx = -1;
 		}
 		else {
@@ -289,7 +245,7 @@ void CGoomba::SetState(int state)
 		break;
 	case PARAGOOMBA_STATE_WALKING:
 		paragoombaStateTimer.Reset();
-		if (marioX <= x0) {
+		if (marioX <= x) {
 			nx = -1;
 		}
 		else {
