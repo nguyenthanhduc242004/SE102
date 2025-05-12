@@ -11,7 +11,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vx += ax * dt;
 
 	HandleTimer(dt);
-
+	if (tailWagTimer.IsRunning()) {
+		vy = MARIO_GRAVITY;
+	}
 	//there should be a mechanism to ease from running to walking, currently it just cuts down immediately
 	if (vx > 0.0f) {
 		vx -= dragX * dt;
@@ -91,7 +93,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	if (tailTimer.IsRunning() && e->ny == 0) {
+	if (tailWhipTimer.IsRunning() && e->ny == 0) {
 		goomba->TakeDamageFrom(this);
 	}
 	// jump on top >> kill Goomba and deflect a bit 
@@ -112,7 +114,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 
-	if (tailTimer.IsRunning() && e->ny == 0) {
+	if (tailWhipTimer.IsRunning() && e->ny == 0) {
 		//kill right away, hit by tail, thus put mario in and turn it into shell would be illogical
 		koopa->TakeDamageFrom(NULL);
 	}
@@ -356,7 +358,7 @@ void CMario::Render()
 
 void CMario::SetState(int state)
 {
-	//DebugOutTitle(L"State: %d", state);
+	DebugOutTitle(L"State: %d", state);
 	//DebugOut(L"maxVx: %f\n", maxVx);
 	// DIE is the end state, cannot be changed! 
 	if (this->state == MARIO_STATE_DIE) return;
@@ -417,6 +419,9 @@ void CMario::SetState(int state)
 			dragX = MARIO_AIR_DRAG_X;
 			isOnPlatform = false;
 		}
+		else if (level == MARIO_LEVEL_TANOOKI && !tailWagTimer.IsRunning()) {
+			tailWagTimer.Start();
+		}
 		break;
 	case MARIO_STATE_RELEASE_JUMP:
 		//release jump reset gravity back
@@ -451,7 +456,6 @@ void CMario::SetState(int state)
 			ay = MARIO_GRAVITY;
 		}
 		break;
-
 	case MARIO_STATE_DIE:
 		vx = 0.0f;
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -475,7 +479,7 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 			right = left + MARIO_BIG_SITTING_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
 		}
-		else if (tailTimer.IsRunning()) {
+		else if (tailWhipTimer.IsRunning()) {
 			left = x - (MARIO_BIG_BBOX_WIDTH + 16) / 2;
 			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
 			right = left + (MARIO_BIG_BBOX_WIDTH + 16);
@@ -519,16 +523,18 @@ void CMario::HandleTimer(DWORD dt)
 		kickTimer.Tick(dt);
 	}
 
-	if (tailFrameTimer.IsRunning())
+	if (tailWhipFrameTimer.IsRunning())
 	{
-		tailFrameTimer.Tick(dt);
+		tailWhipFrameTimer.Tick(dt);
 	}
 
-	if (tailTimer.IsRunning())
+	if (tailWhipTimer.IsRunning())
 	{
-		tailTimer.Tick(dt);
+		tailWhipTimer.Tick(dt);
 	}
-
+	if (tailWagTimer.IsRunning()) {
+		tailWagTimer.Tick(dt);
+	}
 	// reset timer if time has passed
 	if (invincibleTimer.HasPassed(MARIO_UNTOUCHABLE_TIME))
 	{
@@ -540,30 +546,33 @@ void CMario::HandleTimer(DWORD dt)
 		untouchable = 0;
 	}
 
-	if (tailFrameTimer.HasPassed(MARIO_TURNING_STATE_TIME))
+	if (tailWhipFrameTimer.HasPassed(MARIO_WHIPPING_TAIL_FRAME_TIME))
 	{
-		tailFrameTimer.Reset();
-		tailFrameTimer.Start();
-		tailFrame = (((tailFrame + 1) < (5)) ? (tailFrame + 1) : (5));
+		tailWhipFrameTimer.Reset();
+		tailWhipFrameTimer.Start();
+		tailWhipFrame = (((tailWhipFrame + 1) < (5)) ? (tailWhipFrame + 1) : (5));
 	}
 
-	if (tailTimer.HasPassed(MARIO_TURNING_TAIL_TIME))
+	if (tailWhipTimer.HasPassed(MARIO_WHIPPING_TAIL_TIME))
 	{
-		tailTimer.Reset();
-		tailFrameTimer.Reset();
-		tailFrame = 0;
+		tailWhipTimer.Reset();
+		tailWhipFrameTimer.Reset();
+		tailWhipFrame = 0;
 		//tailSprite->hit_times = 0;  // allow new hits
+	}
+	if (tailWagTimer.HasPassed(MARIO_WAGGING_TAIL_TIME)) {
+		tailWagTimer.Reset();
 	}
 }
 
 void CMario::Attack()
 {
 	if (level == MARIO_LEVEL_TANOOKI      // or a new enum check
-		&& !tailTimer.IsRunning()
+		&& !tailWhipTimer.IsRunning()
 		&& !isSitting)
 	{
-		tailTimer.Start();
-		tailFrameTimer.Start();
-		tailFrame = 1;
+		tailWhipTimer.Start();
+		tailWhipFrameTimer.Start();
+		tailWhipFrame = 1;
 	}
 }

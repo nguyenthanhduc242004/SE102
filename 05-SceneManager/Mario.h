@@ -104,8 +104,9 @@
 
 #define MARIO_UNTOUCHABLE_TIME 1000
 #define MARIO_KICK_TIME	200	
-#define MARIO_TURNING_TAIL_TIME		400
-#define MARIO_TURNING_STATE_TIME	60
+#define MARIO_WHIPPING_TAIL_TIME		400
+#define MARIO_WHIPPING_TAIL_FRAME_TIME	60
+#define MARIO_WAGGING_TAIL_TIME		400
 
 class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
@@ -121,11 +122,12 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	float dragX;
 
 	// Tail swing timers and state
-	CDeltaTimer    tailTimer;        // total active-window
-	CDeltaTimer    tailFrameTimer;   // per-frame advance
-	int      tailFrame;        // 0 = no swing, 1...5 = which whip sprite
+	CDeltaTimer    tailWhipTimer;    
+	CDeltaTimer    tailWhipFrameTimer; 
+	int      tailWhipFrame;        // 0 = no swing, 1...5 = which whip sprite
 	//CTanooki* tailSprite;      // the actual whip‐hitbox object
 
+	CDeltaTimer	tailWagTimer;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
@@ -155,7 +157,7 @@ public:
 		coin = 0;
 		dragX = MARIO_DRAG_X;
 
-		tailFrame = 0;
+		tailWhipFrame = 0;
 		//tailSprite = new CTanooki(x, y);
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -205,7 +207,12 @@ public:
 
 	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override {
 		if (untouchable) return;
-		if (level > MARIO_LEVEL_SMALL)
+		if (level > MARIO_LEVEL_BIG)
+		{
+			level = MARIO_LEVEL_BIG;
+			StartUntouchable();
+		}
+		else if (level > MARIO_LEVEL_SMALL)
 		{
 			level = MARIO_LEVEL_SMALL;
 			StartUntouchable();
