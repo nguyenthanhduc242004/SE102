@@ -7,6 +7,7 @@ CGoomba::CGoomba(float x, float y, int color, boolean isParagoomba) :CGameObject
 	this->isParagoomba = isParagoomba;
 	this->ay = GOOMBA_GRAVITY;
 	nx = -1;
+	vx = nx * GOOMBA_WALKING_SPEED;
 	this->paragoombaStateTimer.Start();
 	if (isParagoomba) {
 		SetState(PARAGOOMBA_STATE_WALKING);
@@ -238,24 +239,9 @@ void CGoomba::SetState(int state)
 		dyingTimer.Start();
 		break;
 	case GOOMBA_STATE_WALKING:
-		if (marioX <= x) {
-			nx = -1;
-		}
-		else {
-			nx = 1;
-		}
-		vx = nx * GOOMBA_WALKING_SPEED;
 		break;
 	case PARAGOOMBA_STATE_WALKING:
 		paragoombaStateTimer.Reset();
-		if (marioX <= x) {
-			nx = -1;
-		}
-		else {
-			nx = 1;
-		}
-		vx = nx * GOOMBA_WALKING_SPEED;
-		ay = GOOMBA_GRAVITY;
 		break;
 	case PARAGOOMBA_STATE_PRE_FLY:
 		paragoombaStateTimer.Reset();
