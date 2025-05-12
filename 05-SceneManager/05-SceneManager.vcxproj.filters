@@ -128,12 +128,7 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>Map\Interactable\Functional</Filter>
     </ClCompile>
-    <ClCompile Include="Pipe.cpp">
-      <Filter>Map\Interactable\Non-functional</Filter>
-    </ClCompile>
-    <ClCompile Include="PiranhaPlant.cpp">
-      <Filter>NPC</Filter>
-    </ClCompile>
+    <ClCompile Include="Spawner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -247,11 +242,6 @@
     <ClInclude Include="Damageable.h">
       <Filter>Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Pipe.h">
-      <Filter>Map\Interactable\Non-functional</Filter>
-    </ClInclude>
-    <ClInclude Include="PiranhaPlant.h">
-      <Filter>NPC</Filter>
-    </ClInclude>
+    <ClInclude Include="Spawner.h" />
   </ItemGroup>
 </Project>

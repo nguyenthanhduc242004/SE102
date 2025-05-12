@@ -16,5 +16,9 @@ public:
     virtual void SetSpeed(float vx, float vy) = 0;
     int GetDirection() { return nx; }
     void SetDirection(int nx) { this->nx = nx; }
+    void ReverseDirection() {
+        nx = -nx;
+        vx = -vx;
+    }
 };
 

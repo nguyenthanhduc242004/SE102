@@ -9,14 +9,13 @@ void CBullet::GetBoundingBox(float& left, float& top, float& right, float& botto
 	bottom = top + BULLET_HEIGHT;
 }
 
-void CBullet::OnNoCollision(DWORD dt)
-{
-	x += vx * dt;
-	y += vy * dt;
-};
 
 void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//Bullet stops at nothing, so its position shouldnt be affected by the collision system, basically a slap-on bullet
+	x += vx * dt;
+	y += vy * dt;
+
 	CGame* game = CGame::GetInstance();
 
 	if (!(game->IsInCamera(x - BULLET_WIDTH, y + BULLET_HEIGHT) || game->IsInCamera(x - BULLET_WIDTH, y - BULLET_HEIGHT)

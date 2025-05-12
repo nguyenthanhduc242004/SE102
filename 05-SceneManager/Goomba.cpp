@@ -50,19 +50,16 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (e->nx != 0)
 	{
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 	}
 }
 
 void CGoomba::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-	if (e->nx != 0 && !isParagoomba) {
-		nx = -nx;
-		vx = -vx;
-		goomba->nx = -goomba->nx;
-		goomba->vx = -goomba->vx;
+	if (e->nx != 0) {
+		ReverseDirection();
+		goomba->ReverseDirection();
 	}
 }
 
@@ -70,11 +67,9 @@ void CGoomba::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 		if (koopa->GetState() != KOOPAS_STATE_WALKING) return;
-		koopa->SetDirection(-koopa->GetDirection());
-		koopa->SetState(KOOPAS_STATE_WALKING);
+		koopa->ReverseDirection();
 	}
 }
 
@@ -93,8 +88,13 @@ void CGoomba::HandleTimer(DWORD dt)
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
+		!CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y)) {
+		isDeleted = true;
+		return;
+	}
+
 	vy += ay * dt;
-	vx += ax * dt;
 
 	CGame* game = CGame::GetInstance();
 
@@ -276,6 +276,7 @@ void CGoomba::SetState(int state)
 	case GOOMBA_STATE_DIE_WITH_BOUNCE:
 		vx = nx * KOOPAS_WALKING_SPEED;
 		vy = -KOOPAS_KILL_Y_BOUNCE;
+		dyingTimer.Start();
 		break;
 	case GOOMBA_STATE_WALKING:
 		if (marioX <= x0) {
@@ -295,6 +296,7 @@ void CGoomba::SetState(int state)
 			nx = 1;
 		}
 		vx = nx * GOOMBA_WALKING_SPEED;
+		ay = GOOMBA_GRAVITY;
 		break;
 	case PARAGOOMBA_STATE_PRE_FLY:
 		paragoombaStateTimer.Reset();

@@ -13,11 +13,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	//there should be a mechanism to ease from running to walking, currently it just cuts down immediately
 	if (vx > 0.0f) {
-		vx -= MARIO_DRAG_X * dt;
+		vx -= dragX * dt;
 		if (vx < 0.0f)	vx = 0.0f;
 	}
 	else if (vx < 0.0f) {
-		vx += MARIO_DRAG_X * dt;
+		vx += dragX * dt;
 		if (vx > 0.0f)	vx = 0.0f;
 	}
 
@@ -37,10 +37,14 @@ void CMario::OnNoCollision(DWORD dt)
 }
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
+
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0.0f;
-		if (e->ny < 0) isOnPlatform = true;
+		if (e->ny < 0) {
+			isOnPlatform = true;
+			dragX = MARIO_DRAG_X;
+		}
 	}
 	if (e->nx != 0 && e->obj->IsBlocking())
 	{
@@ -124,7 +128,6 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	}
 }
 
-
 void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 {
 	CQuestionBlock* questionBlock = dynamic_cast<CQuestionBlock*>(e->obj);
@@ -142,7 +145,7 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
-	AddScore(x, y, FLYING_SCORE_TYPE_100, false);
+	coin++;
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -160,6 +163,7 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		if (level < MARIO_LEVEL_BIG) {
 			SetLevel(MARIO_LEVEL_BIG);
 		}
+		AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, true);
 		//add score later
 	}
 	else if (type == MUSHROOM_TYPE_GREEN) {
@@ -385,8 +389,10 @@ void CMario::SetState(int state)
 				vy = -MARIO_JUMP_RUN_SPEED_Y;
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
-			//airborn, gravity will be lifted
+			//airborn, gravity will be lifted, drag reduces
 			ay = MARIO_LIFTED_GRAVITY;
+			dragX = MARIO_AIR_DRAG_X;
+			isOnPlatform = false;
 		}
 		break;
 	case MARIO_STATE_RELEASE_JUMP:
@@ -396,6 +402,7 @@ void CMario::SetState(int state)
 
 	case MARIO_STATE_SIT:
 		if (ax != 0) break;
+		if (isHolding) break;
 		if (isOnPlatform && level != MARIO_LEVEL_SMALL)
 		{
 			state = MARIO_STATE_IDLE;
@@ -423,9 +430,11 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_DIE:
+		vx = 0.0f;
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
-		ax = 0;
-		ay = MARIO_LIFTED_GRAVITY;
+		ax = 0.0f;
+		ay = MARIO_LIFTED_GRAVITY * 2;
+		isHolding = false;
 		break;
 	}
 

@@ -18,8 +18,6 @@ protected:
 
 	virtual int IsCollidable() { return 0; };
 	virtual int IsBlocking() { return 0; }
-	virtual void OnNoCollision(DWORD dt);
-
 public:
 	CBullet(float x, float y, float vx, float vy) : CGameObject(x, y) {
 		this->vx = vx;

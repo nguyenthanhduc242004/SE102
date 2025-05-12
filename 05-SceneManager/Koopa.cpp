@@ -2,6 +2,12 @@
 
 #include <typeinfo>
 
+CKoopa::CKoopa(float x, float y, int color, int type) : CGameObject(x, y) {
+	this->color = color;
+	this->type = type;
+	nx = -1;
+	SetState(KOOPAS_STATE_WALKING);
+}
 
 void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -22,6 +28,12 @@ void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
+		!CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y)) {
+		isDeleted = true;
+		return;
+	}
+
 	vy += ay * dt;
 
 	HandleTimer(dt);
@@ -37,35 +49,41 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CKoopa::Render()
 {
 	int aniId = -1;
-	switch (state)
-	{
-	case KOOPAS_STATE_WALKING:
-		aniId = (nx < 0)
-			? ID_ANI_KOOPAS_WALKING_LEFT
-			: ID_ANI_KOOPAS_WALKING_RIGHT;
-		break;
-	case KOOPAS_STATE_SHELL:
-		aniId = ID_ANI_KOOPAS_SHELL;
-		break;
-	case KOOPAS_STATE_REVIVING:
-		aniId = ID_ANI_KOOPAS_REVIVING;
-		break;
-	case KOOPAS_STATE_SPINNING:
-		aniId = (nx < 0)
-			? ID_ANI_KOOPAS_SPINNING_LEFT
-			: ID_ANI_KOOPAS_SPINNING_RIGHT;
-		break;
-	case KOOPAS_STATE_DIE:
-		aniId = ID_ANI_KOOPAS_DIE;
-		break;
-	case KOOPAS_STATE_DIE_WITH_BOUNCE:
-		// for now
-		aniId = ID_ANI_KOOPAS_DIE;
-		break;
-	}
 
+	if (color == KOOPAS_COLOR_GREEN) {
+		aniId = GetAniIdGreen();
+	}
+	else if (color == KOOPAS_COLOR_RED) {
+		aniId = GetAniIdRed();
+	}
+	//switch (state)
+	//{
+	//case KOOPAS_STATE_WALKING:
+	//	aniId = (nx < 0)
+	//		? ID_ANI_KOOPAS_WALKING_LEFT
+	//		: ID_ANI_KOOPAS_WALKING_RIGHT;
+	//	break;
+	//case KOOPAS_STATE_SHELL:
+	//	aniId = ID_ANI_KOOPAS_SHELL;
+	//	break;
+	//case KOOPAS_STATE_REVIVING:
+	//	aniId = ID_ANI_KOOPAS_REVIVING;
+	//	break;
+	//case KOOPAS_STATE_SPINNING:
+	//	aniId = (nx < 0)
+	//		? ID_ANI_KOOPAS_SPINNING_LEFT
+	//		: ID_ANI_KOOPAS_SPINNING_RIGHT;
+	//	break;
+	//case KOOPAS_STATE_DIE:
+	//	aniId = ID_ANI_KOOPAS_DIE;
+	//	break;
+	//case KOOPAS_STATE_DIE_WITH_BOUNCE:
+	//	// for now
+	//	aniId = ID_ANI_KOOPAS_DIE;
+	//	break;
+	//}
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CKoopa::OnNoCollision(DWORD dt)
@@ -83,6 +101,7 @@ void CKoopa::HandleBeingHeld()
 	{
 		// Keep shell attached to Mario’s hand
 		nx = mario->GetDirection();
+		//DebugOut(L"%d\n", nx);
 		float mX, mY;
 		mario->GetPosition(mX, mY);
 		y = mY + KOOPAS_HOLDING_Y_OFFSET;
@@ -100,6 +119,80 @@ void CKoopa::HandleBeingHeld()
 	}
 }
 
+int CKoopa::GetAniIdGreen()
+{
+	int aniId = -1;
+	switch (state)
+	{
+	case KOOPAS_STATE_WALKING:
+		if (type == KOOPAS_TYPE_WING) {
+			aniId = (nx < 0)
+				? ID_ANI_KOOPAS_GREEN_PARATROOPA_WALKING_LEFT
+				: ID_ANI_KOOPAS_GREEN_PARATROOPA_WALKING_RIGHT;
+		}
+		else {
+			aniId = (nx < 0)
+				? ID_ANI_KOOPAS_GREEN_WALKING_LEFT
+				: ID_ANI_KOOPAS_GREEN_WALKING_RIGHT;
+		}
+		break;
+	case KOOPAS_STATE_SHELL:
+		aniId = ID_ANI_KOOPAS_GREEN_SHELL;
+		break;
+	case KOOPAS_STATE_REVIVING:
+		aniId = ID_ANI_KOOPAS_GREEN_SHAKE;
+		break;
+	case KOOPAS_STATE_SPINNING:
+		aniId = (nx < 0)
+			? ID_ANI_KOOPAS_GREEN_SPINNING_LEFT
+			: ID_ANI_KOOPAS_GREEN_SPINNING_RIGHT;
+		break;
+	case KOOPAS_STATE_DIE:
+		break;
+	case KOOPAS_STATE_DIE_WITH_BOUNCE:
+		aniId = ID_ANI_KOOPAS_GREEN_DIE_UP;
+		break;
+	}
+	return aniId;
+}
+
+int CKoopa::GetAniIdRed()
+{
+	int aniId = -1;
+	switch (state)
+	{
+	case KOOPAS_STATE_WALKING:
+		if (type == KOOPAS_TYPE_WING) {
+			aniId = (nx < 0)
+				? ID_ANI_KOOPAS_RED_PARATROOPA_WALKING_LEFT
+				: ID_ANI_KOOPAS_RED_PARATROOPA_WALKING_RIGHT;
+		}
+		else {
+			aniId = (nx < 0)
+				? ID_ANI_KOOPAS_RED_WALKING_LEFT
+				: ID_ANI_KOOPAS_RED_WALKING_RIGHT;
+		}
+		break;
+	case KOOPAS_STATE_SHELL:
+		aniId = ID_ANI_KOOPAS_RED_SHELL;
+		break;
+	case KOOPAS_STATE_REVIVING:
+		aniId = ID_ANI_KOOPAS_RED_SHAKE;
+		break;
+	case KOOPAS_STATE_SPINNING:
+		aniId = (nx < 0)
+			? ID_ANI_KOOPAS_RED_SPINNING_LEFT
+			: ID_ANI_KOOPAS_RED_SPINNING_RIGHT;
+		break;
+	case KOOPAS_STATE_DIE:
+		break;
+	case KOOPAS_STATE_DIE_WITH_BOUNCE:
+		aniId = ID_ANI_KOOPAS_RED_DIE_UP;
+		break;
+	}
+	return aniId;
+}
+
 
 void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
@@ -112,13 +205,19 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithGoomba(e);
 		return;
 	}
-
+	if (dynamic_cast<CPiranhaPlant*>(e->obj)) {
+		//kill CPiranhaPlant properly later
+		e->obj->Delete();
+		return;
+	}
 	//IsBlocking will be used only to check map objects ---> NPCs are not blocking, Koopa can go through them.
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0)
 	{
 		vy = 0;
-		//y -= e->dy;
+		if (e->ny < 0 && type == KOOPAS_TYPE_WING) {
+			vy = -KOOPAS_JUMPING_SPEED;
+		}
 	}
 
 	//static overlap arguments, when Koopa is passively collided, or it is overlapping
@@ -127,7 +226,7 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		// Shell is held, basically invincible
 		if (isHeld) return;
 		// overlapping platforms are allowed, except CSideCollidablePlatform
-		if (dynamic_cast<CPlatform*>(e->obj) != NULL && dynamic_cast<CSideCollidablePlatform*>(e->obj) == NULL) return;
+		if (dynamic_cast<CPlatform*>(e->obj) != NULL && dynamic_cast<CSideCollidablePlatform*>(e->obj) == NULL && dynamic_cast<CBlockPlatform*>(e->obj) == NULL) return;
 		// center of shell goes inside bounding box, kill, else, dont, still count as hitting against surface
 		float l, t, r, b;
 		e->obj->GetBoundingBox(l, t, r, b);
@@ -136,12 +235,11 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		if (x > r) return;
 		if (y - KOOPAS_HOLDING_Y_OFFSET > b) return;
 		// judge overlaping vertical more harshly
-		SetState(KOOPAS_STATE_DIE_WITH_BOUNCE);
-		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+		// killed by overlapping kick
+		nx = 0;
+		TakeDamageFrom(NULL);
 		return;
 	}
-
 	if (dynamic_cast<CQuestionBlock*>(e->obj)) {
 		OnCollisionWithQuestionBlock(e);
 		return;
@@ -156,20 +254,17 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 	// process all blocks, handle the turning seperately depending on the type and state, if not falling into any of the cases, turn automatically.
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithPlatform(LPCOLLISIONEVENT e) {
 	if (state != KOOPAS_STATE_SPINNING && state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_DIE_WITH_BOUNCE) {
-		if (!IsGroundAhead(e)) {
-			nx = -nx;
-			vx = -vx;
+		if (color == KOOPAS_COLOR_RED && type == KOOPAS_TYPE_NORMAL && !IsGroundAhead(e)) {
+			ReverseDirection();
 		}
 	}
-	if (e->nx != 0 && dynamic_cast<CSideCollidablePlatform*>(e->obj)) {
-		nx = -nx;
-		vx = -vx;
+	if (e->nx != 0 && (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CBlockPlatform*>(e->obj))) {
+		ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
@@ -184,21 +279,23 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		}
 	}
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
+	if (state != KOOPAS_STATE_SPINNING && state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_DIE_WITH_BOUNCE) {
+		if (color == KOOPAS_COLOR_RED && type == KOOPAS_TYPE_NORMAL && !IsGroundAhead(e)) {
+			ReverseDirection();
+		}
+	}
 	if (state == KOOPAS_STATE_SPINNING) {
 		if (e->nx != 0) {
 			e->obj->Delete();
 			//will create break state later
-			return;
 		}
 	}
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
@@ -208,54 +305,58 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	bool thisSpinning = (state == KOOPAS_STATE_SPINNING);
 	bool otherSpinning = (koopa->state == KOOPAS_STATE_SPINNING);
 	bool otherWalking = (koopa->state == KOOPAS_STATE_WALKING);
-	bool otherShell = (koopa->state == KOOPAS_STATE_SHELL || koopa->state == KOOPAS_STATE_REVIVING);
-	if ((thisSpinning || isHeld) && (otherSpinning || otherShell))
-	{
+	if (thisSpinning) {
+		if (otherSpinning) {
+			nx = -nx;
+			TakeDamageFrom(koopa);
+		}
+		koopa->nx = -nx;
+		koopa->TakeDamageFrom(this);
+		return;
+	}
+	if (isHeld) {
 		//this bounces backward
 		nx = -nx;
 		TakeDamageFrom(koopa);
 		//koopa bounces away from this
 		koopa->nx = -nx;
 		koopa->TakeDamageFrom(this);
-
-		return;
-	}
-	if ((thisSpinning || isHeld) && otherWalking)
-	{
-		//koopa bounces in this's direction
-		koopa->nx = nx;
-		koopa->TakeDamageFrom(this);
 		return;
 	}
 	// clearly this is not spinning, thus it is walking, but for other koopa, we dont know, and remember, we only turn koopa if koopa is WALKING into this koopa
 	if (e->nx != 0) {
-		nx = -nx;
-		vx = -vx;
+		ReverseDirection();
 		if (!otherWalking) return;
-		koopa->nx = -koopa->nx;
-		koopa->vx = -koopa->vx;
-
+		koopa->ReverseDirection();
 	}
 }
 void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	if (state == KOOPAS_STATE_SPINNING || isHeld) {
+	if (state == KOOPAS_STATE_SPINNING) {
+		//DebugOut(L"Koopa direction when hit: %d\n", nx);
 		goomba->SetDirection(nx);
 		goomba->TakeDamageFrom(this);
 		return;
 	}
-	if (e->nx != 0) {
+	if (isHeld) {
+		//this bounces backward
 		nx = -nx;
-		vx = -vx;
-		goomba->SetDirection(-goomba->GetDirection());
-		goomba->SetState(GOOMBA_STATE_WALKING);
+		TakeDamageFrom(goomba);
+		//goomba bounces away from this
+		goomba->SetDirection(-nx);
+		goomba->TakeDamageFrom(this);
+		return;
+	}
+	if (e->nx != 0) {
+		ReverseDirection();
+		goomba->ReverseDirection();
 	}
 }
 bool CKoopa::IsGroundAhead(LPCOLLISIONEVENT e)
 {
-	float probeX = x + (vx > 0 ? KOOPAS_BBOX_WIDTH / 2 : -KOOPAS_BBOX_WIDTH / 2);
+	float probeX = x + (nx > 0 ? KOOPAS_BBOX_WIDTH / 2 - 3 : -KOOPAS_BBOX_WIDTH / 2 + 3);
 	float probeY = y + KOOPAS_BBOX_HEIGHT / 2 + 1; // 1 pixel below the bottom
 
 	float l, t, r, b;
@@ -296,42 +397,43 @@ void CKoopa::HandleTimer(DWORD dt) {
 
 	}
 	// die
-	if ((state == KOOPAS_STATE_DIE) && (dyingTimer.HasPassed(KOOPAS_DYING_TIMEOUT)))
+	if ((state == KOOPAS_STATE_DIE_WITH_BOUNCE) && (dyingTimer.HasPassed(KOOPAS_DYING_TIMEOUT)))
 	{
 		dyingTimer.Reset();
 		isDeleted = true;
 		return;
 	}
 }
-void CKoopa::SetState(int newState)
+void CKoopa::SetState(int state)
 {
-	CGameObject::SetState(newState);
-	switch (newState)
+	CGameObject::SetState(state);
+	switch (state)
 	{
 	case KOOPAS_STATE_WALKING:
 		vx = nx * KOOPAS_WALKING_SPEED;
-		ay = KOOPAS_GRAVITY;
+		if (type == KOOPAS_TYPE_WING) {
+			ay = KOOPAS_WING_GRAVITY;
+		}
+		else {
+			ay = KOOPAS_GRAVITY;
+		}
 		isHeld = false;
 		break;
-
 	case KOOPAS_STATE_SHELL:
 		vx = 0.0f;
 		ay = KOOPAS_GRAVITY;
 		isHeld = false;
 		shellTimer.Start();
 		break;
-
 	case KOOPAS_STATE_REVIVING:
 		vx = 0.0f;
 		revivingTimer.Start();
 		break;
-
 	case KOOPAS_STATE_SPINNING:
 		vx = nx * KOOPAS_SPINNING_SPEED;
-		ay = KOOPAS_GRAVITY;
+		ay = KOOPAS_WING_GRAVITY;
 		isHeld = false;
 		break;
-
 	case KOOPAS_STATE_DIE:
 		vx = 0.0f;
 		vy = 0.0f;
@@ -348,31 +450,32 @@ void CKoopa::SetState(int newState)
 		break;
 	}
 }
-
 void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 {
 	// damage caused directly by Mario's stomping
 	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
+		float vx, vy;
+		mario->GetSpeed(vx, vy);
+		mario->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
+		if (type == KOOPAS_TYPE_WING) {
+			vy = 0;
+			ay = KOOPAS_GRAVITY;
+			mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+			type = KOOPAS_TYPE_NORMAL;
+			return;
+		}
 		if (state == KOOPAS_STATE_WALKING || state == KOOPAS_STATE_SPINNING) {
-			float vx, vy;
-			mario->GetSpeed(vx, vy);
-			mario->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
 			mario->AddScore(x, y,
 				(state == KOOPAS_STATE_WALKING) ? FLYING_SCORE_TYPE_100 : FLYING_SCORE_TYPE_200,
 				true);
 			SetState(KOOPAS_STATE_SHELL);
+			return;
 		}
 		return;
 	}
-	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
-		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
-		SetState(KOOPAS_STATE_DIE_WITH_BOUNCE);
-		return;
-	}
-
-	//implement when koopa has health/being hit by mario's fire blast
-	//or when it have wings, take away wings when Mario stomp
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+	SetState(KOOPAS_STATE_DIE_WITH_BOUNCE);
 }
 
 //void CKoopa::OnCollisionWithPlant(LPCOLLISIONEVENT e)
