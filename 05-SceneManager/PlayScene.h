@@ -67,6 +67,8 @@ public:
 	virtual void Render();
 	virtual void Unload();
 	virtual void AddObject(LPGAMEOBJECT object);
+	virtual void RemoveObject(LPGAMEOBJECT object);
+
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

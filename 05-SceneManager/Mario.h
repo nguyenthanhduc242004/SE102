@@ -18,8 +18,9 @@
 
 #define MARIO_JUMP_SPEED_Y		0.25f
 #define MARIO_JUMP_RUN_SPEED_Y	0.28f
-
 #define MARIO_FALL_SPEED_Y		0.25f
+#define MARIO_FLY_SPEED				0.135f
+#define MARIO_FALL_SLOW_SPEED	0.05f
 
 #define MARIO_GRAVITY			GRAVITY
 #define MARIO_LIFTED_GRAVITY	0.00043f
@@ -105,8 +106,9 @@
 #define MARIO_UNTOUCHABLE_TIME 1000
 #define MARIO_KICK_TIME	200	
 #define MARIO_WHIPPING_TAIL_TIME		400
-#define MARIO_WHIPPING_TAIL_FRAME_TIME	60
+#define MARIO_WHIPPING_TAIL_FRAME_TIME	70
 #define MARIO_WAGGING_TAIL_TIME		400
+#define MARIO_FLYING_TIME			1750
 
 class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
@@ -115,19 +117,21 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isReadyToHold;
 	int level;
 	int untouchable;
-	CDeltaTimer invincibleTimer;
-	CDeltaTimer kickTimer;
+	int isBoosted;
 	int score;
 	int coin;
 	float dragX;
 
+	CDeltaTimer invincibleTimer;
+	CDeltaTimer kickTimer;
 	// Tail swing timers and state
 	CDeltaTimer    tailWhipTimer;    
 	CDeltaTimer    tailWhipFrameTimer; 
 	int      tailWhipFrame;        // 0 = no swing, 1...5 = which whip sprite
 	//CTanooki* tailSprite;      // the actual whip‐hitbox object
-
 	CDeltaTimer	tailWagTimer;
+	CDeltaTimer flyTimer;
+
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);

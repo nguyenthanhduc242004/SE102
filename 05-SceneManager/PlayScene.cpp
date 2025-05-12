@@ -13,9 +13,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	key_handler = new CSampleKeyHandler(this);
 }
 
-
-
-
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
 	vector<string> tokens = split(line);
@@ -128,7 +125,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		break;
 	}
-
 	case OBJECT_TYPE_COIN:
 	{
 		// number of iterations into a maze
@@ -145,7 +141,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		break;
 	}
-
 	case OBJECT_TYPE_QUESTION_BLOCK:
 	{
 		// number of iterations into a maze
@@ -165,7 +160,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		break;
 	}
-
 	case OBJECT_TYPE_PLATFORM:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
@@ -183,7 +177,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
 	case OBJECT_TYPE_SIDE_COLLIDABLE_PLATFORM:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
@@ -201,7 +194,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
 	case OBJECT_TYPE_BLOCK_PLATFORM:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
@@ -219,7 +211,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
 	case OBJECT_TYPE_BACKGROUND:
 	{
 		std::cout << "Reading Background!";
@@ -238,7 +229,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
 	case OBJECT_TYPE_BACKGROUND_CLOUD:
 	{
 		int length = atoi(tokens[3].c_str());
@@ -247,7 +237,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
 	case OBJECT_TYPE_BOX:
 	{
 		int length_width = atoi(tokens[3].c_str());
@@ -262,7 +251,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
 	case OBJECT_TYPE_PIPE:
 	{
 		int height = atoi(tokens[3].c_str());
@@ -271,7 +259,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
 	case OBJECT_TYPE_PIRANHA_PLANT:
 	{
 		int stem_height = atoi(tokens[3].c_str());
@@ -280,8 +267,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		objs.push_back(new CPiranhaPlant(x, y, stem_height, type));
 		break;
 	}
-
-
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
@@ -290,8 +275,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		objs.push_back(new CPortal(x, y, r, b, scene_id));
 	}
 	break;
-
-
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;
@@ -342,6 +325,13 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 
 void CPlayScene::AddObject(LPGAMEOBJECT object) {
 	this->objects.push_back(object);
+}
+
+void CPlayScene::RemoveObject(LPGAMEOBJECT object) {
+	auto it = std::find(objects.begin(), objects.end(), object);
+	if (it != objects.end()) {
+		objects.erase(it);
+	}
 }
 
 void CPlayScene::Load()
@@ -448,8 +438,9 @@ void CPlayScene::Clear()
 */
 void CPlayScene::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); i++) {
 		delete objects[i];
+	}
 
 	objects.clear();
 	player = NULL;

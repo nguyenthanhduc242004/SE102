@@ -27,6 +27,7 @@ public:
 	virtual void Update(DWORD dt) = 0;
 	virtual void Render() = 0;
 	virtual void AddObject(LPGAMEOBJECT object) = 0;
+	virtual void RemoveObject(LPGAMEOBJECT object) = 0;
 };
 typedef CScene * LPSCENE;
 

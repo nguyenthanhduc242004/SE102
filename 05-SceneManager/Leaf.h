@@ -44,6 +44,7 @@ protected:
 public:
 	CLeaf(float x, float y) : CGameObject(x, y) {
 		y0 = 0.0f;
+		state = LEAF_STATE_IDLE;
 	}
 	void SetState(int state);
 

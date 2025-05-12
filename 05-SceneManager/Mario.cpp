@@ -12,7 +12,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	HandleTimer(dt);
 	if (tailWagTimer.IsRunning()) {
-		vy = MARIO_GRAVITY;
+		if (flyTimer.IsRunning()) {
+			vy = -MARIO_FLY_SPEED;
+		}
+		else {
+			vy = MARIO_FALL_SLOW_SPEED;
+		}
 	}
 	//there should be a mechanism to ease from running to walking, currently it just cuts down immediately
 	if (vx > 0.0f) {
@@ -152,6 +157,9 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	{
 		if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
 		{
+			if (questionBlock->GetItemID() == ITEM_LEAF && level == MARIO_LEVEL_SMALL) {
+				questionBlock->SetItemId(ITEM_MUSHROOM_RED);
+			}
 			questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
 		}
 	}
@@ -187,6 +195,7 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	}
 	mushroom->Delete();
 }
+
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 {
 	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
@@ -419,8 +428,14 @@ void CMario::SetState(int state)
 			dragX = MARIO_AIR_DRAG_X;
 			isOnPlatform = false;
 		}
-		else if (level == MARIO_LEVEL_TANOOKI && !tailWagTimer.IsRunning()) {
-			tailWagTimer.Start();
+		else if (level == MARIO_LEVEL_TANOOKI)
+		{
+			if (!flyTimer.IsRunning() && abs(vx) >= MARIO_RUNNING_SPEED) {
+				flyTimer.Start();
+			}
+			if (!tailWagTimer.IsRunning()) {
+				tailWagTimer.Start();
+			}
 		}
 		break;
 	case MARIO_STATE_RELEASE_JUMP:
@@ -535,6 +550,9 @@ void CMario::HandleTimer(DWORD dt)
 	if (tailWagTimer.IsRunning()) {
 		tailWagTimer.Tick(dt);
 	}
+	if (flyTimer.IsRunning()) {
+		flyTimer.Tick(dt);
+	}
 	// reset timer if time has passed
 	if (invincibleTimer.HasPassed(MARIO_UNTOUCHABLE_TIME))
 	{
@@ -563,11 +581,14 @@ void CMario::HandleTimer(DWORD dt)
 	if (tailWagTimer.HasPassed(MARIO_WAGGING_TAIL_TIME)) {
 		tailWagTimer.Reset();
 	}
+	if (flyTimer.HasPassed(MARIO_FLYING_TIME)) {
+		flyTimer.Reset();
+	}
 }
 
 void CMario::Attack()
 {
-	if (level == MARIO_LEVEL_TANOOKI      // or a new enum check
+	if (level == MARIO_LEVEL_TANOOKI
 		&& !tailWhipTimer.IsRunning()
 		&& !isSitting)
 	{

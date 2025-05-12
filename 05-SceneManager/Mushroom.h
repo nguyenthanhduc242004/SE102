@@ -48,7 +48,7 @@ protected:
 public:
 	CMushroom(float x, float y) : CGameObject(x, y) {
 		y0 = 0.0f;
-		type = MUSHROOM_TYPE_RED;
+		state = MUSHROOM_STATE_IDLE;
 	}
 	CMushroom(float x, float y, int MUSHROOM_TYPE) : CMushroom(x, y) {
 		type = MUSHROOM_TYPE;
