@@ -129,6 +129,7 @@
       <Filter>Map\Interactable\Functional</Filter>
     </ClCompile>
     <ClCompile Include="Spawner.cpp" />
+    <ClCompile Include="Leaf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -243,5 +244,6 @@
       <Filter>Interface</Filter>
     </ClInclude>
     <ClInclude Include="Spawner.h" />
+    <ClInclude Include="Leaf.h" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "GameObject.h"
 #include "PlayScene.h"
 #include "Animation.h"
@@ -18,8 +18,9 @@
 
 #define MARIO_JUMP_SPEED_Y		0.25f
 #define MARIO_JUMP_RUN_SPEED_Y	0.28f
-
 #define MARIO_FALL_SPEED_Y		0.25f
+#define MARIO_FLY_SPEED				0.135f
+#define MARIO_FALL_SLOW_SPEED	0.05f
 
 #define MARIO_GRAVITY			GRAVITY
 #define MARIO_LIFTED_GRAVITY	0.00043f
@@ -39,7 +40,6 @@
 
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
-
 
 #pragma region ANIMATION_ID
 
@@ -89,9 +89,9 @@
 
 #define GROUND_Y 160.0f
 
-
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
+#define MARIO_LEVEL_TANOOKI 3
 
 #define MARIO_BIG_BBOX_WIDTH  14
 #define MARIO_BIG_BBOX_HEIGHT 24
@@ -103,10 +103,12 @@
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 12
 
-
-#define MARIO_UNTOUCHABLE_TIME 2500
+#define MARIO_UNTOUCHABLE_TIME 1000
 #define MARIO_KICK_TIME	200	
-
+#define MARIO_WHIPPING_TAIL_TIME		400
+#define MARIO_WHIPPING_TAIL_FRAME_TIME	70
+#define MARIO_WAGGING_TAIL_TIME		400
+#define MARIO_FLYING_TIME			1750
 
 class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
@@ -115,17 +117,29 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isReadyToHold;
 	int level;
 	int untouchable;
-	CDeltaTimer invincibleTimer;
-	CDeltaTimer kickTimer;
+	int isBoosted;
 	int score;
 	int coin;
 	float dragX;
+
+	CDeltaTimer invincibleTimer;
+	CDeltaTimer kickTimer;
+	// Tail swing timers and state
+	CDeltaTimer    tailWhipTimer;    
+	CDeltaTimer    tailWhipFrameTimer; 
+	int      tailWhipFrame;        // 0 = no swing, 1...5 = which whip sprite
+	//CTanooki* tailSprite;      // the actual whip‐hitbox object
+	CDeltaTimer	tailWagTimer;
+	CDeltaTimer flyTimer;
+
+
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
 
@@ -146,6 +160,9 @@ public:
 		score = 0;
 		coin = 0;
 		dragX = MARIO_DRAG_X;
+
+		tailWhipFrame = 0;
+		//tailSprite = new CTanooki(x, y);
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
@@ -194,7 +211,12 @@ public:
 
 	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override {
 		if (untouchable) return;
-		if (level > MARIO_LEVEL_SMALL)
+		if (level > MARIO_LEVEL_BIG)
+		{
+			level = MARIO_LEVEL_BIG;
+			StartUntouchable();
+		}
+		else if (level > MARIO_LEVEL_SMALL)
 		{
 			level = MARIO_LEVEL_SMALL;
 			StartUntouchable();
@@ -205,7 +227,7 @@ public:
 			SetState(MARIO_STATE_DIE);
 		}
 	}
-	//will only be called when Mario fall out of bound
+	// will only be called when Mario fall out of bound
 	virtual void Delete() override {
 		CGame* game = CGame::GetInstance();
 		if (state != MARIO_STATE_DIE) {
@@ -235,4 +257,6 @@ public:
 	void SetIsReadyToHold(BOOLEAN isReadyToHold) {
 		this->isReadyToHold = isReadyToHold;
 	}
+
+	void Attack();
 };

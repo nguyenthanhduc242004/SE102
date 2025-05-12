@@ -6,12 +6,12 @@
 
 #pragma region itemID
 #define ITEM_COIN				0
-#define ITEM_CUSTOM				1
+#define ITEM_MUSHROOM_RED		1
 #define ITEM_LEAF				2
-#define ITEM_MUSHROOM_RED		3
+#define ITEM_MUSHROOM_GREEN		3
 #define ITEM_COIN_x5			4
-#define ITEM_MUSHROOM_GREEN		5
-#define ITEM_SWITCH				6	
+#define ITEM_SWITCH				5	
+#define ITEM_CUSTOM				6
 #pragma endregion
 
 
@@ -38,8 +38,9 @@ class CQuestionBlock : public CGameObject {
 protected:
 	ULONGLONG disabled_start;
 	// The original coordinate of the object (For bouncing logic)
-	float x0, y0;
+	float y0;
 
+	int itemID;
 	//	The item the QuestionBlock will be storing
 	CGameObject* item;
 
@@ -54,4 +55,10 @@ public:
 	CQuestionBlock(float x, float y);
 	CQuestionBlock(float x, float y, int itemID);
 	virtual void SetState(int state);
+	int GetItemID() {
+		return itemID;
+	}
+	void SetItemId(int itemID) {
+		this->itemID = itemID;
+	}
 };

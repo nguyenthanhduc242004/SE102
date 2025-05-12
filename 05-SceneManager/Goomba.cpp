@@ -32,7 +32,10 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (dynamic_cast<CGoomba*>(e->obj) && !isParagoomba) {
+
+	if (dynamic_cast<CMario*>(e->obj)) return;
+	
+	if (dynamic_cast<CGoomba*>(e->obj)) {
 		OnCollisionWithGoomba(e);
 	}
 	if (dynamic_cast<CKoopa*>(e->obj)) {

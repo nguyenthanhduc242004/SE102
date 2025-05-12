@@ -5,7 +5,9 @@
 #include "debug.h"
 
 
-CBouncingCoin::CBouncingCoin(float x, float y) :CGameObject(x, y) {}
+CBouncingCoin::CBouncingCoin(float x, float y) :CGameObject(x, y) {
+	state = BOUNCING_COIN_STATE_IDLE;
+}
 
 void CBouncingCoin::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
