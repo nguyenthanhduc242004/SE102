@@ -1,135 +1,214 @@
 # id	left	top	right	bottom	texture_id
 [SPRITES]
-#####  BIG ###############
-#IDLE
-11121	246	154	259	181	0
-11111	186	154	199	181	0
-
-#WALKING RIGHT
-11222	275	154	290	181	0
-11223	304	154	321	181	0
-
-#WALKING LEFT
-11212	155	154	170	181	0
-11213	125	154	140	181	0
-
-#RUNNING RIGHT
-11321	334	154	355	181	0
-11322	334	154	355	181	0
-11323	392	154	413	181	0
-
-#RUNNING LEFT
-11311	91	154	112	181	0
-11312	65	154	86	181	0
-11313	34	154	55	181	0
-
-#JUMP WALK RIGHT
-11417	395	275	412	302	0
-11413	35	275	52	302	0
-
-#JUMP RUN RIGHT & LEFT
-11427	394	195	413	222	0
-11423	35	195	52	222	0
-
-#SIT RIGHT & LEFT 
-11521	426	239	441	256	0
-11511	5	239	20	256	0
-
-#BRACE RIGHT & LEFT 
-11621	425	154	442	181	0
-11611	5	154	22	181	0
+#/
+# ==== Small Mario ==== 
+# --Right--
+# idle right
+10001	254	4	266	20	100
+#walk right
+10002	254	4	266	20	100
+10003	269	4	284	20	100
+#max speed right
+10104	323	4	339	20	100
+10105	341	4	357	20	100
+#jump up right
+10200	304	4	320	20	100
+#brake right
+10307	287	4	301	20	100
+#hold idle right
+10500	435	4	449	20	100
+#hold walk right
+10501	435	4	449	20	100
+10502	452	4	467	20	100
+#hold jump right
+10503	452	4	467	20	100
+#fly right
+10602	360	4	376	20	100
+#kick right
+10700	470	4	486	20	100
+# --Left--
+# idle left
+10011	574	4	586	20	90
+#walk left
+10012	574	4	586	20	90
+10013	556	4	571	20	90
+#max speed left
+10114	501	4	517	20	90
+10115	483	4	499	20	90
+#jump left
+10210	520	4	536	20	90
+#brake left
+10317	539	4	553	20	90
+#hold idle left
+10510	391	4	405	20	90
+#hold walk left
+10511	391	4	405	20	90
+10512	373	4	388	20	90
+#hold jump left
+10513	373	4	388	20	90
+#fly left
+10612	464	4	480	20	90
+#kick left
+10710	354	4	370	20	90
+#  ==== Big Mario  ==== 
+# --Right--
+# idle right
+11001	197	44	211	71	100
+#walk right
+11002	197	44	211	71	100
+11003	214	44	230	71	100
+#max speed right
+11104	290	44	309	71	100
+11105	312	44	331	71	100
+11106	334	44	353	71	100
+#jump up right
+11201	271	45	287	71	100
+#jump down right
+11202	233	45	249	71	100
+#brake right
+11307	252	43	268	71	100
+#sit right
+11408	379	53	393	71	100
+#hold idle right
+11500	434	44	448	71	100
+#hold walk right
+11501	434	44	448	71	100
+11502	451	44	466	71	100
+#hold jump right
+11503	469	45	485	71	100
+#fly right
+11602	599	45	618	71	100
+#kick right
+11700	488	44	509	71	100
+# --Left--
+# idle left
+11011	629	44	643	71	90
+#walk left
+11012	629	44	643	71	90
+11013	610	44	626	71	90
+#max speed left
+11114	531	44	550	71	90
+11115	509	44	528	71	90
+11116	487	44	506	71	90
+#jump up left
+11211	553	45	569	71	90
+#jump down left
+11212	591	45	607	71	90
+#brake left
+11317	572	43	588	71	90
+#sit left
+11418	447	53	461	71	90
+#hold idle left
+11510	392	44	406	71	90
+#hold walk left
+11511	392	44	406	71	90
+11512	374	44	389	71	90
+#hold jump left
+11513	355	45	371	71	90
+#fly left
+11612	222	45	241	71	90
+#kick left
+11710	331	44	352	71	90
 
 #DIE
 13001	215	120	234	137	0
+#/
 
-############ SMALL ################
- #IDLE
-12121	247	0	260	15	0
-12111	187	0	200	15	0
-
-#WALK RIGHT
-12222	275	0	292	15	0
-12223	306	0	321	15	0
-
-#WALK LEFT
-12212	155	0	170	15	0
-12213	125	0	140	15	0
-
-#RUN RIGHT
-12321	275	0	290	15	0
-12322	306	0	321	15	0
-12323	335	0	350	15	0
-
-#RUN LEFT
-12311	155	0	170	15	0
-12312	125	0	140	15	0
-12313	95	0	110	15	0
-
-#BRACE RIGHT & LEFT
-12511	6	0	19	15	0
-12521	426	0	439	15	0
-
-#JUMP WALK RIGHT & LEFT 
-12413	35	80	50	95	0
-12417	395	80	410	95	0
-
-#JUMP RUN RIGHT & LEFT 
-12423	65	40	80	55	0
-12427	365	40	380	55	0
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
-400	11121	100
-401	11111	100
-
-#WALKING RIGHT & LEFT 
-500	11121	100	11222	100	11223	100
-501	11111	100	11212	100	11213	100
-
-#RUNNING RIGHT & LEFT
-600	11321	50	11322	50	11323	50
-601	11311	50	11312	50	11313	50
-
-#JUMP WALK
-700	11417	100
-701	11413	100
-
-#JUMP RUN
-800	11427	100
-801	11423	100
-
-#SIT RIGHT & LEFT 
-900	11521	100
-901	11511	100
-
-#BRACE RIGHT & LEFT 
-1000	11621	100
-1001	11611	100
-
+#/
+# ==== SMALL =====
+#idle small right
+100	10001	100
+#walk small right
+1000	10002	100	10003	100
+#max speed small right
+1010	10104	50	10105	50
+#jump small right
+1020	10200	100
+#brake small right 
+1030	10307	100
+#hold idle small right
+10500	10500	100
+#hold walk small right
+10510	10501	100	10502	100
+#hold jump small right
+10530	10503	100
+#fly right
+10620	10602	100
+#hold kick small right
+10570	10700	200
+#idle small left
+101	10011	100
+#walk small left
+1001	10012	100	10013	100
+#max speed small left
+1011	10114	50	10115	50
+#jump small left
+1021	10210	100
+#brake small left 
+1031	10317	100
+#hold idle small left
+10501	10510	100
+#hold walk small left
+10511	10511	100	10512	100
+#hold jump small left
+10531	10513	100
+#fly left
+10621	10612	100
+#hold kick small left
+10571	10710	200
+# ==== BIG =====
+#idle big right
+110	11001	100
+#walk big right
+1100	11002	100	11003	100
+#max speed big right
+1110	11104	30	11105	30	11106	30	11105	30
+#jump up big right
+1120	11201	100
+#jump down big right
+1123	11202	100
+#brake big right 
+1130	11307	100
+#sit big right
+1140	11408	100
+#hold idle big right
+11500	11500	100
+#hold walk big right
+11510	11501	100	11502	100
+#hold jump big right
+11530	11503	100
+#fly right
+11620	11602	100
+#hold kick big right
+11570	11700	200
+#idle big left
+111	11011	100
+#walk big left
+1101	11012	100	11013	100
+#max speed big left
+1111	11114	30	11115	30	11116	30	11115	30
+#jump up big left
+1121	11211	100
+#jump down big left
+1124	11212	100
+#brake big left 
+1131	11317	100
+#sit big left
+1141	11418	100
+#hold idle big left
+11501	11510	100
+#hold walk big left
+11511	11511	100	11512	100
+#hold jump big left
+11531	11513	100
+#fly left
+11621	11612	100
+#hold kick big left
+11571	11710	200
 #DIE
 999	13001	100
 
-################### SMALL #################
-1100	12121	100
-1102	12111	100
-
-
-#WALK LEFT & RIGHT 
-1200	12121	100	12222	100	12223	100
-1201	12111	100	12212	100	12213	100
-
-#RUN LEFT & RIGHT
-1300	12321	100	12322	100	12323	100
-1301	12311	100	12312	100	12313	100
-
-#BRACE LEFT & RIGHT
-1401	12511	100
-1400	12521	100
-
-#JUMP WALK
-1500	12417	100
-1501	12413	100
-
-#JUMP RUN 
-1601	12423	100
-1600	12427	100
+#/

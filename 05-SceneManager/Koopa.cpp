@@ -44,7 +44,6 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 }
 
-
 // --- Render()
 void CKoopa::Render()
 {
@@ -192,7 +191,6 @@ int CKoopa::GetAniIdRed()
 	}
 	return aniId;
 }
-
 
 void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
