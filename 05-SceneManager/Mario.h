@@ -85,6 +85,10 @@
 #define ID_ANI_MARIO_SMALL_JUMP_RUN_RIGHT 1600
 #define ID_ANI_MARIO_SMALL_JUMP_RUN_LEFT 1601
 
+// ENLARGING
+#define ID_ANI_MARIO_ENLARGING_RIGHT	1701
+#define ID_ANI_MARIO_ENLARGING_LEFT		1702
+
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -136,6 +140,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	CDeltaTimer flyTimer;
 
 	CDeltaTimer* enlargingTimer = new CDeltaTimer();
+	bool isTransforming = false;
 
 
 
@@ -151,6 +156,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
+	int GetAniIdTransform(int level);
 
 public:
 	CMario(float x, float y) : CGameObject(x, y)
@@ -268,5 +274,9 @@ public:
 
 	CDeltaTimer* GetEnlargingTimer() {
 		return this->enlargingTimer;
+	}
+
+	void SetTransforming(boolean isTransforming) {
+		this->isTransforming = isTransforming;
 	}
 };
