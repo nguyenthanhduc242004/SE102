@@ -178,6 +178,10 @@
 #define ID_ANI_TAIL_MARIO_FLAP_RIGHT        1226
 #define ID_ANI_TAIL_MARIO_FLAP_LEFT         1228
 
+// ENLARGING
+#define ID_ANI_MARIO_ENLARGING_RIGHT	1701
+#define ID_ANI_MARIO_ENLARGING_LEFT		1702
+
 #pragma endregion
 
 
@@ -230,6 +234,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	CDeltaTimer flyTimer;
 
 	CDeltaTimer* enlargingTimer = new CDeltaTimer();
+	bool isTransforming = false;
 
 
 
@@ -246,6 +251,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	int GetAniIdTanooki();
 	int GetAniIdBig();
 	int GetAniIdSmall();
+	int GetAniIdTransform(int level);
 
 public:
 	CMario(float x, float y) : CGameObject(x, y)
@@ -363,5 +369,9 @@ public:
 
 	CDeltaTimer* GetEnlargingTimer() {
 		return this->enlargingTimer;
+	}
+
+	void SetTransforming(boolean isTransforming) {
+		this->isTransforming = isTransforming;
 	}
 };

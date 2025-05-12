@@ -419,13 +419,15 @@ void CPlayScene::Update(DWORD dt)
 	CGame::GetInstance()->SetCamPos(cx, DEFAULT_CAM_Y /*cy*/);
 
 	// Mario enlarging timer logic
-	CDeltaTimer* marioEnlargingTimer = dynamic_cast<CMario*>(player)->GetEnlargingTimer();
+	CMario* mario = dynamic_cast<CMario*>(player);
+	CDeltaTimer* marioEnlargingTimer = mario->GetEnlargingTimer();
 	if (marioEnlargingTimer->HasPassed(MARIO_ENLARGING_TIME)) {
 		marioEnlargingTimer->Reset();
 		CGame::GetInstance()->ResumeGame();
+		mario->SetTransforming(false);
+		
 	} else if (marioEnlargingTimer->IsRunning()) {
 		marioEnlargingTimer->Tick(dt);
-		DebugOut(L"[ERROR] Invalid object type: %f\n", marioEnlargingTimer->getAccumulated());
 	}
 
 	PurgeDeletedObjects();
