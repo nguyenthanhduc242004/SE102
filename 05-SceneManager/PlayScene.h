@@ -41,6 +41,9 @@
 #define RESPAWN_OFFSET_CAM_X 70
 #define LOWER_BOUND_DEATHZONE 700.0f
 
+class CSpawner;
+typedef CSpawner* LPSPAWNER;
+
 class CPlayScene : public CScene
 {
 protected:
@@ -48,6 +51,7 @@ protected:
 	LPGAMEOBJECT player;
 
 	vector<LPGAMEOBJECT> objects;
+	vector<LPSPAWNER> spawners;
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
@@ -71,6 +75,7 @@ public:
 
 
 	LPGAMEOBJECT GetPlayer() { return player; }
+	vector<LPSPAWNER> GetSpawners() { return spawners; }
 
 	void Clear();
 	void PurgeDeletedObjects();

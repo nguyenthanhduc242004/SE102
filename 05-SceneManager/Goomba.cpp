@@ -217,6 +217,16 @@ void CGoomba::Render()
 	//RenderBoundingBox();
 }
 
+void CGoomba::SetSpawnerDead(bool isDead) {
+	vector<LPSPAWNER> spawners = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetSpawners();
+	for (LPSPAWNER spawner : spawners) {
+		if (spawner->obj == this) {
+			spawner->SetDead(isDead);
+			return;
+		}
+	}
+}
+
 void CGoomba::SetState(int state)
 {
 	CGameObject::SetState(state);
@@ -232,11 +242,13 @@ void CGoomba::SetState(int state)
 		vy = 0.0f;
 		ay = 0.0f;
 		dyingTimer.Start();
+		SetSpawnerDead(true);
 		break;
 	case GOOMBA_STATE_DIE_WITH_BOUNCE:
 		vx = nx * KOOPAS_WALKING_SPEED;
 		vy = -KOOPAS_KILL_Y_BOUNCE;
 		dyingTimer.Start();
+		SetSpawnerDead(true);
 		break;
 	case GOOMBA_STATE_WALKING:
 		break;

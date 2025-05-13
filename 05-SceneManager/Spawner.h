@@ -3,8 +3,11 @@
 
 class CSpawner : public CGameObject
 {
+public:
+	CGameObject* obj = NULL;
 private:
 	bool hasSpawned;
+	bool isDead = false;
 	int NPC_ID;
 	int token3;
 	int token4;
@@ -33,5 +36,6 @@ public:
 	CSpawner(float x, float y, int NPC_ID, int token3, int token4, int token5) : CSpawner(x, y, NPC_ID, token3, token4) {
 		this->token5 = token5;
 	}
-};
 
+	void SetDead(bool isDead) { this->isDead = isDead; }
+};

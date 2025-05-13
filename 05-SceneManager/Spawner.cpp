@@ -19,12 +19,14 @@ void CSpawner::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//mario->GetPosition(marioX, marioY);
 
 	// hasSpawned is set to false if first: hasSpawned was true and second: spawner is outside of camera ---> avoid setting hasSpawned to false when it is already false;
-	if (hasSpawned && (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
-		!CGame::GetInstance()->IsInCamera(x + 30, DEFAULT_CAM_Y))) {
+	if (isDead)
+		return;
+
+	if (hasSpawned && obj->IsDeleted()) {
 		hasSpawned = false;
 	}
-	else if (!hasSpawned && (CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) ||
-		CGame::GetInstance()->IsInCamera(x + 30, DEFAULT_CAM_Y))) {
+	else if (!hasSpawned
+		&& (CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) || CGame::GetInstance()->IsInCamera(x + 30, DEFAULT_CAM_Y))) {
 		Spawn();
 	}
 
@@ -33,7 +35,6 @@ void CSpawner::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CSpawner::Spawn()
 {
-	CMoveable *obj = NULL;
 	switch (NPC_ID) {
 	case OBJECT_TYPE_GOOMBA:
 	{
@@ -56,7 +57,7 @@ void CSpawner::Spawn()
 	mario->GetPosition(mX, mY);
 	//by default, NPC will go to the left, so if mario returns from the right, imagine the npc turning around to look to the right
 	if (mX > x)
-		obj->ReverseDirection();
-	scene->AddObject(dynamic_cast<CGameObject*>(obj));
+		dynamic_cast<CMoveable*>(obj)->ReverseDirection();
+	scene->AddObject(obj);
 	hasSpawned = true;
 }

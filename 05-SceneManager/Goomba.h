@@ -85,4 +85,6 @@ public:
 		vy = this->vy;
 	}
 	void TakeDamageFrom(LPGAMEOBJECT obj) override;
+
+	void SetSpawnerDead(bool isDead);
 };
