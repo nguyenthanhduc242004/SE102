@@ -272,6 +272,10 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		if (e->nx != 0) {
 			if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
 			{
+				if (questionBlock->GetItemID() == ITEM_LEAF 
+					&& ((CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer())->GetLevel() == MARIO_LEVEL_SMALL) {
+					questionBlock->SetItemId(ITEM_MUSHROOM_RED);
+				}
 				questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
 			}
 		}
