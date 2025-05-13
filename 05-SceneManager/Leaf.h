@@ -23,6 +23,10 @@
 #define LEAF_START_FALLING_HEIGHT	 96
 
 #define LEAF_GLIDING_TURNING_TIME	700
+
+#define ID_ANI_LEAF_SPAWNING	80001
+#define ID_ANI_LEAF_FALLING		80002
+
 class CLeaf : public CGameObject, public CMoveable
 {
 protected:

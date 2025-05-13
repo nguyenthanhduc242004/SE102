@@ -39,7 +39,10 @@ void CLeaf::Render()
 
 	//	still animation, no relation to state
 	//if (type == MUSHROOM_TYPE_RED) {
-		aniId = ID_ANI_MUSHROOM_RED;
+	if (state == LEAF_STATE_SPAWNING)
+		aniId = ID_ANI_LEAF_SPAWNING;
+	else if (state == LEAF_STATE_FALLING)
+		aniId = ID_ANI_LEAF_FALLING;
 	//}
 	//else if (type == MUSHROOM_TYPE_GREEN) {
 		//aniId = ID_ANI_MUSHROOM_GREEN;

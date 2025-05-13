@@ -411,11 +411,11 @@ void CPlayScene::Update(DWORD dt)
 			}
 			if (typeid(*objects[i]) == typeid(CMario) && player->GetState() == MARIO_STATE_DIE) {
 				CDeltaTimer* marioDieTimer = mario->GetDieTimer();
+				if (marioDieTimer->IsRunning()) {
+					marioDieTimer->Tick(dt);
+				}
 				if (marioDieTimer->HasPassed(MARIO_DIE_TIME)) {
 					objects[i]->Update(dt, &coObjects);
-				}
-				else if (marioDieTimer->IsRunning()) {
-					marioDieTimer->Tick(dt);
 				}
 			}
 		}
@@ -441,13 +441,14 @@ void CPlayScene::Update(DWORD dt)
 
 	// Mario transform logic
 	CDeltaTimer* marioTransformTimer = mario->GetTransformTimer();
+	if (marioTransformTimer->IsRunning()) {
+		marioTransformTimer->Tick(dt);
+	}
 	if (marioTransformTimer->HasPassed(MARIO_RESIZING_TIME)) {
 		marioTransformTimer->Reset();
 		CGame::GetInstance()->ResumeGame();
 		mario->SetTransforming(false);
 		
-	} else if (marioTransformTimer->IsRunning()) {
-		marioTransformTimer->Tick(dt);
 	}
 
 	PurgeDeletedObjects();
