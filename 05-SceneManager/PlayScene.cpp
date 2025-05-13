@@ -398,9 +398,14 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED && typeid(*objects[i]) != typeid(CFlyingScore))
-			continue;
-		objects[i]->Update(dt, &coObjects);
+		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED) {
+			if (typeid(*objects[i]) == typeid(CFlyingScore)
+			|| (typeid(*objects[i]) == typeid(CMario) && player->GetState() == MARIO_STATE_DIE))
+				objects[i]->Update(dt, &coObjects);
+		}
+		else {
+			objects[i]->Update(dt, &coObjects);
+		}
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)

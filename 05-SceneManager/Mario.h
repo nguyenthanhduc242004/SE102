@@ -341,6 +341,7 @@ public:
 		{
 			DebugOut(L">>> Mario DIE >>> \n");
 			SetState(MARIO_STATE_DIE);
+			CGame::GetInstance()->PauseGame();
 		}
 	}
 	// will only be called when Mario fall out of bound
