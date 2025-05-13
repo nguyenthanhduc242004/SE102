@@ -206,9 +206,7 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		return;
 	}
 	if (dynamic_cast<CPiranhaPlant*>(e->obj)) {
-		//kill CPiranhaPlant properly later
-		e->obj->Delete();
-		return;
+		dynamic_cast<CPiranhaPlant*>(e->obj)->TakeDamageFrom(this);
 	}
 	// IsBlocking will be used only to check map objects ---> NPCs are not blocking, Koopa can go through them.
 	if (!e->obj->IsBlocking()) return;

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "DeltaTimer.h"
 #include <algorithm>
 
 #define PIRANHA_PLANT_WIDTH  16
@@ -18,6 +19,9 @@
 #define PIRANHA_PLANT_STATE_ASCENDING		1		
 #define PIRANHA_PLANT_STATE_FULLY_EXPOSED	2
 #define PIRANHA_PLANT_STATE_DESCENDING		3
+#define PIRANHA_PLANT_STATE_DIE				4
+
+#define PIRANHA_PLANT_DIE_TIME		400
 
 #define PIRANHA_PLANT_STATE_TIME	1500
 
@@ -41,11 +45,12 @@
 //#define ID_ANI_PIRANHA_PLANT_GREEN_SHOOTABLE_RIGHT	52002
 //#define ID_ANI_PIRANHA_PLANT_GREEN_UNSHOOTABLE		53001
 
+#define ID_ANI_PIRANHA_PLANT_DIE	70001
 
 
 #define PIRANHA_PLANT_BULLET_SPEED	0.05f
 
-class CPiranhaPlant : public CGameObject, public CMoveable
+class CPiranhaPlant : public CGameObject, public CMoveable, public CDamageable
 {
 protected:
 	ULONGLONG state_start;
@@ -54,6 +59,7 @@ protected:
 	float y0;
 	boolean hasFired = false;
 	float piranhaPlantHeadX, piranhaPlantHeadY;
+	CDeltaTimer dieTimer;
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -61,6 +67,8 @@ protected:
 
 	virtual int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 0; }
+
+
 
 
 
@@ -75,6 +83,8 @@ public:
 	}
 
 	void SetState(int state);
+	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override;
+
 
 	virtual void SetSpeed(float vx, float vy) override {
 		this->vx = vx;

@@ -5,6 +5,14 @@
 
 void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (state == PIRANHA_PLANT_STATE_DIE) {
+		if (dieTimer.HasPassed(PIRANHA_PLANT_DIE_TIME)) {
+			this->Delete();
+		}
+		else if (dieTimer.IsRunning())
+			dieTimer.Tick(dt);
+	}
+
 	//CPiranhaPlant is also a slap-on-like object, it can go through blocking objects(pipe) ---> update its position here, so when it's colliding with the pipe, it wont stop, OnNoCollision causes the stuck bug
 	x += vx * dt;
 	y += vy * dt;
@@ -86,6 +94,13 @@ void CPiranhaPlant::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
+
+	if (state == PIRANHA_PLANT_STATE_DIE) {
+		aniId = ID_ANI_PIRANHA_PLANT_DIE;
+		animations->Get(aniId)->Render(x, piranhaPlantHeadY);
+		return;
+	}
+
 	CSprites* s = CSprites::GetInstance();
 	int spriteId = -1;
 
@@ -163,6 +178,10 @@ void CPiranhaPlant::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
+		
+	case PIRANHA_PLANT_STATE_DIE:
+		dieTimer.Start();
+		break;
 	case PIRANHA_PLANT_STATE_HIDDEN:
 		state_start = GetTickCount64();
 		y = y0 + PIRANHA_PLANT_HEAD_HEIGHT + PIRANHA_PLANT_STEM_HEIGHT * stem_height;
@@ -180,5 +199,14 @@ void CPiranhaPlant::SetState(int state)
 	case PIRANHA_PLANT_STATE_DESCENDING:
 		vy = PIRANHA_PLANT_SPEED;
 		break;
+	}
+}
+
+void CPiranhaPlant::TakeDamageFrom(LPGAMEOBJECT obj)
+{
+	// damage caused directly by Mario's stomping
+	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
+		//this->Delete();
+		SetState(PIRANHA_PLANT_STATE_DIE);
 	}
 }

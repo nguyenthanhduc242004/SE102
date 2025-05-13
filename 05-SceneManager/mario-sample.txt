@@ -25,3 +25,4 @@ height	240
 80	textures\enemies1.png
 90	textures\left.png
 100	textures\right.png
+110	textures\particles.png
