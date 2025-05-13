@@ -214,6 +214,8 @@
 
 #define MARIO_RESIZING_TIME	1200
 
+#define MARIO_DIE_TIME	500
+
 
 class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
@@ -239,6 +241,8 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	CDeltaTimer* transformTimer = new CDeltaTimer();
 	bool isTransforming = false;
+
+	CDeltaTimer * dieTimer = new CDeltaTimer();
 
 
 
@@ -341,6 +345,7 @@ public:
 		{
 			DebugOut(L">>> Mario DIE >>> \n");
 			SetState(MARIO_STATE_DIE);
+			dieTimer->Start();
 			CGame::GetInstance()->PauseGame();
 		}
 	}
@@ -383,5 +388,9 @@ public:
 
 	void SetTransforming(boolean isTransforming) {
 		this->isTransforming = isTransforming;
+	}
+
+	CDeltaTimer* GetDieTimer() {
+		return this->dieTimer;
 	}
 };

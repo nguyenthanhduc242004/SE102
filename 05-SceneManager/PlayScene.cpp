@@ -383,7 +383,7 @@ void CPlayScene::Update(DWORD dt)
 
 	// We know that Mario is the first object in the list hence we won't add him into the collidable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
-	vector<LPGAMEOBJECT> coObjects; 
+	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < objects.size(); i++)
 	{
 		objects[i]->GetPosition(x, y);
@@ -396,12 +396,24 @@ void CPlayScene::Update(DWORD dt)
 		coObjects.push_back(objects[i]);
 	}
 
+
+	CMario* mario = dynamic_cast<CMario*>(player);
+
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED) {
-			if (typeid(*objects[i]) == typeid(CFlyingScore)
-			|| (typeid(*objects[i]) == typeid(CMario) && player->GetState() == MARIO_STATE_DIE))
+			if (typeid(*objects[i]) == typeid(CFlyingScore)) {
 				objects[i]->Update(dt, &coObjects);
+			}
+			if (typeid(*objects[i]) == typeid(CMario) && player->GetState() == MARIO_STATE_DIE) {
+				CDeltaTimer* marioDieTimer = mario->GetDieTimer();
+				if (marioDieTimer->HasPassed(MARIO_DIE_TIME)) {
+					objects[i]->Update(dt, &coObjects);
+				}
+				else if (marioDieTimer->IsRunning()) {
+					marioDieTimer->Tick(dt);
+				}
+			}
 		}
 		else {
 			objects[i]->Update(dt, &coObjects);
@@ -424,7 +436,6 @@ void CPlayScene::Update(DWORD dt)
 	CGame::GetInstance()->SetCamPos(cx, DEFAULT_CAM_Y /*cy*/);
 
 	// Mario transform logic
-	CMario* mario = dynamic_cast<CMario*>(player);
 	CDeltaTimer* marioTransformTimer = mario->GetTransformTimer();
 	if (marioTransformTimer->HasPassed(MARIO_RESIZING_TIME)) {
 		marioTransformTimer->Reset();

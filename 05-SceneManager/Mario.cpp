@@ -641,6 +641,7 @@ void CMario::SetState(int state)
 		ay = MARIO_LIFTED_GRAVITY * 2;
 		isHolding = false;
 		break;
+		dieTimer->Start();
 	}
 
 	CGameObject::SetState(state);
