@@ -22,11 +22,13 @@ void CSpawner::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isDead)
 		return;
 
-	if (hasSpawned && obj->IsDeleted()) {
+	if (hasSpawned && obj->IsDeleted()
+		&& !CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) 
+		&& !CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y)) {
 		hasSpawned = false;
 	}
 	else if (!hasSpawned
-		&& (CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) || CGame::GetInstance()->IsInCamera(x + 30, DEFAULT_CAM_Y))) {
+		&& (CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) || CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y))) {
 		Spawn();
 	}
 
