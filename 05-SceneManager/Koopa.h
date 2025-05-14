@@ -102,6 +102,7 @@ protected:
 public:
 	CKoopa(float x, float y, int color, int type);
 	virtual void SetState(int state) override;
+	virtual void GetPosition(float& x, float& y) { x = this->x; y = this->y; };
 	virtual void SetSpeed(float vx, float vy) override { this->vx = vx; this->vy = vy; }
 	virtual void GetSpeed(float& vx, float& vy) override { vx = this->vx; vy = this->vy; }
 	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override;

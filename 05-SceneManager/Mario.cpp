@@ -126,7 +126,14 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	else if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
 		if (!isReadyToHold || e->ny != 0) {
 			Kick();
-			koopa->SetDirection(nx);
+			int koopaNx;
+			float koopaX, koopaY;
+			koopa->GetPosition(koopaX, koopaY);
+			if (x <= koopaX)
+				koopaNx = 1;
+			else
+				koopaNx = -1;
+			koopa->SetDirection(koopaNx);
 			koopa->SetState(KOOPAS_STATE_SPINNING);
 		}
 		else {
