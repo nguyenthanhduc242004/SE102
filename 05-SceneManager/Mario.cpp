@@ -232,11 +232,6 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 {
 	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
 	if (leaf->GetState() == LEAF_STATE_IDLE) return;
-	if (level < MARIO_LEVEL_TANOOKI) {
-		SetLevel(MARIO_LEVEL_TANOOKI);
-	}
-	AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, true);
-	leaf->Delete();
 
 	if (level == MARIO_LEVEL_BIG) {
 		isTransforming = true;
@@ -244,6 +239,14 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 		if (!transformTimer->IsRunning())
 			transformTimer->Start();
 	}
+
+	if (level < MARIO_LEVEL_TANOOKI) {
+		SetLevel(MARIO_LEVEL_TANOOKI);
+	}
+	AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, true);
+	leaf->Delete();
+
+
 }
 
 void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
