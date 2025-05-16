@@ -57,6 +57,21 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		vx = 0.0f;
 	}
 
+	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
+		if (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CPipe*>(e->obj)) {
+			isHittingWall = true;
+			if (nx == 1) {
+				x -= 0.1f;
+			}
+			else {
+				nx += 0.1f;
+			}
+		}
+		else {
+			isHittingWall = false;
+		}
+	}
+
 	if (dynamic_cast<CGoomba*>(e->obj)) {
 		OnCollisionWithGoomba(e);
 		return;
@@ -649,6 +664,8 @@ void CMario::Render()
 		aniId = GetAniIdSmall();
 
 	animations->Get(aniId)->Render(x, y);
+
+	RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
@@ -779,7 +796,7 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 			right = left + MARIO_BIG_SITTING_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
 		}
-		else if (tailWhipTimer.IsRunning()) {
+		else if (tailWhipTimer.IsRunning() && !isHittingWall) {
 			left = x - (MARIO_BIG_BBOX_WIDTH + 16) / 2;
 			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
 			right = left + (MARIO_BIG_BBOX_WIDTH + 16);

@@ -220,6 +220,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isOnPlatform;
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;
+	BOOLEAN isHittingWall = false;
 	int level;
 	int untouchable;
 	int isBoosted;
@@ -268,7 +269,7 @@ public:
 		isReadyToHold = false;
 		maxVy = MARIO_FALL_SPEED_Y;
 		ay = MARIO_GRAVITY;
-		level = MARIO_LEVEL_SMALL;
+		level = MARIO_LEVEL_TANOOKI;
 		untouchable = 0;
 		score = 0;
 		coin = 0;
