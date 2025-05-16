@@ -280,20 +280,7 @@ int CMario::GetAniIdSmall()
 		}
 	}
 	else
-		if (vx == 0.0f)
-		{
-			if (nx >= 0) {
-				aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
-				if (isHolding) aniId = ID_ANI_MARIO_SMALL_HOLD_IDLE_RIGHT;
-			}
-			else {
-				aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT;
-				if (isHolding) aniId = ID_ANI_MARIO_SMALL_HOLD_IDLE_LEFT;
-			}
-		}
-	//move right, can hold
-		else if (vx > 0.0f)
-		{
+		if (vx > 0.0f || state == MARIO_STATE_RUNNING_RIGHT) {
 			if (isHolding)
 				aniId = ID_ANI_MARIO_SMALL_HOLD_WALK_RIGHT;
 			else if (ax < 0)
@@ -303,9 +290,7 @@ int CMario::GetAniIdSmall()
 			else
 				aniId = ID_ANI_MARIO_SMALL_WALKING_RIGHT;
 		}
-	//move left, can hold
-		else // vx < 0
-		{
+		else if (vx < 0.0f || state == MARIO_STATE_RUNNING_LEFT) {
 			if (isHolding)
 				aniId = ID_ANI_MARIO_SMALL_HOLD_WALK_RIGHT;
 			else if (ax > 0.0f)
@@ -314,6 +299,17 @@ int CMario::GetAniIdSmall()
 				aniId = ID_ANI_MARIO_SMALL_RUNNING_LEFT;
 			else
 				aniId = ID_ANI_MARIO_SMALL_WALKING_LEFT;
+		}
+		else if (vx == 0.0f)
+		{
+			if (nx >= 0) {
+				aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
+				if (isHolding) aniId = ID_ANI_MARIO_SMALL_HOLD_IDLE_RIGHT;
+			}
+			else {
+				aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT;
+				if (isHolding) aniId = ID_ANI_MARIO_SMALL_HOLD_IDLE_LEFT;
+			}
 		}
 	if (kickTimer.IsRunning()) {
 		if (nx >= 0)
@@ -373,20 +369,7 @@ int CMario::GetAniIdBig()
 	//is not sitting on the ground, can hold, can kick
 	// idle, can hold
 		else
-			if (vx == 0.0f)
-			{
-				if (nx >= 0) {
-					aniId = ID_ANI_MARIO_BIG_IDLE_RIGHT;
-					if (isHolding) aniId = ID_ANI_MARIO_BIG_HOLD_IDLE_RIGHT;
-				}
-				else {
-					aniId = ID_ANI_MARIO_BIG_IDLE_LEFT;
-					if (isHolding) aniId = ID_ANI_MARIO_BIG_HOLD_IDLE_LEFT;
-				}
-			}
-	//move right, can hold
-			else if (vx > 0.0f)
-			{
+			if (vx > 0.0f || state == MARIO_STATE_RUNNING_RIGHT) {
 				if (isHolding)
 					aniId = ID_ANI_MARIO_BIG_HOLD_WALK_RIGHT;
 				else if (ax < 0)
@@ -396,9 +379,7 @@ int CMario::GetAniIdBig()
 				else
 					aniId = ID_ANI_MARIO_BIG_WALKING_RIGHT;
 			}
-	//move left, can hold
-			else // vx < 0
-			{
+			else if (vx < 0.0f || state == MARIO_STATE_RUNNING_LEFT) {
 				if (isHolding)
 					aniId = ID_ANI_MARIO_BIG_HOLD_WALK_LEFT;
 				else if (ax > 0.0f)
@@ -407,6 +388,17 @@ int CMario::GetAniIdBig()
 					aniId = ID_ANI_MARIO_BIG_RUNNING_LEFT;
 				else
 					aniId = ID_ANI_MARIO_BIG_WALKING_LEFT;
+			}
+			else if (vx == 0.0f)
+			{
+				if (nx >= 0) {
+					aniId = ID_ANI_MARIO_BIG_IDLE_RIGHT;
+					if (isHolding) aniId = ID_ANI_MARIO_BIG_HOLD_IDLE_RIGHT;
+				}
+				else {
+					aniId = ID_ANI_MARIO_BIG_IDLE_LEFT;
+					if (isHolding) aniId = ID_ANI_MARIO_BIG_HOLD_IDLE_LEFT;
+				}
 			}
 	if (kickTimer.IsRunning()) {
 		if (nx >= 0)
@@ -487,20 +479,8 @@ int CMario::GetAniIdTanooki()
 	//is not sitting on the ground, can hold, can kick
 	// idle, can hold
 		else
-			if (vx == 0.0f)
-			{
-				if (nx >= 0) {
-					aniId = ID_ANI_MARIO_TAIL_IDLE_RIGHT;
-					if (isHolding) aniId = ID_ANI_MARIO_TAIL_HOLD_IDLE_RIGHT;
-				}
-				else {
-					aniId = ID_ANI_MARIO_TAIL_IDLE_LEFT;
-					if (isHolding) aniId = ID_ANI_MARIO_TAIL_HOLD_IDLE_LEFT;
-				}
-			}
-	//move right, can hold
-			else if (vx > 0.0f)
-			{
+
+			if (vx > 0.0f || state == MARIO_STATE_RUNNING_RIGHT) {
 				if (isHolding)
 					aniId = ID_ANI_MARIO_TAIL_HOLD_WALKING_RIGHT;
 				else if (ax < 0)
@@ -510,9 +490,7 @@ int CMario::GetAniIdTanooki()
 				else
 					aniId = ID_ANI_MARIO_TAIL_WALKING_RIGHT;
 			}
-	//move left, can hold
-			else // vx < 0
-			{
+			else if (vx < 0.0f || state == MARIO_STATE_RUNNING_LEFT) {
 				if (isHolding)
 					aniId = ID_ANI_MARIO_TAIL_HOLD_WALKING_LEFT;
 				else if (ax > 0.0f)
@@ -521,6 +499,17 @@ int CMario::GetAniIdTanooki()
 					aniId = ID_ANI_MARIO_TAIL_RUNNING_LEFT;
 				else
 					aniId = ID_ANI_MARIO_TAIL_WALKING_LEFT;
+			}
+			else if (vx == 0.0f)
+			{
+				if (nx >= 0) {
+					aniId = ID_ANI_MARIO_TAIL_IDLE_RIGHT;
+					if (isHolding) aniId = ID_ANI_MARIO_TAIL_HOLD_IDLE_RIGHT;
+				}
+				else {
+					aniId = ID_ANI_MARIO_TAIL_IDLE_LEFT;
+					if (isHolding) aniId = ID_ANI_MARIO_TAIL_HOLD_IDLE_LEFT;
+				}
 			}
 	if (kickTimer.IsRunning()) {
 		if (nx >= 0)
@@ -665,7 +654,7 @@ void CMario::Render()
 
 	animations->Get(aniId)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
