@@ -655,12 +655,35 @@ void CMario::Render()
 		aniId = GetAniIdResize(level);
 	else if (state == MARIO_STATE_DIE)
 		aniId = ID_ANI_MARIO_DIE;
-	else if (level == MARIO_LEVEL_TANOOKI)
-		aniId = GetAniIdTanooki();
-	else if (level == MARIO_LEVEL_BIG)
-		aniId = GetAniIdBig();
-	else if (level == MARIO_LEVEL_SMALL)
-		aniId = GetAniIdSmall();
+	else if (level == MARIO_LEVEL_TANOOKI) {
+		if (untouchable) {
+			if ((int)(invincibleTimer.getAccumulated() / (MARIO_UNTOUCHABLE_TIME / 20)) % 2 == 0)
+				aniId = GetAniIdTanooki();
+			else
+				aniId = ID_ANI_MARIO_INVISIBLE;
+		} else
+			aniId = GetAniIdTanooki();
+	}
+	else if (level == MARIO_LEVEL_BIG) {
+		if (untouchable) {
+			if ((int)(invincibleTimer.getAccumulated() / (MARIO_UNTOUCHABLE_TIME / 20)) % 2 == 0)
+				aniId = GetAniIdBig();
+			else
+				aniId = ID_ANI_MARIO_INVISIBLE;
+		}
+		else
+			aniId = GetAniIdBig();
+	}
+	else if (level == MARIO_LEVEL_SMALL) {
+		if (untouchable) {
+			if ((int)(invincibleTimer.getAccumulated() / (MARIO_UNTOUCHABLE_TIME / 20)) % 2 == 0)
+				aniId = GetAniIdSmall();
+			else
+				aniId = ID_ANI_MARIO_INVISIBLE;
+		}
+		else
+			aniId = GetAniIdSmall();
+	}
 
 	animations->Get(aniId)->Render(x, y);
 
