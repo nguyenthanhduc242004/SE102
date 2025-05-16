@@ -829,15 +829,8 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 		else if (tailWhipTimer.IsRunning() && !isHittingWall) {
 			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
 			bottom = top + MARIO_BIG_BBOX_HEIGHT;
-			if (nx == 1) {
-				left = x - MARIO_BIG_BBOX_WIDTH / 2;
-				right = left + MARIO_BIG_BBOX_WIDTH + 10;
-			}
-			else if (nx == -1) {
-				left = x - MARIO_BIG_BBOX_WIDTH / 2 - 10;
-				right = left + MARIO_BIG_BBOX_WIDTH + 10;
-
-			}
+			left = x - MARIO_BIG_BBOX_WIDTH / 2 - 12;
+			right = left + MARIO_BIG_BBOX_WIDTH + 12 * 2;
 		}
 		else
 		{
