@@ -236,7 +236,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	CDeltaTimer invincibleTimer;
 	CDeltaTimer kickTimer;
 	// Tail swing timers and state
-	CDeltaTimer    tailWhipTimer;    
+	CDeltaTimer*    tailWhipTimer = new CDeltaTimer();    
 	CDeltaTimer    tailWhipFrameTimer; 
 	int      tailWhipFrame;        // 0 = no swing, 1...5 = which whip sprite
 	//CTanooki* tailSprite;      // the actual whip‐hitbox object
@@ -413,6 +413,10 @@ public:
 
 	CDeltaTimer* GetDieTimer() {
 		return this->dieTimer;
+	}
+
+	CDeltaTimer* GetTailWhipTimer() {
+		return this->tailWhipTimer;
 	}
 
 };

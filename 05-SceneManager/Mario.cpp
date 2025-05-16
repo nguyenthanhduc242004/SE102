@@ -59,7 +59,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 
 	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
 		if (CPiranhaPlant* piranhaPlant = (dynamic_cast<CPiranhaPlant*>(e->obj))) {
-			if (tailWhipTimer.IsRunning() && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE) {
+			if (tailWhipTimer->IsRunning() && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE) {
 				piranhaPlant->TakeDamageFrom(this);
 			}
 		}
@@ -117,7 +117,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	if (tailWhipTimer.IsRunning() && e->ny == 0) {
+	if (tailWhipTimer->IsRunning() && e->ny == 0) {
 		goomba->TakeDamageFrom(this);
 	}
 	// jump on top >> kill Goomba and deflect a bit 
@@ -138,7 +138,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 
-	if (tailWhipTimer.IsRunning() && e->ny == 0) {
+	if (tailWhipTimer->IsRunning() && e->ny == 0) {
 		//kill right away, hit by tail, thus put mario in and turn it into shell would be illogical
 		koopa->TakeDamageFrom(NULL);
 	}
@@ -247,7 +247,7 @@ void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
 {
 	CPiranhaPlant* piranhaPlant = dynamic_cast<CPiranhaPlant*>(e->obj);
 
-	if (tailWhipTimer.IsRunning() && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE) {
+	if (tailWhipTimer->IsRunning() && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE) {
 		piranhaPlant->TakeDamageFrom(this);
 	}
 	else if (piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE)
@@ -530,7 +530,7 @@ int CMario::GetAniIdTanooki()
 		else
 			aniId = ID_ANI_MARIO_TAIL_KICK_LEFT;
 	}
-	else if (tailWhipTimer.IsRunning()) {
+	else if (tailWhipTimer->IsRunning()) {
 		if (nx >= 0)
 			aniId = ID_ANI_MARIO_TAIL_WHIPPING_RIGHT;
 		else
@@ -826,7 +826,7 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 			right = left + MARIO_BIG_SITTING_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
 		}
-		else if (tailWhipTimer.IsRunning() && !isHittingWall) {
+		else if (tailWhipTimer->IsRunning() && !isHittingWall) {
 			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
 			bottom = top + MARIO_BIG_BBOX_HEIGHT;
 			left = x - MARIO_BIG_BBOX_WIDTH / 2 - 12;
@@ -875,9 +875,9 @@ void CMario::HandleTimer(DWORD dt)
 		tailWhipFrameTimer.Tick(dt);
 	}
 
-	if (tailWhipTimer.IsRunning())
+	if (tailWhipTimer->IsRunning())
 	{
-		tailWhipTimer.Tick(dt);
+		tailWhipTimer->Tick(dt);
 	}
 	if (tailWagTimer.IsRunning()) {
 		tailWagTimer.Tick(dt);
@@ -903,9 +903,9 @@ void CMario::HandleTimer(DWORD dt)
 		tailWhipFrame = (((tailWhipFrame + 1) < (5)) ? (tailWhipFrame + 1) : (5));
 	}
 
-	if (tailWhipTimer.HasPassed(MARIO_WHIPPING_TAIL_TIME))
+	if (tailWhipTimer->HasPassed(MARIO_WHIPPING_TAIL_TIME))
 	{
-		tailWhipTimer.Reset();
+		tailWhipTimer->Reset();
 		tailWhipFrameTimer.Reset();
 		tailWhipFrame = 0;
 		//tailSprite->hit_times = 0;  // allow new hits
@@ -921,10 +921,10 @@ void CMario::HandleTimer(DWORD dt)
 void CMario::Attack()
 {
 	if (level == MARIO_LEVEL_TANOOKI
-		&& !tailWhipTimer.IsRunning()
+		&& !tailWhipTimer->IsRunning()
 		&& !isSitting)
 	{
-		tailWhipTimer.Start();
+		tailWhipTimer->Start();
 		tailWhipFrameTimer.Start();
 		tailWhipFrame = 1;
 	}
