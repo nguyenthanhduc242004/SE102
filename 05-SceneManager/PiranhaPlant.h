@@ -57,6 +57,7 @@ protected:
 	int stem_height;		// Unit: cells
 	int type;
 	float y0;
+	float yDie;
 	boolean hasFired = false;
 	float piranhaPlantHeadX, piranhaPlantHeadY;
 	CDeltaTimer dieTimer;
@@ -67,10 +68,6 @@ protected:
 
 	virtual int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 0; }
-
-
-
-
 
 public:
 	CPiranhaPlant(float x, float y, int stem_height, int PIRANHA_PLANT_TYPE) : CGameObject(x, y) {

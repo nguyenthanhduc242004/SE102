@@ -97,7 +97,7 @@ void CPiranhaPlant::Render()
 
 	if (state == PIRANHA_PLANT_STATE_DIE) {
 		aniId = ID_ANI_PIRANHA_PLANT_DIE;
-		animations->Get(aniId)->Render(x, piranhaPlantHeadY);
+		animations->Get(aniId)->Render(x, yDie + PIRANHA_PLANT_STEM_HEIGHT / 2 - PIRANHA_PLANT_STEM_HEIGHT * stem_height - PIRANHA_PLANT_HEAD_HEIGHT / 2);
 		return;
 	}
 
@@ -181,6 +181,7 @@ void CPiranhaPlant::SetState(int state)
 		
 	case PIRANHA_PLANT_STATE_DIE:
 		dieTimer.Start();
+		yDie = y;
 		break;
 	case PIRANHA_PLANT_STATE_HIDDEN:
 		state_start = GetTickCount64();
@@ -208,5 +209,9 @@ void CPiranhaPlant::TakeDamageFrom(LPGAMEOBJECT obj)
 	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
 		//this->Delete();
 		SetState(PIRANHA_PLANT_STATE_DIE);
+	}
+	else if (CMario* mario = dynamic_cast<CMario*>(obj)) {
+		if (mario->GetLevel() == MARIO_LEVEL_TANOOKI)
+			SetState(PIRANHA_PLANT_STATE_DIE);
 	}
 }

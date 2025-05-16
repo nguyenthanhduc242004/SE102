@@ -58,6 +58,11 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 
 	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
+		if (CPiranhaPlant* piranhaPlant = (dynamic_cast<CPiranhaPlant*>(e->obj))) {
+			if (tailWhipTimer.IsRunning() && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE) {
+				piranhaPlant->TakeDamageFrom(this);
+			}
+		}
 		if (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CPipe*>(e->obj)) {
 			isHittingWall = true;
 			if (nx == 1) {
@@ -242,7 +247,10 @@ void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
 {
 	CPiranhaPlant* piranhaPlant = dynamic_cast<CPiranhaPlant*>(e->obj);
 
-	if (piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN)
+	if (tailWhipTimer.IsRunning() && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE) {
+		piranhaPlant->TakeDamageFrom(this);
+	}
+	else if (piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE)
 	{
 		TakeDamageFrom(piranhaPlant);
 	}
@@ -819,10 +827,17 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
 		}
 		else if (tailWhipTimer.IsRunning() && !isHittingWall) {
-			left = x - (MARIO_BIG_BBOX_WIDTH + 16) / 2;
 			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
-			right = left + (MARIO_BIG_BBOX_WIDTH + 16);
 			bottom = top + MARIO_BIG_BBOX_HEIGHT;
+			if (nx == 1) {
+				left = x - MARIO_BIG_BBOX_WIDTH / 2;
+				right = left + MARIO_BIG_BBOX_WIDTH + 10;
+			}
+			else if (nx == -1) {
+				left = x - MARIO_BIG_BBOX_WIDTH / 2 - 10;
+				right = left + MARIO_BIG_BBOX_WIDTH + 10;
+
+			}
 		}
 		else
 		{
