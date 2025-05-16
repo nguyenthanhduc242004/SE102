@@ -232,6 +232,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	int score;
 	int coin;
 	float dragX;
+	int stompingStreak = 0;
 
 	CDeltaTimer invincibleTimer;
 	CDeltaTimer kickTimer;
@@ -250,7 +251,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	CDeltaTimer * dieTimer = new CDeltaTimer();
 
-
+	void AddScoreBasedOnStreak(int streak);
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);

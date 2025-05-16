@@ -480,15 +480,13 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 		if (type == KOOPAS_TYPE_WING) {
 			vy = 0;
 			ay = KOOPAS_GRAVITY;
-			mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+			//mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
 			type = KOOPAS_TYPE_NORMAL;
 			return;
 		}
 		if (state == KOOPAS_STATE_WALKING || state == KOOPAS_STATE_SPINNING) {
-			mario->AddScore(x, y,
-				(state == KOOPAS_STATE_WALKING) ? FLYING_SCORE_TYPE_100 : FLYING_SCORE_TYPE_200,
-				true);
-			isUpsideDown = false;
+			if (state == KOOPAS_STATE_WALKING)
+				isUpsideDown = false;
 			SetState(KOOPAS_STATE_SHELL);
 			return;
 		}

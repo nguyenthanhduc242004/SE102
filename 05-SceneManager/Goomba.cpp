@@ -274,12 +274,6 @@ void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
 		if (state != GOOMBA_STATE_DIE)
 		{
 			if (isParagoomba) {
-				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_200, true);
-			}
-			else {
-				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
-			}
-			if (isParagoomba) {
 				SetState(GOOMBA_STATE_WALKING);
 				isParagoomba = false;
 			}
@@ -290,7 +284,6 @@ void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
 		return;
 	}
 	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
-		mario->AddScore(x, y - (GOOMBA_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, 100, true);
 		SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
 		return;
 	}
@@ -304,6 +297,7 @@ void CGoomba::TakeDamageFromTanookiTail()
 		if (mario->GetTailWhipTimer()->IsRunning()) {
 			nx = mario->GetDirection();
 			SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
+			mario->AddScore(x, y - (GOOMBA_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, 100, true);
 		}
 	}
 	return;

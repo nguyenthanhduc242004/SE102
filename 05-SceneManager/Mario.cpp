@@ -77,6 +77,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		}
 	}
 
+	if (e->ny < 0 && !dynamic_cast<CGoomba*>(e->obj) && !dynamic_cast<CKoopa*>(e->obj)) {
+		stompingStreak = 0;
+	}
+
 	if (dynamic_cast<CGoomba*>(e->obj)) {
 		OnCollisionWithGoomba(e);
 		return;
@@ -113,6 +117,29 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 }
 
+void CMario::AddScoreBasedOnStreak(int streak) {
+	int FLYING_SCORE_TYPE;
+	switch (streak) {
+	case 1:
+		FLYING_SCORE_TYPE = FLYING_SCORE_TYPE_100;
+		break;
+	case 2:
+		FLYING_SCORE_TYPE = FLYING_SCORE_TYPE_200;
+		break;
+	case 3:
+		FLYING_SCORE_TYPE = FLYING_SCORE_TYPE_400;
+		break;
+	case 4:
+		FLYING_SCORE_TYPE = FLYING_SCORE_TYPE_800;
+		break;
+	default:
+		// Don't know the score after the streak of 4 yet so I set it to be 800
+		FLYING_SCORE_TYPE = FLYING_SCORE_TYPE_800;
+	}
+	// Might change 16 to the exact object's height later
+	AddScore(x, y - (16 + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE, true);
+}
+
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
@@ -122,6 +149,8 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	{
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		goomba->TakeDamageFrom(this);
+		stompingStreak++;
+		AddScoreBasedOnStreak(stompingStreak);
 	} 
 	else if (tailWhipTimer->IsRunning() && e->ny == 0) {
 		goomba->TakeDamageFromTanookiTail();
@@ -161,12 +190,19 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 			isHolding = true;
 			koopa->SetIsHeld(true);
 		}
+
+		if (e->ny < 0) {
+			stompingStreak++;
+			AddScoreBasedOnStreak(stompingStreak);
+		}
 	}
 	//hit koopa not in shell on top, can turn koopa ---> shell
 	else if (e->ny < 0)
 	{
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		koopa->TakeDamageFrom(this);
+		stompingStreak++;
+		AddScoreBasedOnStreak(stompingStreak);
 	}
 	//touch koopa not in shell, not hit on top, koopa can be any other state, just not dead
 	else if (koopa->GetState() != KOOPAS_STATE_DIE && koopa->GetState() != KOOPAS_STATE_DIE_WITH_BOUNCE)
