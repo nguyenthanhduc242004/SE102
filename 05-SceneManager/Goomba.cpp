@@ -273,9 +273,6 @@ void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
 	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
 		if (state != GOOMBA_STATE_DIE)
 		{
-			float vx, vy;
-			mario->GetSpeed(vx, vy);
-			mario->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
 			if (isParagoomba) {
 				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_200, true);
 			}
