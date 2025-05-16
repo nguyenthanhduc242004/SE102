@@ -40,6 +40,7 @@ void CMario::OnNoCollision(DWORD dt)
 	x += vx * dt;
 	y += vy * dt;
 	isOnPlatform = false;
+	isHittingWall = false;
 }
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
@@ -63,6 +64,20 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 				piranhaPlant->TakeDamageFrom(this);
 			}
 		}
+
+		if (CQuestionBlock* questionBlock = dynamic_cast<CQuestionBlock*>(e->obj)) {
+			if (tailWhipTimer->IsRunning()) {
+				// TODO: Can make a TakeDamageFrom function for questionBlock since the codes below is the same as the codes in OnCollisionWithQuestionBlock(e)
+				if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
+				{
+					if (questionBlock->GetItemID() == ITEM_LEAF && level == MARIO_LEVEL_SMALL) {
+						questionBlock->SetItemId(ITEM_MUSHROOM_RED);
+					}
+					questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
+				}
+			}
+		}
+
 		if (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CPipe*>(e->obj)) {
 			isHittingWall = true;
 			if (nx == 1) {
@@ -74,6 +89,11 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		}
 		else {
 			isHittingWall = false;
+		}
+
+		// Prevent Mario in Tanooki level to consume Mushroom, Leaf immediately after hitting QuestionBlock with Tanooki Tail
+		if (dynamic_cast<CMushroom*>(e->obj) || dynamic_cast<CLeaf*>(e->obj)) {
+			return;
 		}
 	}
 
