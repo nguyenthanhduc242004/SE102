@@ -184,6 +184,9 @@
 #define ID_ANI_MARIO_SHIRNKING_RIGHT	1801
 #define ID_ANI_MARIO_SHIRNKING_LEFT		1802
 
+// TRANSFORMING
+#define ID_ANI_MARIO_TRANSFORM		70001
+
 #pragma endregion
 
 
@@ -211,6 +214,7 @@
 #define MARIO_FLYING_TIME			1750
 
 #define MARIO_RESIZING_TIME	1200
+#define MARIO_TRANSFORM_TIME 400
 
 #define MARIO_DIE_TIME	500
 
@@ -238,6 +242,8 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	CDeltaTimer	tailWagTimer;
 	CDeltaTimer flyTimer;
 
+	CDeltaTimer* resizeTimer = new CDeltaTimer();
+	bool isResizing = false;
 	CDeltaTimer* transformTimer = new CDeltaTimer();
 	bool isTransforming = false;
 
@@ -258,7 +264,9 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	int GetAniIdTanooki();
 	int GetAniIdBig();
 	int GetAniIdSmall();
+	int GetAniIdResize(int level);
 	int GetAniIdTransform(int level);
+
 
 public:
 	CMario(float x, float y) : CGameObject(x, y)
@@ -329,16 +337,21 @@ public:
 		{
 			level = MARIO_LEVEL_BIG;
 			StartUntouchable();
+
+			isTransforming = true;
+			CGame::GetInstance()->PauseGame();
+			if (!transformTimer->IsRunning())
+				transformTimer->Start();
 		}
 		else if (level > MARIO_LEVEL_SMALL)
 		{
 			level = MARIO_LEVEL_SMALL;
 			StartUntouchable();
 
-			isTransforming = true;
+			isResizing = true;
 			CGame::GetInstance()->PauseGame();
-			if (!transformTimer->IsRunning())
-				transformTimer->Start();
+			if (!resizeTimer->IsRunning())
+				resizeTimer->Start();
 		}
 		else
 		{
@@ -381,7 +394,7 @@ public:
 
 	void Attack();
 
-	CDeltaTimer* GetTransformTimer() {
+	CDeltaTimer* GetTrasnformTimer() {
 		return this->transformTimer;
 	}
 
@@ -389,7 +402,16 @@ public:
 		this->isTransforming = isTransforming;
 	}
 
+	CDeltaTimer* GetResizeTimer() {
+		return this->resizeTimer;
+	}
+
+	void SetResizing(boolean isResizing) {
+		this->isResizing = isResizing;
+	}
+
 	CDeltaTimer* GetDieTimer() {
 		return this->dieTimer;
 	}
+
 };

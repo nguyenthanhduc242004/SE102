@@ -440,14 +440,26 @@ void CPlayScene::Update(DWORD dt)
 	CGame::GetInstance()->SetCamPos(cx, DEFAULT_CAM_Y /*cy*/);
 
 	// Mario transform logic
-	CDeltaTimer* marioTransformTimer = mario->GetTransformTimer();
-	if (marioTransformTimer->IsRunning()) {
-		marioTransformTimer->Tick(dt);
+	CDeltaTimer* marioTrasnformTimer = mario->GetTrasnformTimer();
+	if (marioTrasnformTimer->IsRunning()) {
+		marioTrasnformTimer->Tick(dt);
 	}
-	if (marioTransformTimer->HasPassed(MARIO_RESIZING_TIME)) {
-		marioTransformTimer->Reset();
+	if (marioTrasnformTimer->HasPassed(MARIO_TRANSFORM_TIME)) {
+		marioTrasnformTimer->Reset();
 		CGame::GetInstance()->ResumeGame();
 		mario->SetTransforming(false);
+
+	}
+
+	// Mario resize logic
+	CDeltaTimer* marioResizeTimer = mario->GetResizeTimer();
+	if (marioResizeTimer->IsRunning()) {
+		marioResizeTimer->Tick(dt);
+	}
+	if (marioResizeTimer->HasPassed(MARIO_RESIZING_TIME)) {
+		marioResizeTimer->Reset();
+		CGame::GetInstance()->ResumeGame();
+		mario->SetResizing(false);
 		
 	}
 

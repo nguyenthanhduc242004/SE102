@@ -216,10 +216,10 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	}
 	mushroom->Delete();
 
-	isTransforming = true;
+	isResizing = true;
 	CGame::GetInstance()->PauseGame();
-	if (!transformTimer->IsRunning())
-		transformTimer->Start();
+	if (!resizeTimer->IsRunning())
+		resizeTimer->Start();
 }
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
@@ -231,6 +231,11 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	}
 	AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, true);
 	leaf->Delete();
+
+	isTransforming = true;
+	CGame::GetInstance()->PauseGame();
+	if (!transformTimer->IsRunning())
+		transformTimer->Start();
 }
 
 void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
@@ -621,6 +626,10 @@ int CMario::GetAniIdTanooki()
 //}
 
 int CMario::GetAniIdTransform(int level) {
+	return ID_ANI_MARIO_TRANSFORM;
+}
+
+int CMario::GetAniIdResize(int level) {
 	if (level == MARIO_LEVEL_BIG) {
 		if (nx == -1)
 			return ID_ANI_MARIO_ENLARGING_LEFT;
@@ -640,9 +649,10 @@ void CMario::Render()
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
 
-	if (isTransforming) {
+	if (isTransforming)
 		aniId = GetAniIdTransform(level);
-	}
+	else if (isResizing) 
+		aniId = GetAniIdResize(level);
 	else if (state == MARIO_STATE_DIE)
 		aniId = ID_ANI_MARIO_DIE;
 	else if (level == MARIO_LEVEL_TANOOKI)
