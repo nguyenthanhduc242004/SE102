@@ -251,7 +251,6 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	CDeltaTimer * dieTimer = new CDeltaTimer();
 
-	void AddScoreBasedOnStreak(int streak);
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
@@ -288,6 +287,9 @@ public:
 		tailWhipFrame = 0;
 		//tailSprite = new CTanooki(x, y);
 	}
+
+	void AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj);
+
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);

@@ -78,6 +78,7 @@ protected:
 	CDeltaTimer revivingTimer;
 	CDeltaTimer dyingTimer;
 	boolean isUpsideDown = false;
+	int spinningKillStreak = 0;
 
 	// core overrides
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) override;
