@@ -223,7 +223,17 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		return;
 	}
 	if (dynamic_cast<CPiranhaPlant*>(e->obj)) {
-		dynamic_cast<CPiranhaPlant*>(e->obj)->TakeDamageFrom(this);
+		CPiranhaPlant* piranhaPlant = dynamic_cast<CPiranhaPlant*>(e->obj);
+
+		if (piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE) {
+			CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+			spinningKillStreak++;
+			mario->AddScoreBasedOnStreak(spinningKillStreak, e->obj);
+		}
+
+		piranhaPlant->TakeDamageFrom(this);
+
+		return;
 	}
 	// IsBlocking will be used only to check map objects ---> NPCs are not blocking, Koopa can go through them.
 	if (!e->obj->IsBlocking()) return;
@@ -324,6 +334,8 @@ void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 		ReverseDirection();
 	}
 }
+
+// TODO: Do spinningKillStreak score logic later
 void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
@@ -364,6 +376,9 @@ void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		//DebugOut(L"Koopa direction when hit: %d\n", nx);
 		goomba->SetDirection(nx);
 		goomba->TakeDamageFrom(this);
+		CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		spinningKillStreak++;
+		mario->AddScoreBasedOnStreak(spinningKillStreak, e->obj);
 		return;
 	}
 	if (isHeld) {
@@ -440,6 +455,7 @@ void CKoopa::SetState(int state)
 		isHeld = false;
 		break;
 	case KOOPAS_STATE_SHELL:
+		spinningKillStreak = 0;
 		vx = 0.0f;
 		ay = KOOPAS_GRAVITY;
 		isHeld = false;
@@ -462,6 +478,7 @@ void CKoopa::SetState(int state)
 		dyingTimer.Start();
 		break;
 	case KOOPAS_STATE_DIE_WITH_BOUNCE:
+		spinningKillStreak = 0;
 		isUpsideDown = true;
 		vx = nx * KOOPAS_WALKING_SPEED;
 		vy = -KOOPAS_KILL_Y_BOUNCE;

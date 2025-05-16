@@ -117,7 +117,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 }
 
-void CMario::AddScoreBasedOnStreak(int streak) {
+void CMario::AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj) {
 	int FLYING_SCORE_TYPE;
 	switch (streak) {
 	case 1:
@@ -136,8 +136,10 @@ void CMario::AddScoreBasedOnStreak(int streak) {
 		// Don't know the score after the streak of 4 yet so I set it to be 800
 		FLYING_SCORE_TYPE = FLYING_SCORE_TYPE_800;
 	}
+	float objX, objY;
+	obj->GetPosition(objX, objY);
 	// Might change 16 to the exact object's height later
-	AddScore(x, y - (16 + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE, true);
+	AddScore(objX, objY - (16 + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE, true);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -150,7 +152,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		goomba->TakeDamageFrom(this);
 		stompingStreak++;
-		AddScoreBasedOnStreak(stompingStreak);
+		AddScoreBasedOnStreak(stompingStreak, e->obj);
 	} 
 	else if (tailWhipTimer->IsRunning() && e->ny == 0) {
 		goomba->TakeDamageFromTanookiTail();
@@ -193,7 +195,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 
 		if (e->ny < 0) {
 			stompingStreak++;
-			AddScoreBasedOnStreak(stompingStreak);
+			AddScoreBasedOnStreak(stompingStreak, e->obj);
 		}
 	}
 	//hit koopa not in shell on top, can turn koopa ---> shell
@@ -202,7 +204,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		koopa->TakeDamageFrom(this);
 		stompingStreak++;
-		AddScoreBasedOnStreak(stompingStreak);
+		AddScoreBasedOnStreak(stompingStreak, e->obj);
 	}
 	//touch koopa not in shell, not hit on top, koopa can be any other state, just not dead
 	else if (koopa->GetState() != KOOPAS_STATE_DIE && koopa->GetState() != KOOPAS_STATE_DIE_WITH_BOUNCE)
