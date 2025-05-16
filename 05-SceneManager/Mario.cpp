@@ -237,10 +237,12 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, true);
 	leaf->Delete();
 
-	isTransforming = true;
-	CGame::GetInstance()->PauseGame();
-	if (!transformTimer->IsRunning())
-		transformTimer->Start();
+	if (level == MARIO_LEVEL_BIG) {
+		isTransforming = true;
+		CGame::GetInstance()->PauseGame();
+		if (!transformTimer->IsRunning())
+			transformTimer->Start();
+	}
 }
 
 void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
