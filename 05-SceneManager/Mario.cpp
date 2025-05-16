@@ -173,11 +173,11 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		goomba->TakeDamageFrom(this);
 		stompingStreak++;
 		AddScoreBasedOnStreak(stompingStreak, e->obj);
-	} 
+	}
 	else if (tailWhipTimer->IsRunning() && e->ny == 0) {
 		goomba->TakeDamageFromTanookiTail();
 	}
-	
+
 	else // hit by Goomba
 	{
 		if (goomba->GetState() != GOOMBA_STATE_DIE && goomba->GetState() != GOOMBA_STATE_DIE_WITH_BOUNCE)
@@ -727,7 +727,7 @@ void CMario::Render()
 
 	if (isTransforming)
 		aniId = GetAniIdTransform(level);
-	else if (isResizing) 
+	else if (isResizing)
 		aniId = GetAniIdResize(level);
 	else if (state == MARIO_STATE_DIE)
 		aniId = ID_ANI_MARIO_DIE;
@@ -737,7 +737,8 @@ void CMario::Render()
 				aniId = GetAniIdTanooki();
 			else
 				aniId = ID_ANI_MARIO_INVISIBLE;
-		} else
+		}
+		else
 			aniId = GetAniIdTanooki();
 	}
 	else if (level == MARIO_LEVEL_BIG) {
@@ -895,10 +896,10 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
 		}
 		else if (tailWhipTimer->IsRunning() && !isHittingWall) {
+			left = x - MARIO_ACTIVE_TAIL_BBOX_WIDTH / 2;
 			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
+			right = left + MARIO_ACTIVE_TAIL_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_BBOX_HEIGHT;
-			left = x - MARIO_BIG_BBOX_WIDTH / 2 - 12;
-			right = left + MARIO_BIG_BBOX_WIDTH + 12 * 2;
 		}
 		else
 		{

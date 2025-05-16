@@ -55,32 +55,6 @@ void CKoopa::Render()
 	else if (color == KOOPAS_COLOR_RED) {
 		aniId = GetAniIdRed();
 	}
-	//switch (state)
-	//{
-	//case KOOPAS_STATE_WALKING:
-	//	aniId = (nx < 0)
-	//		? ID_ANI_KOOPAS_WALKING_LEFT
-	//		: ID_ANI_KOOPAS_WALKING_RIGHT;
-	//	break;
-	//case KOOPAS_STATE_SHELL:
-	//	aniId = ID_ANI_KOOPAS_SHELL;
-	//	break;
-	//case KOOPAS_STATE_REVIVING:
-	//	aniId = ID_ANI_KOOPAS_REVIVING;
-	//	break;
-	//case KOOPAS_STATE_SPINNING:
-	//	aniId = (nx < 0)
-	//		? ID_ANI_KOOPAS_SPINNING_LEFT
-	//		: ID_ANI_KOOPAS_SPINNING_RIGHT;
-	//	break;
-	//case KOOPAS_STATE_DIE:
-	//	aniId = ID_ANI_KOOPAS_DIE;
-	//	break;
-	//case KOOPAS_STATE_DIE_WITH_BOUNCE:
-	//	// for now
-	//	aniId = ID_ANI_KOOPAS_DIE;
-	//	break;
-	//}
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
 	//RenderBoundingBox();
 }
@@ -100,13 +74,13 @@ void CKoopa::HandleBeingHeld()
 	{
 		// Keep shell attached to Mario’s hand
 		nx = mario->GetDirection();
-		//DebugOut(L"%d\n", nx);
 		float mX, mY;
 		mario->GetPosition(mX, mY);
 		y = mY + KOOPAS_HOLDING_Y_OFFSET;
+		// move shell closer into mario by 2 pixels--->guarantee collision--->when revived, koopa will collide with mario
 		x = mX + nx * (mario->GetLevel() == MARIO_LEVEL_SMALL
-			? MARIO_SMALL_BBOX_WIDTH
-			: MARIO_BIG_BBOX_WIDTH);
+			? MARIO_SMALL_BBOX_WIDTH-2
+			: MARIO_BIG_BBOX_WIDTH-2);
 		if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			y -= KOOPAS_HOLDING_SMALL_MARIO_Y_ADJUST;
 	}
