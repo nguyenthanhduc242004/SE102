@@ -444,7 +444,7 @@ void CKoopa::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_WALKING:
-		isUpsideDown = true;
+		isUpsideDown = false;
 		vx = nx * KOOPAS_WALKING_SPEED;
 		if (type == KOOPAS_TYPE_WING) {
 			ay = KOOPAS_WING_GRAVITY;
@@ -502,8 +502,6 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 			return;
 		}
 		if (state == KOOPAS_STATE_WALKING || state == KOOPAS_STATE_SPINNING) {
-			if (state == KOOPAS_STATE_WALKING)
-				isUpsideDown = false;
 			SetState(KOOPAS_STATE_SHELL);
 			return;
 		}
