@@ -117,15 +117,16 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	if (tailWhipTimer->IsRunning() && e->ny == 0) {
-		goomba->TakeDamageFrom(this);
-	}
 	// jump on top >> kill Goomba and deflect a bit 
-	else if (e->ny < 0)
+	if (e->ny < 0)
 	{
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		goomba->TakeDamageFrom(this);
+	} 
+	else if (tailWhipTimer->IsRunning() && e->ny == 0) {
+		goomba->TakeDamageFromTanookiTail();
 	}
+	
 	else // hit by Goomba
 	{
 		if (goomba->GetState() != GOOMBA_STATE_DIE && goomba->GetState() != GOOMBA_STATE_DIE_WITH_BOUNCE)

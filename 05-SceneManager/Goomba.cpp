@@ -273,24 +273,18 @@ void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
 	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
 		if (state != GOOMBA_STATE_DIE)
 		{
-			if (mario->GetTailWhipTimer()->IsRunning()) {
-				nx = mario->GetDirection();
-				SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
+			if (isParagoomba) {
+				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_200, true);
 			}
 			else {
-				if (isParagoomba) {
-					mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_200, true);
-				}
-				else {
-					mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
-				}
-				if (isParagoomba) {
-					SetState(GOOMBA_STATE_WALKING);
-					isParagoomba = false;
-				}
-				else {
-					SetState(GOOMBA_STATE_DIE);
-				}
+				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+			}
+			if (isParagoomba) {
+				SetState(GOOMBA_STATE_WALKING);
+				isParagoomba = false;
+			}
+			else {
+				SetState(GOOMBA_STATE_DIE);
 			}
 		}
 		return;
@@ -301,3 +295,17 @@ void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
 		return;
 	}
 }
+
+void CGoomba::TakeDamageFromTanookiTail()
+{
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (state != GOOMBA_STATE_DIE_WITH_BOUNCE && state != GOOMBA_STATE_DIE)
+	{
+		if (mario->GetTailWhipTimer()->IsRunning()) {
+			nx = mario->GetDirection();
+			SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
+		}
+	}
+	return;
+}
+
