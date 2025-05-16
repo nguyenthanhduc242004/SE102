@@ -77,10 +77,9 @@ void CKoopa::HandleBeingHeld()
 		float mX, mY;
 		mario->GetPosition(mX, mY);
 		y = mY + KOOPAS_HOLDING_Y_OFFSET;
-		// move shell closer into mario by 2 pixels--->guarantee collision--->when revived, koopa will collide with mario
 		x = mX + nx * (mario->GetLevel() == MARIO_LEVEL_SMALL
-			? MARIO_SMALL_BBOX_WIDTH-2
-			: MARIO_BIG_BBOX_WIDTH-2);
+			? MARIO_SMALL_BBOX_WIDTH
+			: MARIO_BIG_BBOX_WIDTH);
 		if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			y -= KOOPAS_HOLDING_SMALL_MARIO_Y_ADJUST;
 	}
@@ -407,8 +406,11 @@ void CKoopa::HandleTimer(DWORD dt) {
 		revivingTimer.Reset();
 		// popping out of shell
 		y -= (KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_SHELL) + 1;
+		if (isHeld) {
+			CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+			mario->TakeDamageFrom(this);
+		}
 		SetState(KOOPAS_STATE_WALKING);
-
 	}
 }
 void CKoopa::SetState(int state)

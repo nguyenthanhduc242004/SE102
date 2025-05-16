@@ -287,7 +287,6 @@ public:
 		dragX = MARIO_DRAG_X;
 
 		tailWhipFrame = 0;
-		//tailSprite = new CTanooki(x, y);
 	}
 
 	void AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj);
