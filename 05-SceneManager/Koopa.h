@@ -33,8 +33,8 @@
 #define KOOPAS_STATE_SHELL      200
 #define KOOPAS_STATE_REVIVING   300
 #define KOOPAS_STATE_SPINNING   400
-#define KOOPAS_STATE_DIE        500
-#define KOOPAS_STATE_DIE_WITH_BOUNCE  600
+#define KOOPAS_STATE_DIE_WITH_BOUNCE        500
+#define KOOPAS_STATE_FIRST_BOUNCE  600
 #define KOOPAS_STATE_SECOND_BOUNCE  700
 
 #define KOOPAS_COLOR_GREEN	0
@@ -85,7 +85,7 @@ protected:
 	virtual void Render() override;
 
 	// collisions
-	virtual int  IsCollidable() override { return state != KOOPAS_STATE_DIE; }
+	virtual int  IsCollidable() override { return state != KOOPAS_STATE_DIE_WITH_BOUNCE; }
 	virtual int  IsBlocking()   override { return 0; }
 	virtual void OnNoCollision(DWORD dt) override;
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e) override;

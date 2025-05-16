@@ -209,9 +209,11 @@ void CPiranhaPlant::TakeDamageFrom(LPGAMEOBJECT obj)
 	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
 		//this->Delete();
 		SetState(PIRANHA_PLANT_STATE_DIE);
+		return;
 	}
-	else if (CMario* mario = dynamic_cast<CMario*>(obj)) {
+	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
 		if (mario->GetLevel() == MARIO_LEVEL_TANOOKI)
 			SetState(PIRANHA_PLANT_STATE_DIE);
+		return;
 	}
 }

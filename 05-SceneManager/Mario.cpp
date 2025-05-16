@@ -169,11 +169,11 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 
 	if (tailWhipTimer->IsRunning() && e->ny == 0) {
-		//kill right away, hit by tail, thus put mario in and turn it into shell would be illogical
-		koopa->TakeDamageFrom(NULL);
+		//bounce off right away, hit by tail OF MARIO, thus put mario in is logical
+		koopa->TakeDamageFrom(this);
 	}
 	// hit koopa in shell in any direction
-	else if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING || koopa->GetState() == KOOPAS_STATE_DIE_WITH_BOUNCE || koopa->GetState() == KOOPAS_STATE_SECOND_BOUNCE) {
+	else if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING || koopa->GetState() == KOOPAS_STATE_FIRST_BOUNCE || koopa->GetState() == KOOPAS_STATE_SECOND_BOUNCE) {
 		// Mario is not trying to hold because he wants to kick = kick
 		// Mario is not trying to hold because he's already holding != kick ---> since mario will just kick the shell he is holding/colliding
 		// Vertical movement will hinder the ability to hold, hence kick
@@ -209,7 +209,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 		AddScoreBasedOnStreak(stompingStreak);
 	}
 	//touch koopa not in shell, not hit on top, koopa can be any other state, just not dead
-	else if (koopa->GetState() != KOOPAS_STATE_DIE && koopa->GetState() != KOOPAS_STATE_DIE_WITH_BOUNCE && koopa->GetState() != KOOPAS_STATE_SECOND_BOUNCE)
+	else if (koopa->GetState() != KOOPAS_STATE_DIE_WITH_BOUNCE && koopa->GetState() != KOOPAS_STATE_FIRST_BOUNCE && koopa->GetState() != KOOPAS_STATE_SECOND_BOUNCE)
 	{
 		TakeDamageFrom(koopa);
 	}
