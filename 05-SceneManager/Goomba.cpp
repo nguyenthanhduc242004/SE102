@@ -144,7 +144,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CGoomba::Render()
 {
 	if (state == GOOMBA_STATE_HIDDEN || state == GOOMBA_STATE_RESPAWNABLE) return;
-
 	int aniId;
 	int spriteId;
 	CAnimations* animations = CAnimations::GetInstance();
@@ -247,6 +246,7 @@ void CGoomba::SetState(int state)
 	case GOOMBA_STATE_DIE_WITH_BOUNCE:
 		vx = nx * KOOPAS_WALKING_SPEED;
 		vy = -KOOPAS_KILL_Y_BOUNCE;
+		ay = KOOPAS_GRAVITY;
 		dyingTimer.Start();
 		SetSpawnerDead(true);
 		break;

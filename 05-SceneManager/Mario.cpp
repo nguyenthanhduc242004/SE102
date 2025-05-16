@@ -143,7 +143,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 		koopa->TakeDamageFrom(NULL);
 	}
 	// hit koopa in shell in any direction
-	else if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING) {
+	else if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING || koopa->GetState() == KOOPAS_STATE_DIE_WITH_BOUNCE || koopa->GetState() == KOOPAS_STATE_SECOND_BOUNCE) {
 		if (!isReadyToHold || e->ny != 0) {
 			Kick();
 			int koopaNx;

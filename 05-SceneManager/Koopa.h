@@ -15,6 +15,7 @@
 #define KOOPAS_WALKING_SPEED       0.036f
 #define KOOPAS_SPINNING_SPEED      0.2f
 #define KOOPAS_KILL_Y_BOUNCE   0.4f
+#define KOOPAS_KILL_SECOND_Y_BOUNCE 0.1f;
 #define KOOPAS_JUMPING_SPEED		0.22f
 
 #define KOOPAS_BBOX_WIDTH          15
@@ -34,6 +35,7 @@
 #define KOOPAS_STATE_SPINNING   400
 #define KOOPAS_STATE_DIE        500
 #define KOOPAS_STATE_DIE_WITH_BOUNCE  600
+#define KOOPAS_STATE_SECOND_BOUNCE  700
 
 #define KOOPAS_COLOR_GREEN	0
 #define KOOPAS_COLOR_RED	1
@@ -44,13 +46,16 @@
 // Red Koopas Animations
 #define ID_ANI_KOOPAS_RED_WALKING_RIGHT				  36000
 #define ID_ANI_KOOPAS_RED_SPINNING_RIGHT			  36020
+#define ID_ANI_KOOPAS_RED_SPINNING_RIGHT_UPSIDE_DOWN  36023
 #define ID_ANI_KOOPAS_RED_PARATROOPA_WALKING_RIGHT    36200
 #define ID_ANI_KOOPAS_RED_WALKING_LEFT				  36001
 #define ID_ANI_KOOPAS_RED_SPINNING_LEFT				  36021
+#define ID_ANI_KOOPAS_RED_SPINNING_LEFT_UPSIDE_DOWN   36024
 #define ID_ANI_KOOPAS_RED_PARATROOPA_WALKING_LEFT     36201
 #define ID_ANI_KOOPAS_RED_SHELL					      36070
+#define ID_ANI_KOOPAS_RED_SHELL_UPSIDE_DOWN			  36071
 #define ID_ANI_KOOPAS_RED_SHAKE						  36083
-#define ID_ANI_KOOPAS_RED_DIE_UP				      36093
+#define ID_ANI_KOOPAS_RED_SHAKE_UPSIDE_DOWN			  36084
 
 // Green Koopas Animations
 #define ID_ANI_KOOPAS_GREEN_WALKING_RIGHT			   36100
@@ -61,7 +66,7 @@
 #define ID_ANI_KOOPAS_GREEN_PARATROOPA_WALKING_LEFT    36301
 #define ID_ANI_KOOPAS_GREEN_SHELL				       36170
 #define ID_ANI_KOOPAS_GREEN_SHAKE				       36183
-#define ID_ANI_KOOPAS_GREEN_DIE_UP				       36193
+#define ID_ANI_KOOPAS_GREEN_SHELL_UPSIDE_DOWN		   36193
 
 class CKoopa : public CGameObject, public CMoveable, public CDamageable
 {
@@ -72,6 +77,7 @@ protected:
 	CDeltaTimer shellTimer;
 	CDeltaTimer revivingTimer;
 	CDeltaTimer dyingTimer;
+	boolean isUpsideDown = false;
 
 	// core overrides
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) override;
@@ -79,7 +85,7 @@ protected:
 	virtual void Render() override;
 
 	// collisions
-	virtual int  IsCollidable() override { return state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_DIE_WITH_BOUNCE; }
+	virtual int  IsCollidable() override { return state != KOOPAS_STATE_DIE; }
 	virtual int  IsBlocking()   override { return 0; }
 	virtual void OnNoCollision(DWORD dt) override;
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e) override;

@@ -29,7 +29,7 @@
 ###Normal
 33201	145	70	160	85	70
 ###Die upside down
-33202	206	70	221	85	60
+33202	206	70	221	85	70
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
