@@ -174,7 +174,10 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 	}
 	// hit koopa in shell in any direction
 	else if (koopa->GetState() == KOOPAS_STATE_SHELL || koopa->GetState() == KOOPAS_STATE_REVIVING || koopa->GetState() == KOOPAS_STATE_DIE_WITH_BOUNCE || koopa->GetState() == KOOPAS_STATE_SECOND_BOUNCE) {
-		if (!isReadyToHold || e->ny != 0) {
+		// Mario is not trying to hold because he wants to kick = kick
+		// Mario is not trying to hold because he's already holding != kick ---> since mario will just kick the shell he is holding/colliding
+		// Vertical movement will hinder the ability to hold, hence kick
+		if ((!isReadyToHold && !isHolding) || e->ny != 0) {
 			Kick();
 			int koopaNx;
 			float koopaX, koopaY;
@@ -186,11 +189,12 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 			koopa->SetDirection(koopaNx);
 			koopa->SetState(KOOPAS_STATE_SPINNING);
 		}
-		else {
+		// else if now check for a simple if trying to hold, when holding for real, trying to hold is set to false.
+		else if (isReadyToHold) {
 			isHolding = true;
+			isReadyToHold = false;
 			koopa->SetIsHeld(true);
 		}
-
 		if (e->ny < 0) {
 			stompingStreak++;
 			AddScoreBasedOnStreak(stompingStreak);
@@ -205,7 +209,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e) {
 		AddScoreBasedOnStreak(stompingStreak);
 	}
 	//touch koopa not in shell, not hit on top, koopa can be any other state, just not dead
-	else if (koopa->GetState() != KOOPAS_STATE_DIE && koopa->GetState() != KOOPAS_STATE_DIE_WITH_BOUNCE)
+	else if (koopa->GetState() != KOOPAS_STATE_DIE && koopa->GetState() != KOOPAS_STATE_DIE_WITH_BOUNCE && koopa->GetState() != KOOPAS_STATE_SECOND_BOUNCE)
 	{
 		TakeDamageFrom(koopa);
 	}
@@ -950,7 +954,6 @@ void CMario::HandleTimer(DWORD dt)
 		tailWhipTimer->Reset();
 		tailWhipFrameTimer.Reset();
 		tailWhipFrame = 0;
-		//tailSprite->hit_times = 0;  // allow new hits
 	}
 	if (tailWagTimer.HasPassed(MARIO_WAGGING_TAIL_TIME)) {
 		tailWagTimer.Reset();

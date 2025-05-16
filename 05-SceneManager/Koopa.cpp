@@ -200,7 +200,6 @@ int CKoopa::GetAniIdRed()
 		}
 		break;
 	case KOOPAS_STATE_DIE:
-		break;
 	case KOOPAS_STATE_SECOND_BOUNCE:
 	case KOOPAS_STATE_DIE_WITH_BOUNCE:
 		aniId = ID_ANI_KOOPAS_RED_SHELL_UPSIDE_DOWN;
@@ -231,7 +230,7 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		vy = 0;
 		if (e->ny < 0) {
-			if (type == KOOPAS_TYPE_WING)
+			if (type == KOOPAS_TYPE_WING && state == KOOPAS_STATE_WALKING)
 				vy = -KOOPAS_JUMPING_SPEED;
 			if (state == KOOPAS_STATE_DIE_WITH_BOUNCE) {
 				SetState(KOOPAS_STATE_SECOND_BOUNCE);
@@ -429,7 +428,6 @@ void CKoopa::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_WALKING:
-		isUpsideDown = true;
 		vx = nx * KOOPAS_WALKING_SPEED;
 		if (type == KOOPAS_TYPE_WING) {
 			ay = KOOPAS_WING_GRAVITY;
@@ -455,9 +453,10 @@ void CKoopa::SetState(int state)
 		isHeld = false;
 		break;
 	case KOOPAS_STATE_DIE:
-		vx = 0.0f;
-		vy = 0.0f;
-		ay = 0.0f;
+		isUpsideDown = true;
+		vx = nx * KOOPAS_WALKING_SPEED;
+		vy = -KOOPAS_KILL_Y_BOUNCE;
+		ay = KOOPAS_GRAVITY;
 		isHeld = false;
 		dyingTimer.Start();
 		break;
