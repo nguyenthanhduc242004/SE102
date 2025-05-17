@@ -212,7 +212,6 @@
 #define MARIO_UNTOUCHABLE_TIME 1200
 #define MARIO_KICK_TIME	200	
 #define MARIO_WHIPPING_TAIL_TIME		400
-#define MARIO_WHIPPING_TAIL_FRAME_TIME	70
 #define MARIO_WAGGING_TAIL_TIME		400
 #define MARIO_FLYING_TIME			1750
 
@@ -228,9 +227,11 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;
 	BOOLEAN isHittingWall = false;
+
 	int level;
 	int untouchable;
 	int isBoosted;
+	int life;
 	int score;
 	int coin;
 	float dragX;
@@ -238,11 +239,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	CDeltaTimer invincibleTimer;
 	CDeltaTimer kickTimer;
-	// Tail swing timers and state
 	CDeltaTimer*    tailWhipTimer = new CDeltaTimer();    
-	CDeltaTimer    tailWhipFrameTimer; 
-	int      tailWhipFrame;        // 0 = no swing, 1...5 = which whip sprite
-	//CTanooki* tailSprite;      // the actual whip‐hitbox object
 	CDeltaTimer	tailWagTimer;
 	CDeltaTimer flyTimer;
 
@@ -282,11 +279,10 @@ public:
 		ay = MARIO_GRAVITY;
 		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
-		score = 0;
-		coin = 0;
+		life = CGame::GetInstance()->GetLife();
+		score = CGame::GetInstance()->GetScore();
+		coin = CGame::GetInstance()->GetCoin();
 		dragX = MARIO_DRAG_X;
-
-		tailWhipFrame = 0;
 	}
 
 	void AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj);
@@ -366,14 +362,27 @@ public:
 			CGame::GetInstance()->PauseGame();
 		}
 	}
+
 	// will only be called when Mario fall out of bound
 	virtual void Delete() override {
 		CGame* game = CGame::GetInstance();
 		if (state != MARIO_STATE_DIE) {
 			float x, y;
 			game->GetCamPos(x, y);
-			this->SetPosition(x + game->GetBackBufferWidth() / 2, y + game->GetBackBufferHeight());
+			this->SetPosition(x + game->GetBackBufferWidth() / 2, y + game->GetBackBufferHeight() + MARIO_SMALL_BBOX_HEIGHT);
 			SetState(MARIO_STATE_DIE);
+			dieTimer->Start();
+			game->PauseGame();
+			// for some reason, the game has to be paused and die timer has to be on for the ReloadCurrentScene 
+			// to make a scene without a mysterious-null-GameObject and not crash the game...
+			return;
+		}
+		if (life > 0) {
+			game->SetLife(life);
+			game->SetCoin(coin);
+			game->SetScore(score);
+			game->ReloadCurrentScene();
+			game->ResumeGame();
 			return;
 		}
 		game->EndGame();

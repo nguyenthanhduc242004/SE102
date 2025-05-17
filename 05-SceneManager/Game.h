@@ -67,6 +67,9 @@ class CGame
 	void _ParseSection_SCENES(string line);
 
 	GameState currentState;
+	int life = 4;
+	int score = 0;
+	int coin = 0;
 public:
 	// Init DirectX, Sprite Handler
 	void Init(HWND hWnd, HINSTANCE hInstance);
@@ -120,7 +123,7 @@ public:
 	void InitiateSwitchScene(int scene_id);
 	void ReloadCurrentScene();
 	void _ParseSection_TEXTURES(string line);
-	
+
 	// GameStateMachine
 	void PauseGame() {
 		if (currentState == GAME_RUNNING) {
@@ -128,9 +131,7 @@ public:
 		}
 	}
 	void ResumeGame() {
-		//if (currentState == GAME_PAUSED) {
-			currentState = GAME_RUNNING;
-		//}
+		currentState = GAME_RUNNING;
 	}
 	void EndGame() {
 		currentState = GAME_OVER;
@@ -148,6 +149,25 @@ public:
 		return true;
 	}
 	~CGame();
+
+	int GetScore() {
+		return score;
+	}
+	int GetLife() {
+		return life;
+	}
+	int GetCoin() {
+		return coin;
+	}
+	void SetScore(int score) {
+		this->score = score;
+	}
+	void SetLife(int life) {
+		this->life = life;
+	}
+	void SetCoin(int coin) {
+		this->coin = coin;
+	}
 };
 typedef CGame* LPGAME;
 

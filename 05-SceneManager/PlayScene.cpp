@@ -3,6 +3,8 @@
 #include "AssetIDs.h"
 #include "PlayScene.h"
 
+#include "Game.h"
+#include <typeinfo>
 
 using namespace std;
 
@@ -222,7 +224,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_BACKGROUND:
 	{
-		std::cout << "Reading Background!";
+		//std::cout << "Reading Background!";
 		float cell_width = (float)atof(tokens[3].c_str());
 		float cell_height = (float)atof(tokens[4].c_str());
 		int length = atoi(tokens[5].c_str());
@@ -380,29 +382,35 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	/*if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED)
-		return;*/
+	if (CGame::GetInstance()->GetCurrentGameState() == GAME_OVER)
+		return;
 
 	float x, y;
 
 	// We know that Mario is the first object in the list hence we won't add him into the collidable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
+	// TO-DO: This is a "dirty" way, need a more organized way
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
+		//Conclusion contradicting the statement above: the first object is not mario, since before, Mario was at the start of the txt, but now, Mario is only paste in the playscene after the background to be visible.
+		//Currently, Mario is in the index 133!
 		objects[i]->GetPosition(x, y);
-		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED && typeid(*objects[i]) != typeid(CFlyingScore))
-			continue;
 		if (y >= LOWER_BOUND_DEATHZONE) {
 			objects[i]->Delete();
 			continue;
 		}
+		// No idea what's the purpose of this, but this being placed before the lower bound deadzone check makes the
+		// check useless. Why when game is paused, we decided to only include CFlyingScore into collision objects? Update applies on all scene objects already, and flying score is noncollidable...
+		// commented out doesnt seem to affect anything either.
+		//if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED && typeid(*objects[i]) != typeid(CFlyingScore))
+			//continue;
 		coObjects.push_back(objects[i]);
 	}
 
 
 	CMario* mario = dynamic_cast<CMario*>(player);
 
+	//the usage of actual pause during dying makes for plenty of confusing behavior, like if the game isnt paused
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED) {

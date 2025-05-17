@@ -61,8 +61,8 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 
-
-
+	int playSceneTime; // second, to use timer (Tick)--->multiply by 1000.
+	bool isCameraIndependent = false;
 public:
 	CPlayScene(int id, LPCWSTR filePath);
 

@@ -877,8 +877,8 @@ void CMario::SetState(int state)
 		ax = 0.0f;
 		ay = MARIO_LIFTED_GRAVITY * 2;
 		isHolding = false;
+		life--;
 		break;
-		dieTimer->Start();
 	}
 
 	CGameObject::SetState(state);
@@ -938,12 +938,6 @@ void CMario::HandleTimer(DWORD dt)
 	if (kickTimer.IsRunning()) {
 		kickTimer.Tick(dt);
 	}
-
-	if (tailWhipFrameTimer.IsRunning())
-	{
-		tailWhipFrameTimer.Tick(dt);
-	}
-
 	if (tailWhipTimer->IsRunning())
 	{
 		tailWhipTimer->Tick(dt);
@@ -964,19 +958,9 @@ void CMario::HandleTimer(DWORD dt)
 		kickTimer.Reset();
 		untouchable = 0;
 	}
-
-	if (tailWhipFrameTimer.HasPassed(MARIO_WHIPPING_TAIL_FRAME_TIME))
-	{
-		tailWhipFrameTimer.Reset();
-		tailWhipFrameTimer.Start();
-		tailWhipFrame = (((tailWhipFrame + 1) < (5)) ? (tailWhipFrame + 1) : (5));
-	}
-
 	if (tailWhipTimer->HasPassed(MARIO_WHIPPING_TAIL_TIME))
 	{
 		tailWhipTimer->Reset();
-		tailWhipFrameTimer.Reset();
-		tailWhipFrame = 0;
 	}
 	if (tailWagTimer.HasPassed(MARIO_WAGGING_TAIL_TIME)) {
 		tailWagTimer.Reset();
@@ -993,7 +977,5 @@ void CMario::Attack()
 		&& !isSitting)
 	{
 		tailWhipTimer->Start();
-		tailWhipFrameTimer.Start();
-		tailWhipFrame = 1;
 	}
 }
