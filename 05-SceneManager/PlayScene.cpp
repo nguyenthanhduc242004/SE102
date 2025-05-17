@@ -436,8 +436,8 @@ void CPlayScene::Update(DWORD dt)
 	cy -= game->GetBackBufferHeight() / 2;
 
 	if (cx < LEFT_BOUND_CAM_X) cx = LEFT_BOUND_CAM_X;
-
-	CGame::GetInstance()->SetCamPos(cx, DEFAULT_CAM_Y /*cy*/);
+	if (cy > DEFAULT_CAM_Y || (cy < DEFAULT_CAM_Y && cy > DEFAULT_CAM_Y - game->GetBackBufferHeight() / 3) || dynamic_cast<CMario*>(player)->GetLevel() != MARIO_LEVEL_TANOOKI) cy = DEFAULT_CAM_Y;
+	CGame::GetInstance()->SetCamPos(cx, cy /*cy*/);
 
 	// Mario transform logic
 	CDeltaTimer* marioTrasnformTimer = mario->GetTrasnformTimer();

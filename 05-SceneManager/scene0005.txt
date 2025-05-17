@@ -127,7 +127,7 @@ leaf.txt
 
 
 #COIN			itX	itY	ofX	ofY
-4	100	364	5	3	20	-20
+#4	100	364	5	3	20	-20
 
 
 
