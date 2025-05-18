@@ -530,7 +530,7 @@ void CGame::InitiateSwitchScene(int scene_id)
 {
 	next_scene = scene_id;
 }
-void CGame::ReloadCurrentScene()
+void CGame::ReloadCurrentScene() 
 {
 	DebugOut(L"[INFO] Reloading current scene...\n");
 	if (scenes[current_scene] != NULL)

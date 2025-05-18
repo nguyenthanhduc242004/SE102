@@ -3,7 +3,6 @@
 #include <Windows.h>
 #include <d3dx10.h>
 #include <vector>
-
 #include "Animation.h"
 #include "Animations.h"
 #include "Sprites.h"
@@ -36,9 +35,7 @@ protected:
 
 public: 
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
-	//void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
-	//void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
 
 	int GetState() { return this->state; }
 	virtual void Delete() { isDeleted = true;  }
