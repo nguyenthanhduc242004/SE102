@@ -377,7 +377,10 @@ void CPlayScene::Load()
 
 	f.close();
 
+	hud = new CHUD();
+
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
+	CGame::GetInstance()->ResumeGame();
 }
 
 void CPlayScene::Update(DWORD dt)
@@ -402,15 +405,15 @@ void CPlayScene::Update(DWORD dt)
 		// No idea what's the purpose of this, but this being placed before the lower bound deadzone check makes the
 		// check useless. Why when game is paused, we decided to only include CFlyingScore into collision objects? Update applies on all scene objects already, and flying score is noncollidable...
 		// commented out doesnt seem to affect anything either.
-		//if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED && typeid(*objects[i]) != typeid(CFlyingScore))
-			//continue;
+		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED && typeid(*objects[i]) != typeid(CFlyingScore))
+			continue;
 		coObjects.push_back(objects[i]);
 	}
 
 
 	CMario* mario = dynamic_cast<CMario*>(player);
 
-	//the usage of actual pause during dying makes for plenty of confusing behavior, like if the game isnt paused
+	//the usage of actual pause during dying makes for plenty of confusing behavior, like if the game isnt paused when mario dies, mario cant reload the scene
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED) {
@@ -445,7 +448,10 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < LEFT_BOUND_CAM_X) cx = LEFT_BOUND_CAM_X;
 	if (cy > DEFAULT_CAM_Y || (cy < DEFAULT_CAM_Y && cy > DEFAULT_CAM_Y - game->GetBackBufferHeight() / 3) || dynamic_cast<CMario*>(player)->GetLevel() != MARIO_LEVEL_TANOOKI) cy = DEFAULT_CAM_Y;
-	CGame::GetInstance()->SetCamPos(cx, cy /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, cy);
+	// Set its gameobject position to the camera position (aligning x--->center, y--->bottom) then in the hud itself, tweak camera_relative x/y to draw
+	hud->SetPosition(cx + (game->GetBackBufferWidth() / 2), cy + (game->GetBackBufferHeight()));
+	hud->Update(dt, mario);
 
 	// Mario transform logic
 	CDeltaTimer* marioTrasnformTimer = mario->GetTrasnformTimer();
@@ -468,7 +474,7 @@ void CPlayScene::Update(DWORD dt)
 		marioResizeTimer->Reset();
 		CGame::GetInstance()->ResumeGame();
 		mario->SetResizing(false);
-		
+
 	}
 
 	PurgeDeletedObjects();
@@ -478,6 +484,7 @@ void CPlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+	hud->Render();
 }
 
 /*
@@ -501,6 +508,7 @@ void CPlayScene::Clear()
 */
 void CPlayScene::Unload()
 {
+	CGame::GetInstance()->PauseGame();
 	for (int i = 0; i < objects.size(); i++) {
 		delete objects[i];
 	}

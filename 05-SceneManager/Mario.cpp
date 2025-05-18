@@ -1,9 +1,5 @@
 #include "Mario.h"
-#include <algorithm>
-#include "debug.h"
-#include "Game.h"
-#include "PlayScene.h"
-#include "Leaf.h"
+
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -18,7 +14,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else
 			vy = MARIO_SLOW_FALL_SPEED;
 	}
-	//there should be a mechanism to ease from running to walking, currently it just cuts down immediately
 	if (vx > 0.0f) {
 		vx -= dragX * dt;
 		if (vx < 0.0f)	vx = 0.0f;
@@ -27,7 +22,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vx += dragX * dt;
 		if (vx > 0.0f)	vx = 0.0f;
 	}
-
 	if (abs(vx) > abs(maxVx) && vx * maxVx > 0) vx = maxVx;
 	if (vy > maxVy) vy = maxVy;
 
@@ -764,7 +758,7 @@ void CMario::Render()
 
 	animations->Get(aniId)->Render(x, y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
@@ -930,6 +924,11 @@ void CMario::AddScore(float x, float y, int value, bool showEffect)
 	}
 }
 
+void CMario::AddCoin(int value)
+{
+	coin += value;
+}
+
 void CMario::HandleTimer(DWORD dt)
 {
 	if (invincibleTimer.IsRunning()) {
@@ -979,3 +978,12 @@ void CMario::Attack()
 		tailWhipTimer->Start();
 	}
 }
+
+int CMario::GetSpeedStacks() {
+	int speedStacks = (int)(abs(vx) / (MARIO_RUNNING_SPEED / MARIO_MAX_SPEED_STACKS));
+	// just to be safe...
+	if (speedStacks > MARIO_MAX_SPEED_STACKS || flyTimer.IsRunning())
+		speedStacks = MARIO_MAX_SPEED_STACKS;
+	return speedStacks;
+}
+

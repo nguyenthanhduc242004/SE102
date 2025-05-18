@@ -6,6 +6,9 @@
 #include "DeltaTimer.h"
 #include "debug.h"
 #include "FlyingScore.h"
+#include <algorithm>
+#include "Game.h"
+#include "Leaf.h"
 
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f
@@ -40,53 +43,8 @@
 
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
-//
-//#pragma region ANIMATION_ID
-//
-//#define ID_ANI_MARIO_IDLE_RIGHT 400
-//#define ID_ANI_MARIO_IDLE_LEFT 401
-//
-//#define ID_ANI_MARIO_WALKING_RIGHT 500
-//#define ID_ANI_MARIO_WALKING_LEFT 501
-//
-//#define ID_ANI_MARIO_RUNNING_RIGHT 600
-//#define ID_ANI_MARIO_RUNNING_LEFT 601
-//
-//#define ID_ANI_MARIO_JUMP_WALK_RIGHT 700
-//#define ID_ANI_MARIO_JUMP_WALK_LEFT 701
-//
-//#define ID_ANI_MARIO_JUMP_RUN_RIGHT 800
-//#define ID_ANI_MARIO_JUMP_RUN_LEFT 801
-//
-//#define ID_ANI_MARIO_SIT_RIGHT 900
-//#define ID_ANI_MARIO_SIT_LEFT 901
-//
-//#define ID_ANI_MARIO_BRACE_RIGHT 1000
-//#define ID_ANI_MARIO_BRACE_LEFT 1001
-//
-//
-//// SMALL MARIO
-//#define ID_ANI_MARIO_SMALL_IDLE_RIGHT 1100
-//#define ID_ANI_MARIO_SMALL_IDLE_LEFT 1102
-//
-//#define ID_ANI_MARIO_SMALL_WALKING_RIGHT 1200
-//#define ID_ANI_MARIO_SMALL_WALKING_LEFT 1201
-//
-//#define ID_ANI_MARIO_SMALL_RUNNING_RIGHT 1300
-//#define ID_ANI_MARIO_SMALL_RUNNING_LEFT 1301
-//
-//#define ID_ANI_MARIO_SMALL_BRACE_RIGHT 1400
-//#define ID_ANI_MARIO_SMALL_BRACE_LEFT 1401
-//
-//#define ID_ANI_MARIO_SMALL_JUMP_WALK_RIGHT 1500
-//#define ID_ANI_MARIO_SMALL_JUMP_WALK_LEFT 1501
-//
-//#define ID_ANI_MARIO_SMALL_JUMP_RUN_RIGHT 1600
-//#define ID_ANI_MARIO_SMALL_JUMP_RUN_LEFT 1601
-//
-//#pragma endregion
-//
 
+#define MARIO_MAX_SPEED_STACKS		6
 
 #pragma region ANIMATION_ID
 
@@ -197,7 +155,7 @@
 #define	MARIO_LEVEL_BIG		2
 #define MARIO_LEVEL_TANOOKI 3
 
-#define MARIO_ACTIVE_TAIL_BBOX_WIDTH		MARIO_BIG_BBOX_WIDTH + 7 * 2
+#define MARIO_ACTIVE_TAIL_BBOX_WIDTH		(MARIO_BIG_BBOX_WIDTH + 7 * 2)
 
 #define MARIO_BIG_BBOX_WIDTH  14
 #define MARIO_BIG_BBOX_HEIGHT 24
@@ -213,7 +171,7 @@
 #define MARIO_KICK_TIME	200	
 #define MARIO_WHIPPING_TAIL_TIME		400
 #define MARIO_WAGGING_TAIL_TIME		400
-#define MARIO_FLYING_TIME			1750
+#define MARIO_FLYING_TIME			2000
 
 #define MARIO_RESIZING_TIME	1200
 #define MARIO_TRANSFORM_TIME 400
@@ -373,8 +331,6 @@ public:
 			SetState(MARIO_STATE_DIE);
 			dieTimer->Start();
 			game->PauseGame();
-			// for some reason, the game has to be paused and die timer has to be on for the ReloadCurrentScene 
-			// to make a scene without a mysterious-null-GameObject and not crash the game...
 			return;
 		}
 		if (life > 0) {
@@ -382,14 +338,15 @@ public:
 			game->SetCoin(coin);
 			game->SetScore(score);
 			game->ReloadCurrentScene();
-			game->ResumeGame();
 			return;
 		}
 		game->EndGame();
 	}
 	void AddScore(float x, float y, int value, bool showEffect);
-
+	void AddCoin(int value);
 	int GetScore() const { return score; }
+	int GetLife() const { return life; }
+	int GetCoin() const { return coin; }
 
 	void HandleTimer(DWORD dt);
 
@@ -407,6 +364,8 @@ public:
 	}
 
 	void Attack();
+
+	int GetSpeedStacks();
 
 	CDeltaTimer* GetTrasnformTimer() {
 		return this->transformTimer;

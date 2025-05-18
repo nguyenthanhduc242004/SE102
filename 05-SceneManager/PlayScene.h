@@ -7,7 +7,6 @@
 #include "Mario.h"
 #include "Goomba.h"
 #include "Utils.h"
-#include "Textures.h"
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
@@ -25,6 +24,7 @@
 #include "Bullet.h"
 #include "SampleKeyEventHandler.h"
 #include "Spawner.h"
+#include "HUD.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
@@ -36,11 +36,12 @@
 
 #define MAX_SCENE_LINE 1024
 
-#define DEFAULT_CAM_Y 244.0f
+#define DEFAULT_CAM_Y 260.0f
 #define LEFT_BOUND_CAM_X 93
 #define RESPAWN_OFFSET_CAM_X 70
 #define LOWER_BOUND_DEATHZONE 700.0f
 
+class CHUD;
 class CSpawner;
 typedef CSpawner* LPSPAWNER;
 
@@ -61,8 +62,9 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 
-	int playSceneTime; // second, to use timer (Tick)--->multiply by 1000.
+	//int playSceneTime; // second, to use timer (Tick)--->multiply by 1000.
 	bool isCameraIndependent = false;
+	CHUD* hud;
 public:
 	CPlayScene(int id, LPCWSTR filePath);
 
