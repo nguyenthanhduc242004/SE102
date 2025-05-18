@@ -1,0 +1,30 @@
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+#sprite
+# ====	HUD ====
+777777	10	0	272	32	120
+# ---- MARIO TAG ---- 
+50003	15	160	33	169	130
+#---- MARIO TAG ---- 
+50004	15	170	33	179	130
+#---- PowerMelter filled arrow ---- 
+50005	63	161	72	170	130
+#---- powerMelter filled iconP ---- 
+50006	72	161	88	170	130
+#---- powerMelter empty arrow ---- 
+50007	90	161	99	170	130
+#---- powerMelter empty icon ---- 
+50008	99	161	116	170	130
+#---- empty card ---- 
+50009	160	158	183	186	130
+#---- mushroom card ---- 
+50010	184	160	208	186	130
+#---- fireflower card ---- 
+50011	208	160	232	186	130
+#---- startman card ---- 
+50012	232	160	256	186	130
+
+# ani_id	sprite1_id	time1	sprite2_id	time2	...
+[ANIMATIONS]
+# ==== IconP flickering ====
+5006	50006	200	15001	200

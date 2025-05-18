@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Windows.h>
-
 #include <signal.h>
 #include <string>
 #include <stdio.h>

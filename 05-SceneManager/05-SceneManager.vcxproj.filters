@@ -31,6 +31,12 @@
     <Filter Include="Map\Interactable\Non-functional">
       <UniqueIdentifier>{a3f79a41-6285-4ddb-abe1-858789d496b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HUD">
+      <UniqueIdentifier>{4849453e-a2ba-438e-bfc6-a7e559c717e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other">
+      <UniqueIdentifier>{ec3099d0-1f19-4e31-b82d-7cd3eca1115a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -58,9 +64,6 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Textures.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="debug.cpp">
@@ -128,6 +131,15 @@
     <ClCompile Include="Leaf.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
+    <ClCompile Include="HUD.cpp">
+      <Filter>HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -170,9 +182,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Goomba.h">
@@ -245,5 +254,14 @@
     <ClInclude Include="Leaf.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="PiranhaPlant.h" />
+    <ClInclude Include="HUD.h">
+      <Filter>HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Other</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

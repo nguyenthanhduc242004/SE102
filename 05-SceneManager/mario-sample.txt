@@ -26,3 +26,6 @@ height	240
 90	textures\left.png
 100	textures\right.png
 110	textures\particles.png
+120	textures\HUD.png
+130	textures\fonts.png
+140	textures\card.png
