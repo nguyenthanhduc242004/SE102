@@ -44,6 +44,9 @@
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
 
+#define MARIO_STATE_DESCENDING_THROUGH_PIPE	700
+#define MARIO_STATE_ASCENDING_THROUGH_PIPE	701
+
 #define MARIO_MAX_SPEED_STACKS		6
 
 #pragma region ANIMATION_ID
@@ -146,6 +149,11 @@
 #define ID_ANI_MARIO_TRANSFORM		70001
 #define ID_ANI_MARIO_INVISIBLE		1901
 
+// TRAVELLING THROUGH PIPE (TAIL)
+#define ID_ANI_MARIO_TRAVELLING_THROUGH_PIPE	1902
+#define MARIO_TRAVELLING_THROUGH_PIPE_SPEED	0.025f
+#define MARIO_TRAVELLING_THROUGH_PIPE_TIME 1000
+
 #pragma endregion
 
 
@@ -186,7 +194,9 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isReadyToHold;
 	BOOLEAN isHittingWall = false;
 
-	bool isTeleporting = false;
+	bool isAscendingThroughPipe = false;
+	bool isDescendingThroughPipe = false;
+	CDeltaTimer* travellingThroughPipeTimer = new CDeltaTimer();
 	float toX = -1, toY = -1;
 
 	int level;
@@ -255,7 +265,7 @@ public:
 
 	int IsCollidable()
 	{
-		return (state != MARIO_STATE_DIE);
+		return (state != MARIO_STATE_DIE && !isAscendingThroughPipe && !isDescendingThroughPipe);
 	}
 
 	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable == 0); }
@@ -292,6 +302,11 @@ public:
 	virtual void GetSpeed(float& vx, float& vy) override {
 		vx = this->vx;
 		vy = this->vy;
+	}
+
+	void SetGravity(float ax, float ay) {
+		this->ax = ax;
+		this->ay = ay;
 	}
 
 	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override {
@@ -395,4 +410,7 @@ public:
 		return this->tailWhipTimer;
 	}
 
+	CDeltaTimer* GetTravellingThroughPipeTimer() {
+		return this->travellingThroughPipeTimer;
+	}
 };

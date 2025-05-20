@@ -3,16 +3,42 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (isTeleporting && toX > 0 && toY > 0) {
-		SetPosition(toX, toY);
-		isTeleporting = false;
-		toX = -1;
-		toY = -1;
-	}
 	vy += ay * dt;
 	vx += ax * dt;
 
 	HandleTimer(dt);
+
+	if (travellingThroughPipeTimer->IsRunning()) {
+		travellingThroughPipeTimer->Tick(dt);
+		vx = 0;
+		ay = 0;
+		if (isAscendingThroughPipe)
+			vy = -MARIO_TRAVELLING_THROUGH_PIPE_SPEED;
+		else if (isDescendingThroughPipe)
+			vy = MARIO_TRAVELLING_THROUGH_PIPE_SPEED;
+	}
+	if (isDescendingThroughPipe && travellingThroughPipeTimer->HasPassed(MARIO_TRAVELLING_THROUGH_PIPE_TIME)) {
+		travellingThroughPipeTimer->Reset();
+		isDescendingThroughPipe = false;
+		SetState(MARIO_STATE_IDLE);
+		ay = MARIO_GRAVITY;
+		SetPosition(toX, toY);
+		toX = -1;
+		toY = -1;
+	}
+	if (isAscendingThroughPipe && travellingThroughPipeTimer->HasPassed(MARIO_TRAVELLING_THROUGH_PIPE_TIME)) {
+		if (toX > 0 && toY > 0) {
+			SetPosition(toX, toY);
+			toX = -1;
+			toY = -1;
+		}
+		if (travellingThroughPipeTimer->HasPassed(MARIO_TRAVELLING_THROUGH_PIPE_TIME * 2)) {
+			travellingThroughPipeTimer->Reset();
+			SetState(MARIO_STATE_IDLE);
+			ay = MARIO_GRAVITY;
+			isAscendingThroughPipe = false;
+		}
+	}
 
 	if (tailWagTimer.IsRunning()) {
 		if (flyTimer.IsRunning())
@@ -77,7 +103,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 			}
 		}
 
-		if (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CPipe*>(e->obj)) {
+		if (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CQuestionBlock*>(e->obj)) {
 			isHittingWall = true;
 			if (nx == 1) {
 				x -= 0.1f;
@@ -339,16 +365,17 @@ void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
 	if (pipeToX > 0 && pipeToY > 0) {
 		if (pipe->GetUpsideDown()) {
 			if (e->ny > 0 && CGame::GetInstance()->GetUpKeyBeingPressed()) {
-				isTeleporting = true;
-				toX = pipe->GetToX();
-				toY = pipe->GetToY();
+				toX = pipeToX;
+				toY = pipeToY;
+				SetState(MARIO_STATE_ASCENDING_THROUGH_PIPE);
 			}
 		}
 		else {
 			if (e->ny < 0 && isSitting) {
-				isTeleporting = true;
-				toX = pipe->GetToX();
-				toY = pipe->GetToY();
+				toX = pipeToX;
+				toY = pipeToY;
+				SetState(MARIO_STATE_DESCENDING_THROUGH_PIPE);
+				isSitting = false;
 			}
 		}
 	}
@@ -754,6 +781,9 @@ void CMario::Render()
 		aniId = GetAniIdTransform(level);
 	else if (isResizing)
 		aniId = GetAniIdResize(level);
+	else if (isAscendingThroughPipe || isDescendingThroughPipe) {
+		aniId = ID_ANI_MARIO_TRAVELLING_THROUGH_PIPE;
+	}
 	else if (state == MARIO_STATE_DIE)
 		aniId = ID_ANI_MARIO_DIE;
 	else if (level == MARIO_LEVEL_TANOOKI) {
@@ -801,6 +831,14 @@ void CMario::SetState(int state)
 
 	switch (state)
 	{
+	case MARIO_STATE_DESCENDING_THROUGH_PIPE:
+		travellingThroughPipeTimer->Start();
+		isDescendingThroughPipe = true;
+		break;
+	case MARIO_STATE_ASCENDING_THROUGH_PIPE:
+		travellingThroughPipeTimer->Start();
+		isAscendingThroughPipe = true;
+		break;
 	case MARIO_STATE_RUNNING_RIGHT:
 		if (isSitting) break;
 		maxVx = MARIO_RUNNING_SPEED;
@@ -960,8 +998,7 @@ void CMario::AddCoin(int value)
 	coin += value;
 }
 
-void CMario::HandleTimer(DWORD dt)
-{
+void CMario::HandleTimer(DWORD dt) {
 	if (invincibleTimer.IsRunning()) {
 		invincibleTimer.Tick(dt);
 	}
