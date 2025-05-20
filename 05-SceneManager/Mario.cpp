@@ -3,6 +3,12 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isTeleporting && toX > 0 && toY > 0) {
+		SetPosition(toX, toY);
+		isTeleporting = false;
+		toX = -1;
+		toY = -1;
+	}
 	vy += ay * dt;
 	vx += ax * dt;
 
@@ -38,7 +44,6 @@ void CMario::OnNoCollision(DWORD dt)
 }
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
-
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0.0f;
@@ -128,6 +133,9 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 	if (dynamic_cast<CBullet*>(e->obj)) {
 		OnCollisionWithBullet(e);
+	}
+	if (dynamic_cast<CPipe*>(e->obj)) {
+		OnCollisionWithPipe(e);
 	}
 }
 
@@ -321,6 +329,29 @@ void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e)
 {
 	TakeDamageFrom(e->obj);
+}
+
+void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
+{
+	CPipe* pipe = dynamic_cast<CPipe*>(e->obj);
+	float pipeToX = pipe->GetToX();
+	float pipeToY = pipe->GetToY();
+	if (pipeToX > 0 && pipeToY > 0) {
+		if (pipe->GetUpsideDown()) {
+			if (e->ny > 0 && CGame::GetInstance()->GetUpKeyBeingPressed()) {
+				isTeleporting = true;
+				toX = pipe->GetToX();
+				toY = pipe->GetToY();
+			}
+		}
+		else {
+			if (e->ny < 0 && isSitting) {
+				isTeleporting = true;
+				toX = pipe->GetToX();
+				toY = pipe->GetToY();
+			}
+		}
+	}
 }
 //
 // Get animation ID for small Mario

@@ -21,7 +21,7 @@ public:
 	CBox(float x, float y, int length_width, int length_height, int color) : CPlatform(x, y)
 	{
 		this->length = length_width;
-		this->girth = length_height;
+		this->height = length_height;
 		this->color = color;
 	}
 

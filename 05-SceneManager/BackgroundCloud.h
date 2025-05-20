@@ -14,7 +14,7 @@ class CBackgroundCloud : public CBackground
 {
 public:
 	CBackgroundCloud(float x, float y, int length)
-		:CBackground(x, y, BACKGROUND_CLOUDE_WIDTH / 4, BACKGROUND_CLOUDE_HEIGHT, length, NULL, NULL, NULL) {}
+		:CBackground(x, y, BACKGROUND_CLOUDE_WIDTH / 4, BACKGROUND_CLOUDE_HEIGHT, length, 1, NULL, NULL, NULL) {}
 
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);

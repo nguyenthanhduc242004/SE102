@@ -70,6 +70,8 @@ class CGame
 	int life = 4;
 	int score = 0;
 	int coin = 0;
+
+	BOOLEAN isUpKeyBeingPressed = false;
 public:
 	// Init DirectX, Sprite Handler
 	void Init(HWND hWnd, HINSTANCE hInstance);
@@ -168,6 +170,8 @@ public:
 	void SetCoin(int coin) {
 		this->coin = coin;
 	}
+	void SetUpKeyBeingPressed(BOOLEAN isUpKeyBeingPressed) { this->isUpKeyBeingPressed = isUpKeyBeingPressed; }
+	BOOLEAN GetUpKeyBeingPressed() { return this->isUpKeyBeingPressed; }
 };
 typedef CGame* LPGAME;
 

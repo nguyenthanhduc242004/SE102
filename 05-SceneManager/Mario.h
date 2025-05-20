@@ -186,6 +186,9 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isReadyToHold;
 	BOOLEAN isHittingWall = false;
 
+	bool isTeleporting = false;
+	float toX = -1, toY = -1;
+
 	int level;
 	int untouchable;
 	int isBoosted;
@@ -218,6 +221,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
+	void OnCollisionWithPipe(LPCOLLISIONEVENT e);
 
 	int GetAniIdTanooki();
 	int GetAniIdBig();

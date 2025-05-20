@@ -9,6 +9,16 @@
 #Bottom right
 180004	340	68	355	83	50
 
+############ Transparent - Upside down ############
+#Top left
+181001	2096	464	2111	479	40
+#Top right
+181002	2112	464	2127	479	40
+#Bottom left
+181003	2096	480	2111	495	40
+#Bottom right
+181004	2112	480	2127	495	40
+
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]

@@ -38,31 +38,46 @@ void CPipe::Render()
 	CSprites* s = CSprites::GetInstance();
 
 	// Drawing the first row
-	s->Get(SPRITE_ID_PIPE_BOTTOM_LEFT)->Draw(xx, yy);
+	s->Get(spriteIdBottomLeft)->Draw(xx, yy);
 	xx += this->cell_width;
-	s->Get(SPRITE_ID_PIPE_BOTTOM_RIGHT)->Draw(xx, yy);
+	s->Get(spriteIdBottomRight)->Draw(xx, yy);
 
 	// Resetting the x-axis
 	xx = x;
 
 	// Drawing the middle row(s)
-	yy -= this->cell_height;
-	for (int i = 1; i < this->height - 1; i++) {
-		s->Get(SPRITE_ID_PIPE_BOTTOM_LEFT)->Draw(xx, yy);
-		xx += this->cell_width;
-		s->Get(SPRITE_ID_PIPE_BOTTOM_RIGHT)->Draw(xx, yy);
-
-		// Resetting the x-axis
-		xx = x;
-
+	if (!isUpsideDown) {
 		yy -= this->cell_height;
+		for (int i = 1; i < this->height - 1; i++) {
+			s->Get(spriteIdBottomLeft)->Draw(xx, yy);
+			xx += this->cell_width;
+			s->Get(spriteIdBottomRight)->Draw(xx, yy);
+
+			// Resetting the x-axis
+			xx = x;
+
+			yy -= this->cell_height;
+		}
+	}
+	else {
+		yy -= this->cell_height;
+		for (int i = 1; i < this->height - 1; i++) {
+			s->Get(spriteIdTopLeft)->Draw(xx, yy);
+			xx += this->cell_width;
+			s->Get(spriteIdTopRight)->Draw(xx, yy);
+
+			// Resetting the x-axis
+			xx = x;
+
+			yy -= this->cell_height;
+		}
 	}
 
 	// Drawing the last row
 	if (this->height > 1) {
-		s->Get(SPRITE_ID_PIPE_TOP_LEFT)->Draw(xx, yy);
+		s->Get(spriteIdTopLeft)->Draw(xx, yy);
 		xx += this->cell_width;
-		s->Get(SPRITE_ID_PIPE_TOP_RIGHT)->Draw(xx, yy);
+		s->Get(spriteIdTopRight)->Draw(xx, yy);
 	}
 }
 
