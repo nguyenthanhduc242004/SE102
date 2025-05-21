@@ -176,8 +176,6 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 }
 
-}
-
 void CMario::AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj) {
 	int FLYING_SCORE_TYPE;
 	switch (streak) {
