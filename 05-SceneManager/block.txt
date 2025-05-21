@@ -1,6 +1,10 @@
 # id	left	top	right	bottom	texture_id
 [SPRITES]
+#Orange block with black stripes
 130001	164	6	179	21	30
+
+#Blue block (for map 1-1 secret room)
+130002	289	187	304	202	50
 
 
 

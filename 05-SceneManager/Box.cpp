@@ -32,7 +32,7 @@ void CBox::RenderBoundingBox()
 
 void CBox::Render()
 {
-	if (this->length <= 0 || this->girth <= 0) return;
+	if (this->length <= 0 || this->height <= 0) return;
 	float xx = x;
 	float yy = y;
 	CSprites* s = CSprites::GetInstance();
@@ -140,7 +140,7 @@ void CBox::Render()
 
 	// Drawing the middle row(s)
 	yy -= this->cell_height;
-	for (int i = 1; i < this->girth - 1; i++) {
+	for (int i = 1; i < this->height - 1; i++) {
 		s->Get(sprite_id_middle_left)->Draw(xx, yy);
 		xx += this->cell_width;
 		for (int i = 1; i < this->length - 1; i++)
@@ -151,7 +151,7 @@ void CBox::Render()
 		if (this->length > 1)
 			s->Get(sprite_id_middle_right)->Draw(xx, yy);
 
-		if (i != this->girth - 2) {
+		if (i != this->height - 2) {
 			yy += BOX_SHADOW_HEIGHT / 2;
 			xx += (this->cell_width + BOX_SHADOW_WIDTH) / 2;
 			s->Get(sprite_id_shadow_middle)->Draw(xx, yy);
@@ -176,7 +176,7 @@ void CBox::Render()
 	}
 
 	// Drawing the last row
-	if (girth > 1) {
+	if (height > 1) {
 		s->Get(sprite_id_top_left)->Draw(xx, yy);
 		xx += this->cell_width;
 		for (int i = 1; i < this->length - 1; i++)
@@ -200,7 +200,7 @@ void CBox::GetBoundingBox(float& l, float& t, float& r, float& b)
 	float cellWidth_div_2 = this->cell_width / 2;
 	l = x - cellWidth_div_2;
 	b = y + this->cell_height / 2;
-	t = b - this->cell_height * this->girth;
+	t = b - this->cell_height * this->height;
 	r = l + this->cell_width * this->length;
 
 }

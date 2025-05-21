@@ -8,10 +8,25 @@
 
 void CBackground::Render()
 {
-	if (this->length <= 0) return;
-	float xx = x;
+	if (this->length <= 0 || this->height <= 0) return;
 	CSprites* s = CSprites::GetInstance();
+	float yy = y;
+	RenderRow(yy);
+	yy += this->cellHeight;
+	for (int i = 1; i < this->height - 1; i++)
+	{
+		RenderRow(yy);
+		yy += this->cellHeight;
+	}
+	if (height > 1)
+		RenderRow(yy);
 
+	//RenderBoundingBox();	
+}
+
+void CBackground::RenderRow(float y) {
+	CSprites* s = CSprites::GetInstance();
+	float xx = x;
 	s->Get(this->spriteIdBegin)->Draw(xx, y);
 	xx += this->cellWidth;
 	for (int i = 1; i < this->length - 1; i++)
@@ -21,8 +36,6 @@ void CBackground::Render()
 	}
 	if (length > 1)
 		s->Get(this->spriteIdEnd)->Draw(xx, y);
-
-	//RenderBoundingBox();	
 }
 
 int CBackground::IsDirectionCollidable(float nx, float ny)

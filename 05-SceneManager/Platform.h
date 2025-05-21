@@ -8,7 +8,7 @@
 class CPlatform : public CGameObject
 {
 protected:
-	int length, girth;				// Unit: cell 
+	int height, length;				// Unit: cell 
 	float cellWidth;
 	float cellHeight;
 	int spriteIdBegin, spriteIdMiddle, spriteIdEnd;

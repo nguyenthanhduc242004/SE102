@@ -1,0 +1,10 @@
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+#Light blue - black divider
+220001	2479	0	2487	15	40
+#Black
+220002	2500	0	2515	15	40
+
+
+# ani_id	sprite1_id	time1	sprite2_id	time2	...
+[ANIMATIONS]
