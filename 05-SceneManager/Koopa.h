@@ -97,6 +97,7 @@ protected:
 	virtual void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithBoBro(LPCOLLISIONEVENT e);
 
 	bool IsGroundAhead(LPCOLLISIONEVENT e);
 

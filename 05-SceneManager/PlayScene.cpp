@@ -108,7 +108,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		//LPSPAWNER spawner = new CSpawner(x, y, OBJECT_TYPE_GOOMBA, color, isParagoomba);
 		//objs.push_back(spawner);
 		//spawners.push_back(spawner);
-		objs.push_back(new CBoBro(x, y - 12));
+		objs.push_back(new CBoBro(x, y - 5));
 		break;
 	}
 

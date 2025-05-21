@@ -185,6 +185,9 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (dynamic_cast<CMario*>(e->obj)) return;
 
 	//check all npc / which this npc can go through/interact ---> solve Mario triggering collision event multiple times because of IsBlocking setting
+	if (dynamic_cast<CBoBro*>(e->obj)) {
+		OnCollisionWithBoBro(e);
+	}
 	if (dynamic_cast<CKoopa*>(e->obj)) {
 		OnCollisionWithKoopa(e);
 		return;
@@ -366,6 +369,34 @@ void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		goomba->ReverseDirection();
 	}
 }
+void CKoopa::OnCollisionWithBoBro(LPCOLLISIONEVENT e)
+{
+	CBoBro* bro = dynamic_cast<CBoBro*>(e->obj);
+
+	if (state == KOOPAS_STATE_SPINNING) {
+		//DebugOut(L"Koopa direction when hit: %d\n", nx);
+		bro->SetDirection(nx);
+		bro->TakeDamageFrom(this);
+		CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		spinningKillStreak++;
+		mario->AddScoreBasedOnStreak(spinningKillStreak, e->obj);
+		return;
+	}
+	if (isHeld) {
+		//this bounces backward
+		nx = -nx;
+		TakeDamageFrom(bro);
+		//goomba bounces away from this
+		bro->SetDirection(-nx);
+		bro->TakeDamageFrom(this);
+		return;
+	}
+	if (e->nx != 0) {
+		ReverseDirection();
+		bro->ReverseDirection();
+	}
+}
+
 bool CKoopa::IsGroundAhead(LPCOLLISIONEVENT e)
 {
 	float probeX = x + (nx > 0 ? KOOPAS_BBOX_WIDTH / 2 - 3 : -KOOPAS_BBOX_WIDTH / 2 + 3);

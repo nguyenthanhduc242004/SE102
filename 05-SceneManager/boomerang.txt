@@ -1,0 +1,12 @@
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+# ==== Boomerang ====
+800009	124	166	139	182	80
+800010	144	166	160	181	80
+800011	124	188	139	204	80
+800012	145	186	161	202	80
+
+# ani_id	sprite1_id	time1	sprite2_id	time2	...
+[ANIMATIONS]
+# ==== Boomerang ====
+8002	800009	100	800010	100	800011	100	800012	100

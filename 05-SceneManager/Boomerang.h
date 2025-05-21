@@ -23,18 +23,15 @@
 #define BOOM_CHANGE_TIME       750   // ms
 #define BOOM_PHASE_COUNT       6
 
-#define BOOMERANG_ANI_ID				90
-#define BOOMERANG_ANI_IDLE_RIGHT		0
-#define BOOMERANG_ANI_RIGHT				1
-#define BOOMERANG_ANI_IDLE_LEFT			2
-#define BOOMERANG_ANI_LEFT				3
+#define BOOMERANG_ANI_ID				8002
 
 class CBoomerang : public CGameObject, public CMoveable
 {
 protected:
     CDeltaTimer phaseTimer;
     float x0;
-    bool isSpawned = false;
+    virtual int IsCollidable() { return 1; }
+    virtual int IsBlocking() { return 0; }
     virtual void GetBoundingBox(float& lelf, float& top, float& right, float& bottom);
     virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
     virtual void Render();
@@ -51,10 +48,6 @@ public:
     void SetSpeed(float vx, float vy) {
         this->vx = vx;
         this->vy = vy;
-    }
-    bool IsSpawned() { return isSpawned; }
-    void SetIsSpawned(bool isSpawned) {
-        this->isSpawned = isSpawned;
     }
 };
 

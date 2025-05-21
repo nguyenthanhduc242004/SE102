@@ -14,10 +14,10 @@
 #define BOOMERANG_BROTHER_STATE_WALKING         1
 #define BOOMERANG_BROTHER_STATE_DIE            2
 
-#define BB_SPEED                0.0035f
+#define BB_SPEED                0.035f
 #define BB_GRAVITY              0.0005
 
-#define BB_LIMIT_RANGE          48
+#define BB_LIMIT_RANGE          60
 #define BB_ACTIVE_RANGE         80
 
 #define BB_AIM_TIME             500   // ms
@@ -49,15 +49,13 @@ protected:
     virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
     virtual void Render();
     
-    virtual int IsCollidable() { return 1; }
+    virtual int IsCollidable() { return state != BOOMERANG_BROTHER_STATE_DIE; }
     virtual int IsBlocking() { return 0; }
     virtual void OnNoCollision(DWORD dt);
 
     virtual void OnCollisionWith(LPCOLLISIONEVENT e);
-
     void HoldBoomerang();
     void ThrowBoomerang();
-    void ClearBoomerang();
     void HandleTimer(DWORD dt);
 public:
     CBoBro(float x, float y);

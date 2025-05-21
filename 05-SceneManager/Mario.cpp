@@ -103,6 +103,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		OnCollisionWithKoopa(e);
 		return;
 	}
+	if (dynamic_cast<CBoBro*>(e->obj)) {
+		OnCollisionWithBoBro(e);
+		return;
+	}
 	if (dynamic_cast<CQuestionBlock*>(e->obj)) {
 		OnCollisionWithQuestionBlock(e);
 		return;
@@ -125,10 +129,18 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 	if (dynamic_cast<CPiranhaPlant*>(e->obj)) {
 		OnCollisionWithPiranhaPlant(e);
+		return;
 	}
 	if (dynamic_cast<CBullet*>(e->obj)) {
 		OnCollisionWithBullet(e);
+		return;
 	}
+	// basically same projectile as bullet
+	if (dynamic_cast<CBoomerang*>(e->obj)) {
+		OnCollisionWithBullet(e);
+		return;
+	}
+
 }
 
 void CMario::AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj) {
@@ -321,6 +333,33 @@ void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e)
 {
 	TakeDamageFrom(e->obj);
+}
+void CMario::OnCollisionWithBoBro(LPCOLLISIONEVENT e)
+{
+	CBoBro* bro = dynamic_cast<CBoBro*>(e->obj);
+
+	// jump on top >> kill bro and deflect a bit 
+	if (e->ny < 0)
+	{
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
+		stompingStreak++;
+		// this is new behavior, bro when stomp earns more point, but TakeDamageFrom doesnt really have an idea of what kind of damage is taken
+		// so for now, set it up like this is fine
+		bro->SetState(BOOMERANG_BROTHER_STATE_DIE);
+		AddScore(x, y, FLYING_SCORE_TYPE_1000, true);
+	}
+	else if (tailWhipTimer->IsRunning() && e->ny == 0) {
+		bro->TakeDamageFrom(this);
+	}
+
+	else // hit by bro
+	{
+		if (bro->GetState() != BOOMERANG_BROTHER_STATE_DIE )
+		{
+			TakeDamageFrom(bro);
+		}
+	}
+
 }
 //
 // Get animation ID for small Mario
@@ -758,7 +797,7 @@ void CMario::Render()
 
 	animations->Get(aniId)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CMario::SetState(int state)

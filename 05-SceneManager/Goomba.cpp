@@ -33,9 +33,9 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-
-	if (dynamic_cast<CMario*>(e->obj)) return;
-	
+	if (dynamic_cast<CBoBro*>(e->obj)) {
+		OnCollisionWith(e);
+	}
 	if (dynamic_cast<CGoomba*>(e->obj)) {
 		OnCollisionWithGoomba(e);
 	}
@@ -66,6 +66,15 @@ void CGoomba::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	if (e->nx != 0) {
 		ReverseDirection();
 		goomba->ReverseDirection();
+	}
+}
+
+void CGoomba::OnCollisionWithBoBro(LPCOLLISIONEVENT e)
+{
+	CBoBro* bro = dynamic_cast<CBoBro*>(e->obj);
+	if (e->nx != 0) {
+		ReverseDirection();
+		bro->ReverseDirection();
 	}
 }
 

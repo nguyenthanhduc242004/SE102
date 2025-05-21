@@ -71,6 +71,8 @@ protected:
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
+	void OnCollisionWithBoBro(LPCOLLISIONEVENT e);
+
 	void HandleTimer(DWORD dt);
 public: 	
 	CGoomba(float x, float y, int color, boolean isParagoomba);

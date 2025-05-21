@@ -27,34 +27,27 @@ void CBoBro::OnNoCollision(DWORD dt)
 
 void CBoBro::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	if (CBoomerang* boom = dynamic_cast<CBoomerang*>(e->obj)) {
+		if (boom->GetState() >= BOOM_STATE_5) {
+			boom->Delete();
+			boomerangsThrown--;
+		}
+	}
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0) vy = 0;
-	if (e->nx != 0) {
-		// reverse patrol on side hit
+	if (e->nx != 0)
 		ReverseDirection();
-	}
 }
 
 void CBoBro::HoldBoomerang()
 {
 	boomerang = new CBoomerang(x, y);
-	boomerang->SetDirection(nx);
-	boomerang->SetIsSpawned(true);
 	CGame::GetInstance()->GetCurrentScene()->AddObject(boomerang);
 }
 
 void CBoBro::ThrowBoomerang()
 {
-	if (boomerang) boomerang->SetState(BOOM_STATE_1);
-}
-
-void CBoBro::ClearBoomerang()
-{
-	if (boomerang) {
-		boomerang->Delete();
-		boomerang = NULL;
-		reloadTimer.Reset();
-	}
+	if (boomerang && !boomerang->IsDeleted()) boomerang->SetState(BOOM_STATE_1);
 }
 
 void CBoBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -73,7 +66,13 @@ void CBoBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 
 	// throw logic all handled in timers
+	// stop bro throwing when he dies, or he wont stop until he is deleted...
 	HandleTimer(dt);
+
+	if (boomerang && boomerang->GetState() == BOOM_STATE_IDLE) {
+		boomerang->SetPosition(x, y);
+		boomerang->SetDirection(nx);
+	}
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -85,12 +84,12 @@ void CBoBro::Render()
 		? (aimTimer.IsRunning() ? ID_ANI_BOOMERANG_BROTHER_AIM_RIGHT : ID_ANI_BOOMERANG_BROTHER_WALK_RIGHT)
 		: (aimTimer.IsRunning() ? ID_ANI_BOOMERANG_BROTHER_AIM_LEFT : ID_ANI_BOOMERANG_BROTHER_WALK_LEFT);
 
-	//for now:
-	CAnimations::GetInstance()->Get(ID_ANI_RED_GOOMBA_WALKING)->Render(x, y);
+	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 void CBoBro::HandleTimer(DWORD dt) {
+	if (state == BOOMERANG_BROTHER_STATE_DIE) return;
 	if (aimTimer.IsRunning()) aimTimer.Tick(dt);
 	if (throwTimer.IsRunning()) throwTimer.Tick(dt);
 	if (chargeTimer.IsRunning()) chargeTimer.Tick(dt);
@@ -98,17 +97,20 @@ void CBoBro::HandleTimer(DWORD dt) {
 
 	if (aimTimer.HasPassed(BB_AIM_TIME)) {
 		aimTimer.Reset();
-		if (boomerangsThrown < BB_MAX_BOOMS) { HoldBoomerang(); throwTimer.Start(); }
+		if (boomerangsThrown < BB_MAX_BOOMS) {
+			HoldBoomerang();
+			throwTimer.Start();
+		}
 		else chargeTimer.Start();
 	}
 	if (throwTimer.HasPassed(BB_THROW_TIME)) {
-		throwTimer.Reset(); 
+		throwTimer.Reset();
 		ThrowBoomerang();
 		boomerangsThrown++;
 		reloadTimer.Start();
 	}
 	if (chargeTimer.HasPassed(BB_CHARGE_TIME)) {
-		chargeTimer.Reset(); 
+		chargeTimer.Reset();
 		boomerangsThrown = 0;
 		aimTimer.Start();
 	}
@@ -130,12 +132,13 @@ void CBoBro::SetState(int state)
 		vx = nx * BB_SPEED;
 		break;
 	case BOOMERANG_BROTHER_STATE_DIE:
-		vy = -BB_SPEED * 10;
-		ClearBoomerang();
+		vy = BB_SPEED * 0.003;
 		break;
 	}
 }
 
 void CBoBro::TakeDamageFrom(LPGAMEOBJECT obj) {
 	SetState(BOOMERANG_BROTHER_STATE_DIE);
+	CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	mario->AddScore(x, y - BOOMERANG_BROTHER_BBOX_HEIGHT / 2 - FLYING_SCORE_HEIGHT, FLYING_SCORE_TYPE_100, true);
 }

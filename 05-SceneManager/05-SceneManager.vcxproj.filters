@@ -140,8 +140,12 @@
     <ClCompile Include="Font.cpp">
       <Filter>Other</Filter>
     </ClCompile>
-    <ClCompile Include="BoBro.cpp" />
-    <ClCompile Include="Boomerang.cpp" />
+    <ClCompile Include="BoBro.cpp">
+      <Filter>NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Boomerang.cpp">
+      <Filter>Map\Interactable\Functional</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -265,7 +269,11 @@
     <ClInclude Include="Font.h">
       <Filter>Other</Filter>
     </ClInclude>
-    <ClInclude Include="BoBro.h" />
-    <ClInclude Include="Boomerang.h" />
+    <ClInclude Include="BoBro.h">
+      <Filter>NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Boomerang.h">
+      <Filter>Map\Interactable\Functional</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,7 +12,6 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	CMario* mario = (CMario *)((LPPLAYSCENE)game->GetCurrentScene())->GetPlayer();
 	if (KeyCode == DIK_R) {
 		game->ReloadCurrentScene();
-		//game->ResumeGame();
 		return;
 	}
 	if (KeyCode == DIK_ESCAPE) {
