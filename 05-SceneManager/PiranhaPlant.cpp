@@ -74,12 +74,10 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 
 			if (abs(piranhaPlantHeadX - marioX) >= PIRANHA_PLANT_DISTANCE_CLOSE) {
-				CGame::GetInstance()->GetCurrentScene()->AddObject(new CBoomerang(piranhaPlantHeadX, piranhaPlantHeadY));
-				//CGame::GetInstance()->GetCurrentScene()->AddObject(new CBullet(piranhaPlantHeadX, piranhaPlantHeadY, bulletVX, bulletVY / 3));
+				CGame::GetInstance()->GetCurrentScene()->AddObject(new CBullet(piranhaPlantHeadX, piranhaPlantHeadY, bulletVX, bulletVY / 3));
 			}
 			else {
-				CGame::GetInstance()->GetCurrentScene()->AddObject(new CBoomerang(piranhaPlantHeadX, piranhaPlantHeadY));
-				//CGame::GetInstance()->GetCurrentScene()->AddObject(new CBullet(piranhaPlantHeadX, piranhaPlantHeadY, bulletVX, bulletVY));
+				CGame::GetInstance()->GetCurrentScene()->AddObject(new CBullet(piranhaPlantHeadX, piranhaPlantHeadY, bulletVX, bulletVY));
 			}
 			hasFired = true;
 		}

@@ -229,11 +229,6 @@ void CGoomba::SetSpawnerDead(bool isDead) {
 void CGoomba::SetState(int state)
 {
 	CGameObject::SetState(state);
-
-	CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	float marioX, marioY;
-	mario->GetPosition(marioX, marioY);
-
 	switch (state)
 	{
 	case GOOMBA_STATE_DIE:

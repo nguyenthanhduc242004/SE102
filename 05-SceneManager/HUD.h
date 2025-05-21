@@ -5,7 +5,6 @@
 #define HUD_PANEL_SPRITE_ID     777777    
 #define HUD_P_ANIM_ID           5006
 #define HUD_ARROW_SPRITE_ID     50005    
-#define HUD_TIME_DEFAULT        300
 #define HUD_DIGIT_WIDTH         8
 
 #define HUD_CAMERA_RELATIVE_X                   0

@@ -140,6 +140,8 @@
     <ClCompile Include="Font.cpp">
       <Filter>Other</Filter>
     </ClCompile>
+    <ClCompile Include="BoBro.cpp" />
+    <ClCompile Include="Boomerang.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -263,5 +265,7 @@
     <ClInclude Include="Font.h">
       <Filter>Other</Filter>
     </ClInclude>
+    <ClInclude Include="BoBro.h" />
+    <ClInclude Include="Boomerang.h" />
   </ItemGroup>
 </Project>

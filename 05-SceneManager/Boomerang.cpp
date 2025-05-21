@@ -8,14 +8,14 @@ CBoomerang::CBoomerang(float x, float y)
     ay = BOOM_GRAVITY;
     nx = -1;
     isSpawned = false;
-    //SetState(BOOM_STATE_IDLE);
-    SetState(BOOM_STATE_1);
+    SetState(BOOM_STATE_IDLE);
+    //SetState(BOOM_STATE_1);
 }
 
 void CBoomerang::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-    left = x + BOOM_BBOX_WIDTH/2;
-    top = y - BOOM_BBOX_HEIGHT;
+    left = x - BOOM_BBOX_WIDTH/2;
+    top = y - BOOM_BBOX_HEIGHT/2;
     right = left + BOOM_BBOX_WIDTH;
     bottom = top + BOOM_BBOX_HEIGHT;
 }
@@ -79,6 +79,7 @@ void CBoomerang::SetState(int s)
     case BOOM_STATE_IDLE:
         vx = vy = 0; break;
     case BOOM_STATE_1:
+        ay = 0;
         vx = nx * BOOM_SPEED_X; vy = -BOOM_SPEED_Y; phaseTimer.Start(); isSpawned = true; break;
     case BOOM_STATE_2:
         vy = 0; break;
@@ -87,6 +88,7 @@ void CBoomerang::SetState(int s)
     case BOOM_STATE_4:
         vy = BOOM_SPEED_Y * 1.25f; break;
     case BOOM_STATE_5:
+        ay = BOOM_GRAVITY;
         vx = -nx * BOOM_SPEED_X; vy = BOOM_SPEED_Y; break;
     case BOOM_STATE_6:
         vy = 0; break;

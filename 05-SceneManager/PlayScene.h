@@ -25,6 +25,7 @@
 #include "SampleKeyEventHandler.h"
 #include "Spawner.h"
 #include "HUD.h"
+#include "BoBro.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
@@ -40,6 +41,7 @@
 #define LEFT_BOUND_CAM_X 93
 #define RESPAWN_OFFSET_CAM_X 70
 #define LOWER_BOUND_DEATHZONE 700.0f
+#define DEFAULT_PLAYTIME        300
 
 class CHUD;
 class CSpawner;
@@ -62,7 +64,7 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 
-	//int playSceneTime; // second, to use timer (Tick)--->multiply by 1000.
+	int playSceneTime = DEFAULT_PLAYTIME; // second, when use timer (Tick)--->multiply by 1000.
 	bool isCameraIndependent = false;
 	CHUD* hud;
 public:

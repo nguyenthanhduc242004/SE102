@@ -31,17 +31,18 @@
 
 class CBoomerang : public CGameObject, public CMoveable
 {
+protected:
     CDeltaTimer phaseTimer;
     float x0;
     bool isSpawned = false;
+    virtual void GetBoundingBox(float& lelf, float& top, float& right, float& bottom);
+    virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+    virtual void Render();
+    void HandleTimer(DWORD dt);
 
 public:
     CBoomerang(float x, float y);
-    virtual void GetBoundingBox(float& l, float& t, float& r, float& b) override;
-    virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override;
-    virtual void Render() override;
     virtual void SetState(int state) override;
-    void HandleTimer(DWORD dt);
 
     void GetSpeed(float& vx, float& vy) {
         vx = this->vx;
@@ -50,6 +51,10 @@ public:
     void SetSpeed(float vx, float vy) {
         this->vx = vx;
         this->vy = vy;
+    }
+    bool IsSpawned() { return isSpawned; }
+    void SetIsSpawned(bool isSpawned) {
+        this->isSpawned = isSpawned;
     }
 };
 

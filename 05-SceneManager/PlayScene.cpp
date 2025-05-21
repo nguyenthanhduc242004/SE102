@@ -103,11 +103,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: {
-		int color = (int)atof(tokens[3].c_str());
-		boolean isParagoomba = (boolean)atof(tokens[4].c_str());
-		LPSPAWNER spawner = new CSpawner(x, y, OBJECT_TYPE_GOOMBA, color, isParagoomba);
-		objs.push_back(spawner);
-		spawners.push_back(spawner);
+		//int color = (int)atof(tokens[3].c_str());
+		//boolean isParagoomba = (boolean)atof(tokens[4].c_str());
+		//LPSPAWNER spawner = new CSpawner(x, y, OBJECT_TYPE_GOOMBA, color, isParagoomba);
+		//objs.push_back(spawner);
+		//spawners.push_back(spawner);
+		objs.push_back(new CBoBro(x, y - 12));
 		break;
 	}
 

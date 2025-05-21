@@ -10,7 +10,7 @@ void CHUD::Update(DWORD dt, CMario* mario) {
 	coin = mario->GetCoin();
 
 	timer.Tick(dt);
-	remainTime = (int)(ceil(HUD_TIME_DEFAULT - (timer.getAccumulated() / 1000)));
+	remainTime = (int)(ceil(DEFAULT_PLAYTIME - (timer.getAccumulated() / 1000)));
 
 	// running meter stacks (0–MARIO_RUNNING_STACKS)
 	runStacks = mario->GetSpeedStacks();
@@ -38,7 +38,7 @@ CHUD::CHUD() : CGameObject()
 	// initial values (or load from saved state)
 	timer.Reset();                  // zero it
 	timer.Start();                  // begin ticking
-	remainTime = HUD_TIME_DEFAULT;
+	remainTime = DEFAULT_PLAYTIME;
 	runStacks = 0;
 
 	// init font mapping
