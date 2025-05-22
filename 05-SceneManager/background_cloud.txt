@@ -5,5 +5,10 @@
 90003	143	0	150	23	30
 90004	151	0	158	23	30
 
+#Small cloud in map 1-4
+91001	274	318	289	325	30
+#Big cloud in map 1-4
+91002	234	315	265	330	30
+
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
