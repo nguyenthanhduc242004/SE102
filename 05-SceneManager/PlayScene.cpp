@@ -12,6 +12,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	player = NULL;
+	hud = NULL;
+	remainTime = 0;
 	key_handler = new CSampleKeyHandler(this);
 }
 
@@ -406,15 +408,23 @@ void CPlayScene::Load()
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 	CGame::GetInstance()->ResumeGame();
+
+	remainTime = DEFAULT_PLAYTIME;
+	playSceneTimer.Start();
+	//load the scene/ reload the scene->reset timer;
 }
 
 void CPlayScene::Update(DWORD dt)
 {
 	if (CGame::GetInstance()->GetCurrentGameState() == GAME_OVER)
 		return;
-
+	//{
+	//	playSceneTimer.Tick(dt);
+	//	remainTime = (int)(ceil(DEFAULT_PLAYTIME - (playSceneTimer.getAccumulated() / 1000)));
+	//	hud->SetRemainTime(remainTime);
+	//	if (remainTime < 0) { mario->Delete() };	//this should kill mario immediately--->then reload the scene
+	//}
 	float x, y;
-
 	// We know that Mario is the first object in the list hence we won't add him into the collidable object list
 	// TO-DO: This is a "dirty" way, need a more organized way
 	vector<LPGAMEOBJECT> coObjects;
@@ -427,9 +437,6 @@ void CPlayScene::Update(DWORD dt)
 			objects[i]->Delete();
 			continue;
 		}
-		// No idea what's the purpose of this, but this being placed before the lower bound deadzone check makes the
-		// check useless. Why when game is paused, we decided to only include CFlyingScore into collision objects? Update applies on all scene objects already, and flying score is noncollidable...
-		// commented out doesnt seem to affect anything either.
 		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED && typeid(*objects[i]) != typeid(CFlyingScore))
 			continue;
 		coObjects.push_back(objects[i]);
@@ -437,8 +444,20 @@ void CPlayScene::Update(DWORD dt)
 
 
 	CMario* mario = dynamic_cast<CMario*>(player);
+	{
+		if (playSceneTimer.IsRunning() && CGame::GetInstance()->GetCurrentGameState() != GAME_PAUSED) {
+			playSceneTimer.Tick(dt);
+			remainTime = (int)(ceil(DEFAULT_PLAYTIME - (playSceneTimer.getAccumulated() / 1000)));
+		}
+		hud->SetRemainTime(remainTime);
+		if (remainTime < 0) {
+			remainTime = 0;
+			playSceneTimer.Reset();
+			mario->SetLevel(MARIO_LEVEL_SMALL);
+			mario->TakeDamageFrom(NULL);
+		}
+	}
 
-	//the usage of actual pause during dying makes for plenty of confusing behavior, like if the game isnt paused when mario dies, mario cant reload the scene
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (CGame::GetInstance()->GetCurrentGameState() == GAME_PAUSED) {

@@ -37,11 +37,11 @@
 
 #define MAX_SCENE_LINE 1024
 
-#define DEFAULT_CAM_Y 260.0f
-#define LEFT_BOUND_CAM_X 93
+#define DEFAULT_CAM_Y 260.0f	// this is also fixed
+#define LEFT_BOUND_CAM_X 93		//object fully visible around x=100 and beyond, this is a fixed property of a standard scene
 #define RESPAWN_OFFSET_CAM_X 70
-#define LOWER_BOUND_DEATHZONE 700.0f
-#define DEFAULT_PLAYTIME        300
+#define LOWER_BOUND_DEATHZONE 700.0f		//this is also fixed
+#define DEFAULT_PLAYTIME        10			//this can change for
 
 class CHUD;
 class CSpawner;
@@ -64,8 +64,11 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 
-	int playSceneTime = DEFAULT_PLAYTIME; // second, when use timer (Tick)--->multiply by 1000.
+	CDeltaTimer playSceneTimer;
+	int remainTime;
+	int playSceneTime = DEFAULT_PLAYTIME; // second, when use timer (Tick)--->multiply by 1000. for now, not used, just go by the default
 	bool isCameraIndependent = false;
+
 	CHUD* hud;
 public:
 	CPlayScene(int id, LPCWSTR filePath);

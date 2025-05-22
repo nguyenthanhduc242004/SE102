@@ -185,6 +185,8 @@ void CCollision::Scan(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* objDe
 		// Skip self-collision
 		if (objDest == objSrc) continue;
 
+		if (objDest == nullptr) continue;
+
 		//  FIX: Skip deleted or non-collidable objects
 		if (objDest->IsDeleted() || !objDest->IsCollidable()) continue;
 

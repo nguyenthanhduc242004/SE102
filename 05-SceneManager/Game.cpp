@@ -451,6 +451,7 @@ void CGame::_ParseSection_SETTINGS(string line)
 
 void CGame::_ParseSection_SCENES(string line)
 {
+	//this is where we add new settings to it
 	vector<string> tokens = split(line);
 
 	if (tokens.size() < 2) return;
