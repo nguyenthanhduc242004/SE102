@@ -43,6 +43,8 @@
 #define KOOPAS_TYPE_NORMAL	0
 #define KOOPAS_TYPE_WING	1
 
+#define KOOPAS_RED_PARATROOPA_MAX_RANGE_Y	64
+
 // Red Koopas Animations
 #define ID_ANI_KOOPAS_RED_WALKING_RIGHT				  36000
 #define ID_ANI_KOOPAS_RED_SPINNING_RIGHT			  36020
@@ -71,6 +73,7 @@
 class CKoopa : public CGameObject, public CMoveable, public CDamageable
 {
 protected:
+	float y0;
 	int color;
 	int type;
 	bool isHeld;

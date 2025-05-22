@@ -462,7 +462,7 @@ int CMario::GetAniIdSmall()
 		}
 		else if (vx < 0.0f || state == MARIO_STATE_RUNNING_LEFT) {
 			if (isHolding)
-				aniId = ID_ANI_MARIO_SMALL_HOLD_WALK_RIGHT;
+				aniId = ID_ANI_MARIO_SMALL_HOLD_WALK_LEFT;
 			else if (ax > 0.0f)
 				aniId = ID_ANI_MARIO_SMALL_BRACE_LEFT;
 			else if (vx <= -MARIO_RUNNING_SPEED)
