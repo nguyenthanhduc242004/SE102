@@ -103,12 +103,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: {
-		//int color = (int)atof(tokens[3].c_str());
-		//boolean isParagoomba = (boolean)atof(tokens[4].c_str());
-		//LPSPAWNER spawner = new CSpawner(x, y, OBJECT_TYPE_GOOMBA, color, isParagoomba);
-		//objs.push_back(spawner);
-		//spawners.push_back(spawner);
-		objs.push_back(new CBoBro(x, y - 5));
+		int color = (int)atof(tokens[3].c_str());
+		boolean isParagoomba = (boolean)atof(tokens[4].c_str());
+		LPSPAWNER spawner = new CSpawner(x, y, OBJECT_TYPE_GOOMBA, color, isParagoomba);
+		objs.push_back(spawner);
+		spawners.push_back(spawner);
+		//objs.push_back(new CBoBro(x, y - 5));
 		break;
 	}
 
@@ -282,6 +282,25 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int type = atoi(tokens[4].c_str());
 
 		objs.push_back(new CPiranhaPlant(x, y, stem_height, type));
+		break;
+	}
+	case OBJECT_TYPE_LIFT:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int sprite_begin = atoi(tokens[6].c_str());
+		int sprite_middle = atoi(tokens[7].c_str());
+		int sprite_end = atoi(tokens[8].c_str());
+		float maxRange = (float)atof(tokens[9].c_str());
+
+		objs.push_back(new CLift(
+			x, y,
+			cell_width, cell_height, length,
+			sprite_begin, sprite_middle, sprite_end, maxRange
+		));
+
+
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:

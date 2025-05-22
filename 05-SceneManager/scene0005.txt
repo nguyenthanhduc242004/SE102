@@ -28,6 +28,7 @@ font.txt
 background.txt
 boomerang.txt
 boomerang_brother.txt
+lift.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -137,7 +138,8 @@ boomerang_brother.txt
 
 #COIN			itX	itY	ofX	ofY
 #4	100	364	5	3	20	-20
-
+#Add lifts for testing	last is max range for x movement (pixel)
+14	250	364	16	16	3	303830	303831	303832	96
 
 
 
@@ -201,15 +203,15 @@ boomerang_brother.txt
 
 
 #MARIO
-0	2356	0
-
+#0	2356	0
+0	120	392
 
 #Pipe			#height #color #isUpsideDown #toX #toY
 12	452	408	3	1	0	-1	-1
 12	1892	408	2	1	0	-1	-1	
 12	1956	408	3	1	0	-1	-1
 12	2356	408	3	1	0	-1	-1
-12	2356	296	12	1	0	3336s	264
+12	2356	296	12	1	0	3336	264
 12	2420	408	2	1	0	-1	-1
 
 12	3328	264	2	0	1	-1	-1

@@ -1,0 +1,9 @@
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+# lift (fixed sized (48x16))
+#first
+303830	234	337	250	352	30
+#mid
+303831	250	337	266	352	30
+#last
+303832	266	337	282	352	30

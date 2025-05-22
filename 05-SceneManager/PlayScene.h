@@ -26,7 +26,7 @@
 #include "Spawner.h"
 #include "HUD.h"
 #include "BoBro.h"
-
+#include "Lift.h"
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2

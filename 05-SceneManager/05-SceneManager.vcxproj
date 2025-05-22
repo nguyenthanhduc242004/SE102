@@ -168,6 +168,7 @@
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="Leaf.cpp" />
+    <ClCompile Include="Lift.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="Mushroom.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="Leaf.h" />
+    <ClInclude Include="Lift.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="Mushroom.h" />
