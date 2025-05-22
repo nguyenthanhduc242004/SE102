@@ -9,8 +9,7 @@ void CHUD::Update(DWORD dt, CMario* mario) {
 	score = mario->GetScore();
 	coin = mario->GetCoin();
 
-	timer.Tick(dt);
-	remainTime = (int)(ceil(DEFAULT_PLAYTIME - (timer.getAccumulated() / 1000)));
+	//remainTime = (int)(ceil(DEFAULT_PLAYTIME - (timer.getAccumulated() / 1000)));
 
 	// running meter stacks (0–MARIO_RUNNING_STACKS)
 	runStacks = mario->GetSpeedStacks();
@@ -35,10 +34,7 @@ CHUD::CHUD() : CGameObject()
 	arrowSprite = CSprites::GetInstance()->Get(HUD_ARROW_SPRITE_ID);
 	pAnim = CAnimations::GetInstance()->Get(HUD_P_ANIM_ID);
 
-	// initial values (or load from saved state)
-	timer.Reset();                  // zero it
-	timer.Start();                  // begin ticking
-	remainTime = DEFAULT_PLAYTIME;
+	remainTime = 0;
 	runStacks = 0;
 
 	// init font mapping
@@ -67,9 +63,9 @@ void CHUD::Render() {
 
 	// draw run-meter (arrows + “P”)
 	for (int i = 0; i < runStacks; i++) {
-			arrowSprite->Draw(x + HUD_CAMERA_RELATIVE_X + HUD_OFFSET_SCORE_X + i * HUD_DIGIT_WIDTH + HUD_PANEL_OFFSET_X,
-				y + HUD_CAMERA_RELATIVE_Y + HUD_ROW1_Y + HUD_PANEL_OFFSET_Y);
-			if (i == MARIO_MAX_SPEED_STACKS - 1)
+		arrowSprite->Draw(x + HUD_CAMERA_RELATIVE_X + HUD_OFFSET_SCORE_X + i * HUD_DIGIT_WIDTH + HUD_PANEL_OFFSET_X,
+			y + HUD_CAMERA_RELATIVE_Y + HUD_ROW1_Y + HUD_PANEL_OFFSET_Y);
+		if (i == MARIO_MAX_SPEED_STACKS - 1)
 			pAnim->Render(x + HUD_CAMERA_RELATIVE_X + HUD_OFFSET_P_X + HUD_PANEL_OFFSET_X,
 				y + HUD_CAMERA_RELATIVE_Y + HUD_ROW1_Y + HUD_PANEL_OFFSET_Y);
 	}

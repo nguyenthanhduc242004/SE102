@@ -20,6 +20,7 @@
 #define FLYING_SCORE_TYPE_2000 2000
 #define FLYING_SCORE_TYPE_4000 4000
 #define FLYING_SCORE_TYPE_8000 8000
+#define FLYING_SCORE_TYPE_1_LIFE 1
 
 
 class CFlyingScore : public CGameObject, public CMoveable

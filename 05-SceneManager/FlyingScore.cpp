@@ -28,6 +28,9 @@ CFlyingScore::CFlyingScore(float x, float y, int type) :CGameObject(x, y)
 	case FLYING_SCORE_TYPE_8000:
 		this->sprite_id = SPRITE_ID_FLYING_SCORE_8000;
 		break;
+	case FLYING_SCORE_TYPE_1_LIFE: 
+		this->sprite_id = SPRITE_ID_FLYING_SCORE_1_LIFE;
+		break;
 	}
 	this->ay = FLYING_SCORE_GRAVITY;
 	this->vy = -FLYING_SCORE_INITIAL_SPEED;

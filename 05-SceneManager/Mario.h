@@ -201,7 +201,6 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	int level;
 	int untouchable;
-	int isBoosted;
 	int life;
 	int score;
 	int coin;
@@ -284,7 +283,6 @@ public:
 			y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
 		}
 		level = l;
-
 	}
 	void StartUntouchable() {
 		untouchable = 1;
@@ -336,8 +334,8 @@ public:
 		{
 			DebugOut(L">>> Mario DIE >>> \n");
 			SetState(MARIO_STATE_DIE);
-			dieTimer->Start();
-			CGame::GetInstance()->PauseGame();
+			//dieTimer->Start();
+			//CGame::GetInstance()->PauseGame();
 		}
 	}
 
@@ -349,8 +347,8 @@ public:
 			game->GetCamPos(x, y);
 			this->SetPosition(x + game->GetBackBufferWidth() / 2, y + game->GetBackBufferHeight() + MARIO_SMALL_BBOX_HEIGHT);
 			SetState(MARIO_STATE_DIE);
-			dieTimer->Start();
-			game->PauseGame();
+			//dieTimer->Start();
+			//game->PauseGame();
 			return;
 		}
 		if (life > 0) {
@@ -362,6 +360,7 @@ public:
 		}
 		game->EndGame();
 	}
+	void AddLife(float x, float y, bool showEffect);
 	void AddScore(float x, float y, int value, bool showEffect);
 	void AddCoin(int value);
 	int GetScore() const { return score; }

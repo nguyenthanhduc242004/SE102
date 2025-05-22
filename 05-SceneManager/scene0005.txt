@@ -1,3 +1,11 @@
+
+#define SCENE_SETTING_INDEPENDENT_CAM 1  #define SCENE_SETTING_PLAYTIME 2  #define SCENE_SETTING_CAMERA_LEFT_BOUND 3  #define SCENE_SETTING_LOWER_DEATH_BOUND 4
+[SETTINGS]
+1	0
+2	350
+3	92
+4	800
+
 # list of object assets to load in this scene
 [ASSETS]
 mario.txt
@@ -169,6 +177,8 @@ item_frame.txt
 
 
 #Koopa   color(0:green, 1:red)  type(0:normal, 1:para)
+3	676	372	1	0
+
 3	1428	296	0	1
 3	1476	296	0	1
 3	1524	296	0	1
@@ -176,7 +186,6 @@ item_frame.txt
 3	1572	402	0	0
 
 3	2196	370	1	0
-3	676	372	1	0
 
 
 #Goompa			#color	#isParagoomba
@@ -192,8 +201,8 @@ item_frame.txt
 11	340	312	1	1	16	16	2
 11	516	328	1	1	16	16	0
 11	756	392	1	1	16	16	2
-11	804	360	1	1	16	16	0
-11	1540	136	1	1	16	16	0
+11	804	360	1	1	16	16	2
+11	1540	136	1	1	16	16	3
 11	1572	376	1	1	16	16	0
 
 

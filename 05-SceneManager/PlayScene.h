@@ -27,7 +27,15 @@
 #include "HUD.h"
 #include "BoBro.h"
 #include "Lift.h"
+
+#define SCENE_SETTING_INDEPENDENT_CAM	1
+#define SCENE_SETTING_PLAYTIME			2
+#define SCENE_SETTING_CAMERA_LEFT_BOUND 3
+#define	SCENE_SETTING_LOWER_DEATH_BOUND	4
+
+
 #define SCENE_SECTION_UNKNOWN -1
+#define SCENE_SECTION_SETTINGS  0
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
 
@@ -37,11 +45,12 @@
 
 #define MAX_SCENE_LINE 1024
 
-#define DEFAULT_CAM_Y 260.0f
-#define LEFT_BOUND_CAM_X 93
+#define DEFAULT_CAM_Y 260.0f	
+#define LEFT_BOUND_CAM_X 93		
 #define RESPAWN_OFFSET_CAM_X 70
-#define LOWER_BOUND_DEATHZONE 700.0f
-#define DEFAULT_PLAYTIME        300
+#define LOWER_BOUND_DEATHZONE 700.0f		//this is fixed
+#define DEFAULT_PLAYTIME        300	
+#define CAMERA_MOVE_X_PER_MS	0.02f
 
 class CHUD;
 class CSpawner;
@@ -55,17 +64,21 @@ protected:
 
 	vector<LPGAMEOBJECT> objects;
 	vector<LPSPAWNER> spawners;
-
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 
+	void _ParseSection_SETTINGS(string line);
 	void _ParseSection_ASSETS(string line);
 	void _ParseSection_OBJECTS(string line);
 
 	void LoadAssets(LPCWSTR assetFile);
 
-	int playSceneTime = DEFAULT_PLAYTIME; // second, when use timer (Tick)--->multiply by 1000.
-	bool isCameraIndependent = false;
+	CDeltaTimer playSceneTimer;
+	int remainTime;
+	int playSceneTime = DEFAULT_PLAYTIME; // second, when use timer (Tick)--->multiply by 1000. for now, not used, just go by the default
+	bool isCameraIndependent = false;	//also know as isSceneAthletic, since the scene will move constantly
+	float camLeftBound = LEFT_BOUND_CAM_X;
+	float lowerDeathBound = LOWER_BOUND_DEATHZONE;
 	CHUD* hud;
 public:
 	CPlayScene(int id, LPCWSTR filePath);

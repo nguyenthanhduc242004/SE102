@@ -23,7 +23,6 @@
 class CMario;
 class CHUD : public CGameObject {
     int life, coin, score;
-    CDeltaTimer timer;     
     int remainTime;
     int runStacks;
 
@@ -36,7 +35,6 @@ class CHUD : public CGameObject {
     vector<LPSPRITE> scoreSprites;
     vector<LPSPRITE> coinSprites;
     vector<LPSPRITE> lifeSprites;
-    //vector<LPSPRITE> speedometerSprites;
 
 public:
     CHUD();
@@ -59,9 +57,9 @@ public:
 		for (size_t i = 0; i < timeSprites.size(); i++)
 			delete timeSprites[i];
         timeSprites.clear();
-		//for (size_t i = 0; i < speedometerSprites.size(); i++)
-			//delete speedometerSprites[i];
-        //speedometerSprites.clear();
 	}
 
+    void SetRemainTime(int remainTime) {
+        this->remainTime = remainTime;
+    }
 };

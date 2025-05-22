@@ -35,14 +35,12 @@ void CLift::OnCollisionWith(LPCOLLISIONEVENT e) {
 			float minOverlapY = (overlapTop < overlapBottom) ? -overlapTop : overlapBottom;
 
 			if (std::abs(minOverlapX) < std::abs(minOverlapY)) {
-				// Push player along X
+				// Push mario along X
 				mx += minOverlapX;
-				//player.vx = 0; // Optional: stop X movement
 			}
 			else {
-				// Push player along Y
+				// Push mario along Y
 				my += minOverlapY;
-				//player.vy = 0; // Optional: stop Y movement
 			}
 			mario->SetPosition(mx, my);
 		}

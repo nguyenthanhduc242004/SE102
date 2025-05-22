@@ -6,6 +6,7 @@ CKoopa::CKoopa(float x, float y, int color, int type) : CGameObject(x, y) {
 	this->color = color;
 	this->type = type;
 	nx = -1;
+	y0 = y;
 	SetState(KOOPAS_STATE_WALKING);
 }
 
@@ -63,6 +64,11 @@ void CKoopa::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
 	y += vy * dt;
+
+	if (type == KOOPAS_TYPE_WING && color == KOOPAS_COLOR_RED) {
+		if ((y - y0) > KOOPAS_RED_PARATROOPA_MAX_RANGE_Y) vy = -KOOPAS_WALKING_SPEED;
+		if ((y - y0) < -KOOPAS_RED_PARATROOPA_MAX_RANGE_Y) vy = KOOPAS_WALKING_SPEED;
+	}
 }
 
 void CKoopa::HandleBeingHeld()
@@ -146,9 +152,9 @@ int CKoopa::GetAniIdRed()
 		}
 		break;
 	case KOOPAS_STATE_SHELL:
-		if (isUpsideDown) 
+		if (isUpsideDown)
 			aniId = ID_ANI_KOOPAS_RED_SHELL_UPSIDE_DOWN;
-		else 
+		else
 			aniId = ID_ANI_KOOPAS_RED_SHELL;
 		break;
 	case KOOPAS_STATE_REVIVING:
@@ -213,15 +219,20 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0)
 	{
-		vy = 0;
-		if (e->ny < 0) {
-			if (type == KOOPAS_TYPE_WING && state == KOOPAS_STATE_WALKING)
-				vy = -KOOPAS_JUMPING_SPEED;
-			if (state == KOOPAS_STATE_FIRST_BOUNCE) {
-				SetState(KOOPAS_STATE_SECOND_BOUNCE);
-			}
-			else if (state == KOOPAS_STATE_SECOND_BOUNCE) {
-				SetState(KOOPAS_STATE_SHELL);
+		if (type == KOOPAS_TYPE_WING && color == KOOPAS_COLOR_RED) {
+			vy = -vy;
+		}
+		else {
+			vy = 0;
+			if (e->ny < 0) {
+				if (type == KOOPAS_TYPE_WING && state == KOOPAS_STATE_WALKING)
+					vy = -KOOPAS_JUMPING_SPEED;
+				if (state == KOOPAS_STATE_FIRST_BOUNCE) {
+					SetState(KOOPAS_STATE_SECOND_BOUNCE);
+				}
+				else if (state == KOOPAS_STATE_SECOND_BOUNCE) {
+					SetState(KOOPAS_STATE_SHELL);
+				}
 			}
 		}
 	}
@@ -280,7 +291,7 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		if (e->nx != 0) {
 			if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
 			{
-				if (questionBlock->GetItemID() == ITEM_LEAF 
+				if (questionBlock->GetItemID() == ITEM_LEAF
 					&& ((CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer())->GetLevel() == MARIO_LEVEL_SMALL) {
 					questionBlock->SetItemId(ITEM_MUSHROOM_RED);
 				}
@@ -453,6 +464,11 @@ void CKoopa::SetState(int state)
 		vx = nx * KOOPAS_WALKING_SPEED;
 		if (type == KOOPAS_TYPE_WING) {
 			ay = KOOPAS_WING_GRAVITY;
+			if (color == KOOPAS_COLOR_RED) {
+				ay = 0;
+				vx = 0;
+				vy = KOOPAS_WALKING_SPEED;
+			}
 		}
 		else {
 			ay = KOOPAS_GRAVITY;
@@ -530,32 +546,8 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 		SetState(KOOPAS_STATE_DIE_WITH_BOUNCE);
 	}
 }
-	//void CKoopa::OnCollisionWithPlant(LPCOLLISIONEVENT e)
-//{
 
-	//// plants die if you spin into them or hold shell into them
-	//if (state == KOOPAS_STATE_SPINNING_LEFT
-	//	|| state == KOOPAS_STATE_SPINNING_RIGHT
-	//	|| isHeld)
-	//{
-	//CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	// 
-	//	mario->AddScore(x, y, 100, true);
-	//	plant->SetState(PIRANHAPLANT_STATE_DEATH);
-	//	plant->isDestroyed = true;
-	//}
-//}
-
-//void CKoopa::OnCollisionWithMusicalBrick(LPCOLLISIONEVENT e)
-//{
-	//if (state == KOOPAS_STATE_SPINNING_LEFT || state == KOOPAS_STATE_SPINNING_RIGHT) {
-		 //bounce back
-		//nx = -nx;  vx = -vx;
-		//mb->SetState(MUSIC_BRICK_STATE_HIT_FROM_TOP);
-	//}
-//}
-
-	/// Debug code
+/// Debug code
 // Convert mangled name (char*) to wstring for DebugOut
 	//std::string className = typeid(*e->obj).name();
 	//std::wstring wideClassName(className.begin(), className.end()); // crude but readable

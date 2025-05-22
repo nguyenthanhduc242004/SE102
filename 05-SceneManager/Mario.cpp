@@ -310,23 +310,21 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
 	if (mushroom->GetState() == MUSHROOM_STATE_IDLE) return;
 	int type = mushroom->GetType();
+	if (level < MARIO_LEVEL_BIG) {
+		SetLevel(MARIO_LEVEL_BIG);
+		isResizing = true;
+		CGame::GetInstance()->PauseGame();
+		if (!resizeTimer->IsRunning())
+			resizeTimer->Start();
+	}
 	if (type == MUSHROOM_TYPE_RED) {
-		if (level < MARIO_LEVEL_BIG) {
-			SetLevel(MARIO_LEVEL_BIG);
-		}
 		AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, true);
-		//add score later
 	}
 	else if (type == MUSHROOM_TYPE_GREEN) {
-		//add life later
-		//add score later
+		AddLife(x, y - MARIO_BIG_BBOX_HEIGHT / 2, true);
+		AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, false);
 	}
 	mushroom->Delete();
-
-	isResizing = true;
-	CGame::GetInstance()->PauseGame();
-	if (!resizeTimer->IsRunning())
-		resizeTimer->Start();
 }
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
@@ -367,6 +365,7 @@ void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e)
 {
 	TakeDamageFrom(e->obj);
 }
+
 void CMario::OnCollisionWithBoBro(LPCOLLISIONEVENT e)
 {
 	CBoBro* bro = dynamic_cast<CBoBro*>(e->obj);
@@ -387,7 +386,7 @@ void CMario::OnCollisionWithBoBro(LPCOLLISIONEVENT e)
 
 	else // hit by bro
 	{
-		if (bro->GetState() != BOOMERANG_BROTHER_STATE_DIE )
+		if (bro->GetState() != BOOMERANG_BROTHER_STATE_DIE)
 		{
 			TakeDamageFrom(bro);
 		}
@@ -463,7 +462,7 @@ int CMario::GetAniIdSmall()
 		}
 		else if (vx < 0.0f || state == MARIO_STATE_RUNNING_LEFT) {
 			if (isHolding)
-				aniId = ID_ANI_MARIO_SMALL_HOLD_WALK_RIGHT;
+				aniId = ID_ANI_MARIO_SMALL_HOLD_WALK_LEFT;
 			else if (ax > 0.0f)
 				aniId = ID_ANI_MARIO_SMALL_BRACE_LEFT;
 			else if (vx <= -MARIO_RUNNING_SPEED)
@@ -978,7 +977,10 @@ void CMario::SetState(int state)
 		ax = 0.0f;
 		ay = MARIO_LIFTED_GRAVITY * 2;
 		isHolding = false;
-		life--;
+		life--;		
+		//
+		dieTimer->Start();
+		CGame::GetInstance()->PauseGame();
 		break;
 	}
 
@@ -1016,6 +1018,20 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 		top = y - MARIO_SMALL_BBOX_HEIGHT / 2;
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
+	}
+}
+
+void CMario::AddLife(float x, float y, bool showEffect)
+{
+	life++;
+	if (showEffect) {
+		if (showEffect)
+		{
+			// create a score effect popup at (x, y)
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			scene->AddObject(new CFlyingScore(x, y, FLYING_SCORE_TYPE_1_LIFE));
+		}
+
 	}
 }
 
@@ -1087,7 +1103,7 @@ void CMario::Attack()
 
 int CMario::GetSpeedStacks() {
 	int speedStacks = (int)(abs(vx) / (MARIO_RUNNING_SPEED / MARIO_MAX_SPEED_STACKS));
-	// just to be safe...
+	// just to be safe it wont go overboard, plus the stack stays full during flying
 	if (speedStacks > MARIO_MAX_SPEED_STACKS || flyTimer.IsRunning())
 		speedStacks = MARIO_MAX_SPEED_STACKS;
 	return speedStacks;
