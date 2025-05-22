@@ -149,6 +149,9 @@
     <ClCompile Include="Lift.cpp">
       <Filter>Map\Interactable\Non-functional</Filter>
     </ClCompile>
+    <ClCompile Include="ItemBrick.cpp">
+      <Filter>Map\Interactable\Functional</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -280,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="Lift.h">
       <Filter>Map\Interactable\Non-functional</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemBrick.h">
+      <Filter>Map\Interactable\Functional</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

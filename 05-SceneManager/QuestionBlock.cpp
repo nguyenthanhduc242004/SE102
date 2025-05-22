@@ -12,6 +12,8 @@ CQuestionBlock::CQuestionBlock(float x, float y) :CGameObject(x, y)
 
 CQuestionBlock::CQuestionBlock(float x, float y, int itemID) : CQuestionBlock(x, y)
 {
+	y0 = y;
+	disabled_start = -1;
 	this->itemID = itemID;
 	SetState(QUESTION_BLOCK_STATE_ACTIVE);
 }
@@ -34,8 +36,12 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			y = y0 - pxMoved;
 		else if (QUESTION_BLOCK_BOUNCE_TIME / 2 <= time && time < QUESTION_BLOCK_BOUNCE_TIME)
 			y = y0 - 2 * QUESTION_BLOCK_BOUNCE_HEIGHT + pxMoved;
-		else
+		else {
 			y = y0;
+			if (hp > 0) {
+				SetState(QUESTION_BLOCK_STATE_ACTIVE);
+			}
+		}
 	}
 
 	CGameObject::Update(dt, coObjects);
@@ -84,6 +90,7 @@ void CQuestionBlock::SetState(int state)
 			break;
 		}
 		if (item == NULL) break;
+		hp--;
 		CGame::GetInstance()->GetCurrentScene()->AddObject(item);
 		//remove and overlay it on top of the item
 		CGame::GetInstance()->GetCurrentScene()->RemoveObject(this);

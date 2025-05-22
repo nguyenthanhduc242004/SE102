@@ -328,14 +328,33 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
+	case OBJECT_TYPE_ITEM_BRICK: {
+		// number of iterations into a maze
+		int itX = (int)atof(tokens[3].c_str());
+		int itY = (int)atof(tokens[4].c_str());
+
+		// distance between objects following directX top-left axis
+		int offsetX = (int)atof(tokens[5].c_str());
+		int offsetY = (int)atof(tokens[6].c_str());
+
+		//0: coin, 3:mushroom red, 5:mushroom green
+		int itemID = (int)atof(tokens[7].c_str());
+		int hp = (int)atof(tokens[8].c_str());
+		for (int i = 0; i < itX; i++) {
+			for (int j = 0; j < itY; j++) {
+				objs.push_back(new CItemBrick(x + i * offsetX, y + j * offsetY, itemID, hp));
+			}
+		}
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
 		float b = (float)atof(tokens[4].c_str());
 		int scene_id = atoi(tokens[5].c_str());
 		objs.push_back(new CPortal(x, y, r, b, scene_id));
+		break;
 	}
-	break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;

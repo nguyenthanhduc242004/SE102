@@ -27,6 +27,7 @@
 #include "HUD.h"
 #include "BoBro.h"
 #include "Lift.h"
+#include "ItemBrick.h"
 
 #define SCENE_SETTING_INDEPENDENT_CAM	1
 #define SCENE_SETTING_PLAYTIME			2

@@ -36,6 +36,8 @@
 
 class CQuestionBlock : public CGameObject {
 protected:
+	int hp = 1;
+
 	ULONGLONG disabled_start;
 	// The original coordinate of the object (For bouncing logic)
 	float y0;
@@ -50,6 +52,7 @@ protected:
 
 	virtual int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 1; }
+	void SetHp(int hp) { this->hp = hp; }
 
 public:
 	CQuestionBlock(float x, float y);
