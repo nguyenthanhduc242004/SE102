@@ -49,7 +49,7 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		SetState(PIRANHA_PLANT_STATE_HIDDEN);
 	}
 
-	if (state == PIRANHA_PLANT_STATE_FULLY_EXPOSED && GetTickCount64() - state_start > PIRANHA_PLANT_STATE_TIME / 2) {
+	if ((type == PIRANHA_PLANT_TYPE_RED_SHOOTABLE || type == PIRANHA_PLANT_TYPE_GREEN_SHOOTABLE) && state == PIRANHA_PLANT_STATE_FULLY_EXPOSED && GetTickCount64() - state_start > PIRANHA_PLANT_STATE_TIME / 2) {
 		if (!hasFired && CGame::GetInstance()->IsInCamera(x, y)) {
 			float bulletVX, bulletVY;
 			// Mario in bottom left of piranha plant head
@@ -146,21 +146,36 @@ void CPiranhaPlant::Render()
 			animations->Get(aniId)->Render(x, yy);
 		}
 	}
-	/*else if (type == PIRANHA_PLANT_TYPE_GREEN_SHOOTABLE) {
-		int direction = mario->GetDirection();
-		if (direction == 1) {
-			aniId = ID_ANI_PIRANHA_PLANT_GREEN_SHOOTABLE_RIGHT;
-			spriteId = SPRITE_ID_PIRANHA_PLANT_GREEN_SHOOTABLE_MOUTH_OPENING_RIGHT;
+	else if (type == PIRANHA_PLANT_TYPE_GREEN_SHOOTABLE) {
+		if (state == PIRANHA_PLANT_STATE_FULLY_EXPOSED) {
+			// Mario in bottom left of piranha plant head
+			if (marioX <= piranhaPlantHeadX && marioY >= piranhaPlantHeadY)
+				spriteId = SPRITE_ID_PIRANHA_PLANT_GREEN_SHOOTABLE_MOUTH_OPENING_LEFT_DOWNWARD;
+			// Mario in top left of piranha plant head
+			else if (marioX <= piranhaPlantHeadX && marioY < piranhaPlantHeadY)
+				spriteId = SPRITE_ID_PIRANHA_PLANT_GREEN_SHOOTABLE_MOUTH_OPENING_LEFT_UPWARD;
+			// Mario in bottom right of piranha plant head
+			else if (marioX > piranhaPlantHeadX && marioY >= piranhaPlantHeadY)
+				spriteId = SPRITE_ID_PIRANHA_PLANT_GREEN_SHOOTABLE_MOUTH_OPENING_RIGHT_DOWNWARD;
+			// Mario in top right of piranha plant head
+			else
+				spriteId = SPRITE_ID_PIRANHA_PLANT_GREEN_SHOOTABLE_MOUTH_OPENING_RIGHT_UPWARD;
+
+			s->Get(spriteId)->Draw(x, yy);
 		}
-		else if (direction == -1) {
-			aniId = ID_ANI_PIRANHA_PLANT_GREEN_SHOOTABLE_LEFT;
-			spriteId = SPRITE_ID_PIRANHA_PLANT_GREEN_SHOOTABLE_MOUTH_OPENING_RIGHT;
+		else {
+			if (marioX <= piranhaPlantHeadX)
+				aniId = ID_ANI_PIRANHA_PLANT_GREEN_SHOOTABLE_LEFT;
+			else
+				aniId = ID_ANI_PIRANHA_PLANT_GREEN_SHOOTABLE_RIGHT;
+
+			animations->Get(aniId)->Render(x, yy);
 		}
 	}
 	else if (type == PIRANHA_PLANT_TYPE_GREEN_UNSHOOTABLE) {
 		aniId = ID_ANI_PIRANHA_PLANT_GREEN_UNSHOOTABLE;
-	}*/
-
+		animations->Get(aniId)->Render(x, yy);
+	}
 	//RenderBoundingBox();
 }
 

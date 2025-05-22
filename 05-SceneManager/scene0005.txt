@@ -164,6 +164,8 @@ item_frame.txt
 
 #Piranha plant		#stem_height	#type
 13	460	364	2	0
+13	1964	364	1	1
+13	1900	380	1	2
 
 
 #Koopa   color(0:green, 1:red)  type(0:normal, 1:para)
