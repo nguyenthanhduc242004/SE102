@@ -50,6 +50,29 @@ void CPlayScene::_ParseSection_ASSETS(string line)
 
 	LoadAssets(path.c_str());
 }
+void CPlayScene::_ParseSection_SETTINGS(string line)
+{
+	vector<string> tokens = split(line);
+	//skip invalid settings, need one for what setting and the other for value
+	if (tokens.size() < 2) return;
+	int setting = atoi(tokens[0].c_str());
+	int value = atoi(tokens[1].c_str());
+	switch (setting)
+	{
+	case SCENE_SETTING_INDEPENDENT_CAM:	//cam_indie
+		isCameraIndependent = value;
+		break;
+	case SCENE_SETTING_PLAYTIME:	//playtime
+		playSceneTime = value;
+		break;
+	case SCENE_SETTING_CAMERA_LEFT_BOUND:	//start_x
+		camLeftBound = value;
+		break;
+	case SCENE_SETTING_LOWER_DEATH_BOUND: //lower_death_bound
+		lowerDeathBound = value;
+		break;
+	}
+}
 
 void CPlayScene::_ParseSection_ANIMATIONS(string line)
 {
@@ -388,6 +411,7 @@ void CPlayScene::Load()
 		string line(str);
 
 		if (line[0] == '#') continue;	// skip comment lines	
+		if (line == "[SETTINGS]") { section = SCENE_SECTION_SETTINGS; continue; }
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
@@ -397,6 +421,7 @@ void CPlayScene::Load()
 		//
 		switch (section)
 		{
+		case SCENE_SECTION_SETTINGS: _ParseSection_SETTINGS(line); break;
 		case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 		}
@@ -409,7 +434,7 @@ void CPlayScene::Load()
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 	CGame::GetInstance()->ResumeGame();
 
-	remainTime = DEFAULT_PLAYTIME;
+	remainTime = playSceneTime;
 	playSceneTimer.Start();
 	//load the scene/ reload the scene->reset timer;
 }
@@ -433,7 +458,7 @@ void CPlayScene::Update(DWORD dt)
 		//Conclusion contradicting the statement above: the first object is not mario, since before, Mario was at the start of the txt, but now, Mario is only paste in the playscene after the background to be visible.
 		//Currently, Mario is in the index 133!
 		objects[i]->GetPosition(x, y);
-		if (y >= LOWER_BOUND_DEATHZONE) {
+		if (y >= lowerDeathBound) {
 			objects[i]->Delete();
 			continue;
 		}
@@ -447,7 +472,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		if (playSceneTimer.IsRunning() && CGame::GetInstance()->GetCurrentGameState() != GAME_PAUSED) {
 			playSceneTimer.Tick(dt);
-			remainTime = (int)(ceil(DEFAULT_PLAYTIME - (playSceneTimer.getAccumulated() / 1000)));
+			remainTime = (int)(ceil(playSceneTime - (playSceneTimer.getAccumulated() / 1000)));
 		}
 		hud->SetRemainTime(remainTime);
 		if (remainTime < 0) {
@@ -491,8 +516,11 @@ void CPlayScene::Update(DWORD dt)
 	cx -= game->GetBackBufferWidth() / 2;
 	cy -= game->GetBackBufferHeight() / 2;
 
-	if (cx < LEFT_BOUND_CAM_X) cx = LEFT_BOUND_CAM_X;
+	if (cx < camLeftBound) cx = camLeftBound;
 	if (cy > DEFAULT_CAM_Y || (cy < DEFAULT_CAM_Y && cy > DEFAULT_CAM_Y - game->GetBackBufferHeight() / 3) || dynamic_cast<CMario*>(player)->GetLevel() != MARIO_LEVEL_TANOOKI) cy = DEFAULT_CAM_Y;
+
+	if (isCameraIndependent) cx = camLeftBound + playSceneTimer.getAccumulated() * CAMERA_MOVE_X_PER_MS;
+
 	CGame::GetInstance()->SetCamPos(cx, cy);
 	// Set its gameobject position to the camera position (aligning x--->center, y--->bottom) then in the hud itself, tweak camera_relative x/y to draw
 	hud->SetPosition(cx + (game->GetBackBufferWidth() / 2), cy + (game->GetBackBufferHeight()));

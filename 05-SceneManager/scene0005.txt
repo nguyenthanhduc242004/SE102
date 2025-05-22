@@ -1,3 +1,11 @@
+
+#define SCENE_SETTING_INDEPENDENT_CAM 1  #define SCENE_SETTING_PLAYTIME 2  #define SCENE_SETTING_CAMERA_LEFT_BOUND 3  #define SCENE_SETTING_LOWER_DEATH_BOUND 4
+[SETTINGS]
+1	0
+2	350
+3	92
+4	800
+
 # list of object assets to load in this scene
 [ASSETS]
 mario.txt
