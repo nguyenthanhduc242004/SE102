@@ -362,6 +362,7 @@ public:
 		}
 		game->EndGame();
 	}
+	void AddLife(float x, float y, bool showEffect);
 	void AddScore(float x, float y, int value, bool showEffect);
 	void AddCoin(int value);
 	int GetScore() const { return score; }
