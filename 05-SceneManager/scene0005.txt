@@ -29,6 +29,7 @@ background.txt
 boomerang.txt
 boomerang_brother.txt
 lift.txt
+item_frame.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -102,6 +103,8 @@ lift.txt
 6	2516	152	16	16	1	1	100001	100001	100001
 6	2548	8	16	16	1	1	100001	100001	100001
 
+#Item frame
+6	2796	342	28	28	1	1	230001	230001	230001
 
 
 #BackgroundCloud
