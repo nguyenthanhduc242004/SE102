@@ -29,22 +29,39 @@
 
 #Green shootable
 ##Left
-###Mouth opening
-192101	299	194	314	209	10
-###Mouth closing
-192102	346	194	361	209	10
+###Downward
+####Mouth opening
+192111	289	408	304	423	10
+####Mouth closing
+192112	305	408	320	423	10
+
+##Left
+###Upward
+####Mouth opening
+192121	321	408	336	423	10
+####Mouth closing
+192122	337	408	352	423	10
 	
 ##Right
-###Mouth opening
-192201	442	194	457	209	10
-###Mouth closing
-192202	395	194	410	209	10
+###Downward
+####Mouth opening
+192211	402	408	417	423	10
+####Mouth closing
+192212	386	408	401	423	10
+
+##Right
+###Upward
+####Mouth opening
+192221	370	408	385	423	10
+####Mouth closing
+192222	354	408	369	423	10
+
 
 #Green unshootable
 ##Mouth opening
-193001	314	259	329	274	10
+193001	257	408	272	423	10
 ##Mouth closing
-193002	358	259	373	274	10
+193002	273	408	288	423	10
 
 #Stem
 194001	13	78	28	85	10
@@ -60,9 +77,9 @@
 
 #Green shootable
 ##Left
-52001	192101	200	192102	200
+52001	192121	200	192122	200
 ##Right	
-52002	192201	200	192202	200
+52002	192221	200	192222	200
 
 #Green unshootable
 53001	193001	200	193002	200
