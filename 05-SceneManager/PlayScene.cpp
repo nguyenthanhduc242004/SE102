@@ -453,8 +453,9 @@ void CPlayScene::Update(DWORD dt)
 		if (remainTime < 0) {
 			remainTime = 0;
 			playSceneTimer.Reset();
-			mario->SetLevel(MARIO_LEVEL_SMALL);
-			mario->TakeDamageFrom(NULL);
+			mario->SetState(MARIO_STATE_DIE);
+			//mario->SetLevel(MARIO_LEVEL_SMALL);
+			//mario->TakeDamageFrom(NULL);
 		}
 	}
 

@@ -977,7 +977,10 @@ void CMario::SetState(int state)
 		ax = 0.0f;
 		ay = MARIO_LIFTED_GRAVITY * 2;
 		isHolding = false;
-		life--;
+		life--;		
+		//
+		dieTimer->Start();
+		CGame::GetInstance()->PauseGame();
 		break;
 	}
 
