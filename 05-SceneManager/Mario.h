@@ -197,6 +197,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	bool isAscendingThroughPipe = false;
 	bool isDescendingThroughPipe = false;
+	bool isAscendingAfterTravellingThroughPipe = false;
 	CDeltaTimer* travellingThroughPipeTimer = new CDeltaTimer();
 	float toX = -1, toY = -1;
 

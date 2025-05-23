@@ -18,13 +18,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = MARIO_TRAVELLING_THROUGH_PIPE_SPEED;
 	}
 	if (isDescendingThroughPipe && travellingThroughPipeTimer->HasPassed(MARIO_TRAVELLING_THROUGH_PIPE_TIME)) {
-		travellingThroughPipeTimer->Reset();
-		isDescendingThroughPipe = false;
-		SetState(MARIO_STATE_IDLE);
-		ay = MARIO_GRAVITY;
-		SetPosition(toX, toY);
-		toX = -1;
-		toY = -1;
+		if (toX > 0 && toY > 0) {
+			SetPosition(toX, toY);
+			toX = -1;
+			toY = -1;
+		}
+		
+		if (isAscendingAfterTravellingThroughPipe) {
+			vy = -MARIO_TRAVELLING_THROUGH_PIPE_SPEED;
+		}
+		if (!isAscendingAfterTravellingThroughPipe || travellingThroughPipeTimer->HasPassed(MARIO_TRAVELLING_THROUGH_PIPE_TIME * 2)) {
+			travellingThroughPipeTimer->Reset();
+			isAscendingAfterTravellingThroughPipe = false;
+			isDescendingThroughPipe = false;
+			SetState(MARIO_STATE_IDLE);
+			ay = MARIO_GRAVITY;
+		}
 	}
 	if (isAscendingThroughPipe && travellingThroughPipeTimer->HasPassed(MARIO_TRAVELLING_THROUGH_PIPE_TIME)) {
 		if (toX > 0 && toY > 0) {
@@ -32,11 +41,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			toX = -1;
 			toY = -1;
 		}
-		if (travellingThroughPipeTimer->HasPassed(MARIO_TRAVELLING_THROUGH_PIPE_TIME * 2)) {
+		if (!isAscendingAfterTravellingThroughPipe || travellingThroughPipeTimer->HasPassed(MARIO_TRAVELLING_THROUGH_PIPE_TIME * 2)) {
 			travellingThroughPipeTimer->Reset();
 			SetState(MARIO_STATE_IDLE);
 			ay = MARIO_GRAVITY;
 			isAscendingThroughPipe = false;
+			isAscendingAfterTravellingThroughPipe = false;
 		}
 	}
 
@@ -416,6 +426,7 @@ void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
 			if (e->ny > 0 && CGame::GetInstance()->GetUpKeyBeingPressed()) {
 				toX = pipeToX;
 				toY = pipeToY;
+				isAscendingAfterTravellingThroughPipe = pipe->IsAscendingAfter();
 				SetState(MARIO_STATE_ASCENDING_THROUGH_PIPE);
 			}
 		}
@@ -423,6 +434,7 @@ void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
 			if (e->ny < 0 && isSitting) {
 				toX = pipeToX;
 				toY = pipeToY;
+				isAscendingAfterTravellingThroughPipe = pipe->IsAscendingAfter();
 				SetState(MARIO_STATE_DESCENDING_THROUGH_PIPE);
 				isSitting = false;
 			}

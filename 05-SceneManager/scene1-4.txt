@@ -39,14 +39,14 @@ brick_debris.txt
 
 #6 = Background (Put these before Mario)
 #type cellW cellH Leng begin middle end
-
 ##Light blue - black divider (Map)
-#6	2583	8	9	16	1	30	220001	220001	220001
+6	2696	8	9	16	1	30	220001	220001	220001
 #Black background (Map)
-#6	2595	8	16	16	100	30	220002	220002	220002
+6	2708	8	16	16	100	30	220002	220002	220002
 
 ##Bush
 6 	164	344	16	16	5	1	70001	70001	70001
+6 	2516	408	16	16	1	1	70001	70001	70001	#Secret room
 
 ##Cloud
 6 	132	296	32	16	1	1	91002	91002	91002
@@ -114,10 +114,10 @@ brick_debris.txt
 3	2092	354	1	0
 
 #MARIO
-0	120	346
+0	2100	346
 
 #Pipe			#height #color #isUpsideDown #toX #toY
-12	2044	392	3	1	0	-1	-1
+12	2044	392	3	1	0	2644	397	1
 
 #BlockPlatform		
 10	2140	392	16	16	1	130001	130001	130001
@@ -173,3 +173,15 @@ brick_debris.txt
 4	1436	296	3	1	16	16
 4	1612	280	1	8	16	16
 4	1996	312	3	1	16	16	
+
+
+
+########## SECRET ROOM ##########
+#Pipe			#height #color #isUpsideDown #toX #toY
+12	2636	408	2	1	0	-1	-1	0
+
+#Ground
+9 	2500	424	16	16	32	61001	61002	61003
+
+#Item frame
+6	2892	344	28	28	1	1	230001	230001	230001
