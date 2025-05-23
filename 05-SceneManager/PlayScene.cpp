@@ -136,6 +136,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		//objs.push_back(new CBoBro(x, y - 5));
 		break;
 	}
+						   
+	case OBJECT_TYPE_BO_BRO: {
+		objs.push_back(new CBoBro(x, y));
+		break;
+	}
 
 	case OBJECT_TYPE_KOOPA:
 	{
