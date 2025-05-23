@@ -443,7 +443,10 @@ void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
 }
 
 void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
-	e->obj->SetState(BRICK_STATE_BROKEN);
+	if (level == MARIO_LEVEL_SMALL)
+		e->obj->SetState(BRICK_STATE_BOUNCING);
+	else 
+		e->obj->SetState(BRICK_STATE_BROKEN);
 }
 //
 // Get animation ID for small Mario
