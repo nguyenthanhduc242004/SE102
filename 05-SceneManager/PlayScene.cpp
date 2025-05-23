@@ -296,8 +296,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		boolean isUpsideDown = atoi(tokens[5].c_str());
 		float toX = atoi(tokens[6].c_str());
 		float toY = atoi(tokens[7].c_str());
+		boolean isAscendingAfter = atoi(tokens[8].c_str());
 
-		objs.push_back(new CPipe(x, y, height, color, isUpsideDown, toX, toY));
+		objs.push_back(new CPipe(x, y, height, color, isUpsideDown, toX, toY, isAscendingAfter));
 
 		break;
 	}

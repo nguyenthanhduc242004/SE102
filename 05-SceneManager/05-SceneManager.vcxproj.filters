@@ -102,9 +102,6 @@
     <ClCompile Include="BlockPlatform.cpp">
       <Filter>Map\Interactable\Non-functional</Filter>
     </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>Map\Interactable\Non-functional</Filter>
-    </ClCompile>
     <ClCompile Include="Platform.cpp">
       <Filter>Map\Interactable\Non-functional</Filter>
     </ClCompile>
@@ -151,6 +148,12 @@
     </ClCompile>
     <ClCompile Include="ItemBrick.cpp">
       <Filter>Map\Interactable\Functional</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>Map\Interactable\Functional</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickDebris.cpp">
+      <Filter>Map\Non-interactable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -229,9 +232,6 @@
     <ClInclude Include="BlockPlatform.h">
       <Filter>Map\Interactable\Non-functional</Filter>
     </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>Map\Interactable\Non-functional</Filter>
-    </ClInclude>
     <ClInclude Include="Platform.h">
       <Filter>Map\Interactable\Non-functional</Filter>
     </ClInclude>
@@ -286,6 +286,12 @@
     </ClInclude>
     <ClInclude Include="ItemBrick.h">
       <Filter>Map\Interactable\Functional</Filter>
+    </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>Map\Interactable\Functional</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickDebris.h">
+      <Filter>Map\Non-interactable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

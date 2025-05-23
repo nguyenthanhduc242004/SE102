@@ -23,18 +23,20 @@ protected:
 	float cell_height = PIPE_HEIGHT;
 	int color;
 	bool isUpsideDown;
+	bool isAscendingAfter;
 	float toX, toY;
 
 	int spriteIdTopLeft, spriteIdTopRight, spriteIdBottomLeft, spriteIdBottomRight;
 
 public:
 	CPipe(float x, float y) : CGameObject(x, y) {}
-	CPipe(float x, float y, int height, int color, bool isUpsideDown, float toX, float toY) :CGameObject(x, y)
+	CPipe(float x, float y, int height, int color, bool isUpsideDown, float toX, float toY, bool isAscendingAfter) :CGameObject(x, y)
 	{
 		// 0: transparent; 1: green
 		this->color = color;
 		this->height = height;
 		this->isUpsideDown = isUpsideDown;
+		this->isAscendingAfter = isAscendingAfter;
 		this->toX = toX;
 		this->toY = toY;
 
@@ -64,6 +66,7 @@ public:
 	int IsDirectionCollidable(float nx, float ny);
 
 	bool GetUpsideDown() { return this->isUpsideDown; };
+	bool IsAscendingAfter() { return this->isAscendingAfter; }
 	float GetToX() { return this->toX; };
 	float GetToY() { return this->toY; };
 
