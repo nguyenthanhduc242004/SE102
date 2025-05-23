@@ -196,6 +196,7 @@
     <ClInclude Include="AssetIDs.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="BackgroundCloud.h" />
+    <ClInclude Include="BackgroundTree.h" />
     <ClInclude Include="BlockPlatform.h" />
     <ClInclude Include="BoBro.h" />
     <ClInclude Include="Boomerang.h" />

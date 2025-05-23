@@ -1,13 +1,43 @@
 # id	left	top	right	bottom	texture_id
 [SPRITES]
-#Green trees
-80001	79	27	142	74	30
-80002	0	79	127	142	30
-80003	556	19	651	146	30
+########## Green ##########
+#Head left
+80101	95	27	110	42	30
+#Head right
+80102	111	27	126	42	30
 
-#Transparent trees
-81001	4	146	51	193	30
-81002	0	209	79	304	30
+#Body left (Has black on left side)
+80201	95	43	110	58	30
+#Body middle
+80202	111	59	126	74	30
+#Body right (Has black on right side)
+80203	127	59	142	74	30
+
+
+#Head left above body middle
+80301	64	127	79	142	30
+#Head left above body middle
+80302	80	127	95	142	30	
+
+
+########## Transparent ##########
+#Head left
+81101	102	0	117	15	50
+#Head right
+81102	119	0	134	15	50
+
+#Body left (Has black on left side)
+81201	102	17	117	32	50
+#Body middle
+81202	110	17	125	32	50
+#Body right (Has black on right side)
+81203	119	17	134	32	50
+
+
+#Head left above body middle
+81301	119	34	134	49	50
+#Head left above body middle
+81302	102	34	117	49	50
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
