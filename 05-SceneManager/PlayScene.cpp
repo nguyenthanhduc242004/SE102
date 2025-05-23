@@ -142,6 +142,92 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 
+	case OBJECT_TYPE_BACKGROUND_TREE: {
+		int cellWidth = 16;
+		int cellHeight = 16;
+		int color = atoi(tokens[3].c_str());	// 0: transparent; 1: green
+		int length = atoi(tokens[4].c_str());
+		int height = atoi(tokens[5].c_str());
+
+		int id = -1;
+		int spriteId = -1;
+		
+		// 1: headLeft; 2: headRight
+		// 3: bodyLeft; 4: bodyMiddle; 5:bodyRight
+		for (int i = 1; i <= height; i++) {
+			for (int j = 1; j <= length; j++) {
+				id = atoi(tokens[5 + (i - 1) * length + j].c_str());
+				switch (id) {
+				case 1:
+					if (color == 0) {
+						spriteId = SPRITE_ID_BACKGROUND_GREEN_TREE_HEAD_LEFT;
+					}
+					else if (color == 1) {
+						spriteId = SPRITE_ID_BACKGROUND_TRANSPARENT_TREE_HEAD_LEFT;
+					}
+					break;
+				case 2:
+					if (color == 0) {
+						spriteId = SPRITE_ID_BACKGROUND_GREEN_TREE_HEAD_RIGHT;
+					}
+					else if (color == 1) {
+						spriteId = SPRITE_ID_BACKGROUND_TRANSPARENT_TREE_HEAD_RIGHT;
+					}
+					break;
+				case 3:
+					if (color == 0) {
+						spriteId = SPRITE_ID_BACKGROUND_GREEN_TREE_BODY_LEFT;
+					}
+					else if (color == 1) {
+						spriteId = SPRITE_ID_BACKGROUND_TRANSPARENT_TREE_BODY_LEFT;
+					}
+					break;
+				case 4:
+					if (color == 0) {
+						spriteId = SPRITE_ID_BACKGROUND_GREEN_TREE_BODY_MIDDLE;
+					}
+					else if (color == 1) {
+						spriteId = SPRITE_ID_BACKGROUND_TRANSPARENT_TREE_BODY_MIDDLE;
+					}
+					break;
+				case 5:
+					if (color == 0) {
+						spriteId = SPRITE_ID_BACKGROUND_GREEN_TREE_BODY_RIGHT;
+					}
+					else if (color == 1) {
+						spriteId = SPRITE_ID_BACKGROUND_TRANSPARENT_TREE_BODY_RIGHT;
+					}
+					break;
+				case 6:
+					if (color == 0) {
+						spriteId = SPRITE_ID_BACKGROUND_GREEN_TREE_HEAD_LEFT_ABOVE_BODY_MIDDLE;
+					}
+					else if (color == 1) {
+						spriteId = SPRITE_ID_BACKGROUND_TRANSPARENT_TREE_HEAD_LEFT_ABOVE_BODY_MIDDLE;
+					}
+					break;
+				case 7:
+					if (color == 0) {
+						spriteId = SPRITE_ID_BACKGROUND_GREEN_TREE_HEAD_RIGHT_ABOVE_BODY_MIDDLE;
+					}
+					else if (color == 1) {
+						spriteId = SPRITE_ID_BACKGROUND_TRANSPARENT_TREE_HEAD_RIGHT_ABOVE_BODY_MIDDLE;
+					}
+					break;
+				}
+
+				if (spriteId != -1) {
+					objs.push_back(new CBackground(
+						x + (j - 1) * cellWidth, y - (i - 1) * cellHeight, cellWidth, cellHeight, 1, 1,
+						spriteId, spriteId, spriteId
+					));
+					spriteId = -1;
+				}
+			}
+		}
+		break;
+	}
+
 	case OBJECT_TYPE_KOOPA:
 	{
 		int color = (int)atof(tokens[3].c_str());
