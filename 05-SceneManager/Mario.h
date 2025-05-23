@@ -234,7 +234,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
 	void OnCollisionWithPipe(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
-
+	void OnCollisionWithLift(LPCOLLISIONEVENT e);
 	void OnCollisionWithBoBro(LPCOLLISIONEVENT e);
 	int GetAniIdTanooki();
 	int GetAniIdBig();

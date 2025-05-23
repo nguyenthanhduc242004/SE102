@@ -23,7 +23,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			toX = -1;
 			toY = -1;
 		}
-		
+
 		if (isAscendingAfterTravellingThroughPipe) {
 			vy = -MARIO_TRAVELLING_THROUGH_PIPE_SPEED;
 		}
@@ -196,6 +196,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		OnCollisionWithBrick(e);
 		return;
 	}
+	if (dynamic_cast<CLift*>(e->obj)) {
+		OnCollisionWithLift(e);
+		return;
+	}
 }
 
 void CMario::AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj) {
@@ -366,8 +370,6 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	}
 	AddScore(x, y - MARIO_BIG_BBOX_HEIGHT / 2, FLYING_SCORE_TYPE_1000, true);
 	leaf->Delete();
-
-
 }
 
 void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
@@ -444,6 +446,14 @@ void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 	e->obj->SetState(BRICK_STATE_BROKEN);
+}
+void CMario::OnCollisionWithLift(LPCOLLISIONEVENT e)
+{
+	CLift* lift = dynamic_cast<CLift*>(e->obj);
+	if (e->ny < 0) {
+		if (lift->GetState() != LIFT_STATE_FALLING)
+			lift->SetState(LIFT_STATE_FALLING);
+	}
 }
 //
 // Get animation ID for small Mario
@@ -1005,7 +1015,7 @@ void CMario::SetState(int state)
 		ax = 0.0f;
 		ay = MARIO_LIFTED_GRAVITY * 2;
 		isHolding = false;
-		life--;		
+		life--;
 		//
 		dieTimer->Start();
 		CGame::GetInstance()->PauseGame();

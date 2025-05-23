@@ -1,12 +1,14 @@
 #include "Lift.h"
 
 void CLift::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
+	if (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
+		!CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y))
+		return;
+
 	x += vx * dt;
 	y += vy * dt;
 
 	vy += ay * dt;
-	if ((x - x0) > maxRange) vx = -LIFT_SPEED_X;
-	if ((x - x0) < -maxRange) vx = LIFT_SPEED_X;
 
 	HandleTimer(dt);
 	CGameObject::Update(dt, coObjects);
@@ -15,9 +17,6 @@ void CLift::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 
 void CLift::OnCollisionWith(LPCOLLISIONEVENT e) {
 	if (CMario* mario = dynamic_cast<CMario*>(e->obj)) {
-		if (e->ny > 0) {
-			SetState(LIFT_STATE_FALLING);
-		}
 		if (!e->nx && !e->ny && !e->dx && !e->dy) {
 			float ml, mt, mr, mb, mx, my, l, t, r, b;
 			mario->GetBoundingBox(ml, mt, mr, mb);

@@ -7,7 +7,7 @@ void CProbe::GetBoundingBox(float& left, float& top, float& right, float& bottom
 	bottom = top + PROBE_BB_HEIGHT;
 }
 void CProbe::Render() {
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 void CProbe::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 	if (y > (y0 + PROBE_FALL_THRESHOLD) || y < y0) Reset();

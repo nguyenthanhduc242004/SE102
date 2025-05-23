@@ -323,7 +323,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		objs.push_back(new CLift(
 			x, y,
 			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end, maxRange
+			sprite_begin, sprite_middle, sprite_end
 		));
 
 

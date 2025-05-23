@@ -18,7 +18,6 @@ protected:
 	CDeltaTimer respawnTimer;
 	CDeltaTimer startFallingTimer;
 	float x0, y0;
-	float maxRange;
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 	void HandleTimer(DWORD dt);
@@ -30,11 +29,10 @@ protected:
 public:
 	CLift(float x, float y,
 		float cell_width, float cell_height, int length,
-		int sprite_id_begin, int sprite_id_middle, int sprite_id_end, float maxRange)
+		int sprite_id_begin, int sprite_id_middle, int sprite_id_end)
 		: CSideCollidablePlatform(x, y, cell_width, cell_height, length, sprite_id_begin, sprite_id_middle, sprite_id_end) {
 		x0 = x;
 		y0 = y;
-		this->maxRange = maxRange;
 		nx = -1;
 		SetState(LIFT_STATE_GLIDING);
 	}
