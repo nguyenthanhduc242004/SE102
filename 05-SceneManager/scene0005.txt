@@ -38,6 +38,7 @@ boomerang.txt
 boomerang_brother.txt
 lift.txt
 item_frame.txt
+brick_debris.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type

@@ -103,6 +103,13 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 			}
 		}
 
+		if (CBrick* brick = dynamic_cast<CBrick*>(e->obj)) {
+			float brickX, brickY;
+			brick->GetPosition(brickX, brickY);
+			if (brickY > y)
+				brick->SetState(BRICK_STATE_BROKEN);
+		}
+
 		if (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CQuestionBlock*>(e->obj)) {
 			isHittingWall = true;
 			if (nx == 1) {
@@ -173,6 +180,11 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 	if (dynamic_cast<CPipe*>(e->obj)) {
 		OnCollisionWithPipe(e);
+		return;
+	}
+	if (e->ny > 0 && dynamic_cast<CBrick*>(e->obj)) {
+		OnCollisionWithBrick(e);
+		return;
 	}
 }
 
@@ -416,6 +428,10 @@ void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
 			}
 		}
 	}
+}
+
+void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
+	e->obj->SetState(BRICK_STATE_BROKEN);
 }
 //
 // Get animation ID for small Mario

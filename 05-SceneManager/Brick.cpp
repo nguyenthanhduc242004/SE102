@@ -1,4 +1,5 @@
 #include "Brick.h"
+#include "PlayScene.h"
 
 void CBrick::Render()
 {
@@ -13,4 +14,22 @@ void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 	t = y - BRICK_BBOX_HEIGHT/2;
 	r = l + BRICK_BBOX_WIDTH;
 	b = t + BRICK_BBOX_HEIGHT;
+}
+
+void CBrick::SetState(int state)
+{
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case BRICK_STATE_BROKEN:
+		CPlayScene* playScene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+		float brickX, brickY;
+		GetPosition(brickX, brickY);
+		playScene->AddObject(new CBrickDebris(brickX, brickY, -1, -1));
+		playScene->AddObject(new CBrickDebris(brickX, brickY, -1, 1));
+		playScene->AddObject(new CBrickDebris(brickX, brickY, 1, -1));
+		playScene->AddObject(new CBrickDebris(brickX, brickY, 1, 1));
+		Delete();
+		break;
+	}
 }

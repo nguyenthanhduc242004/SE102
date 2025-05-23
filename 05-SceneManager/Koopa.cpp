@@ -311,8 +311,7 @@ void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 	}
 	if (state == KOOPAS_STATE_SPINNING) {
 		if (e->nx != 0) {
-			e->obj->Delete();
-			//will create break state later
+			e->obj->SetState(BRICK_STATE_BROKEN);
 		}
 	}
 	if (e->nx != 0) {

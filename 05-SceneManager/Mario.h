@@ -9,6 +9,7 @@
 #include <algorithm>
 #include "Game.h"
 #include "Leaf.h"
+#include "BrickDebris.h"
 
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f
@@ -231,6 +232,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
 	void OnCollisionWithPipe(LPCOLLISIONEVENT e);
+	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 
 	void OnCollisionWithBoBro(LPCOLLISIONEVENT e);
 	int GetAniIdTanooki();
