@@ -8,6 +8,8 @@ CKoopa::CKoopa(float x, float y, int color, int type) : CGameObject(x, y) {
 	nx = -1;
 	y0 = y;
 	SetState(KOOPAS_STATE_WALKING);
+	probe = new CProbe(x, y);
+	CGame::GetInstance()->GetCurrentScene()->AddObject(probe);
 }
 
 void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -31,7 +33,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
 		!CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y)) {
-		isDeleted = true;
+		Delete();
 		return;
 	}
 
@@ -42,6 +44,10 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
+
+	float probeX = x + (nx > 0 ? KOOPAS_BBOX_WIDTH / 4 : -KOOPAS_BBOX_WIDTH / 4);
+	float probeY = y + KOOPAS_BBOX_HEIGHT / 4 - PROBE_BB_HEIGHT;
+	if (probe) probe->SetSoftPosition(probeX, probeY);
 
 }
 
@@ -257,6 +263,14 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		TakeDamageFrom(NULL);
 		return;
 	}
+	//	universal edge detection for all block type
+	if (state != KOOPAS_STATE_SPINNING && state != KOOPAS_STATE_DIE_WITH_BOUNCE && state != KOOPAS_STATE_FIRST_BOUNCE) {
+		if (color == KOOPAS_COLOR_RED && type == KOOPAS_TYPE_NORMAL && !IsGroundAhead()) {
+			probe->Reset();
+			ReverseDirection();
+
+		}
+	}
 	if (dynamic_cast<CQuestionBlock*>(e->obj)) {
 		OnCollisionWithQuestionBlock(e);
 		return;
@@ -275,11 +289,6 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 }
 void CKoopa::OnCollisionWithPlatform(LPCOLLISIONEVENT e) {
-	if (state != KOOPAS_STATE_SPINNING && state != KOOPAS_STATE_DIE_WITH_BOUNCE && state != KOOPAS_STATE_FIRST_BOUNCE && state != KOOPAS_STATE_SECOND_BOUNCE) {
-		if (color == KOOPAS_COLOR_RED && type == KOOPAS_TYPE_NORMAL && !IsGroundAhead(e)) {
-			ReverseDirection();
-		}
-	}
 	if (e->nx != 0 && (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CBlockPlatform*>(e->obj))) {
 		ReverseDirection();
 	}
@@ -304,15 +313,9 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	}
 }
 void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
-	if (state != KOOPAS_STATE_SPINNING && state != KOOPAS_STATE_DIE_WITH_BOUNCE && state != KOOPAS_STATE_FIRST_BOUNCE) {
-		if (color == KOOPAS_COLOR_RED && type == KOOPAS_TYPE_NORMAL && !IsGroundAhead(e)) {
-			ReverseDirection();
-		}
-	}
 	if (state == KOOPAS_STATE_SPINNING) {
 		if (e->nx != 0) {
 			e->obj->Delete();
-			//will create break state later
 		}
 	}
 	if (e->nx != 0) {
@@ -408,21 +411,9 @@ void CKoopa::OnCollisionWithBoBro(LPCOLLISIONEVENT e)
 	}
 }
 
-bool CKoopa::IsGroundAhead(LPCOLLISIONEVENT e)
+bool CKoopa::IsGroundAhead()
 {
-	float probeX = x + (nx > 0 ? KOOPAS_BBOX_WIDTH / 2 - 3 : -KOOPAS_BBOX_WIDTH / 2 + 3);
-	float probeY = y + KOOPAS_BBOX_HEIGHT / 2 + 1; // 1 pixel below the bottom
-
-	float l, t, r, b;
-	e->obj->GetBoundingBox(l, t, r, b);
-
-	// Check if probe point is inside the object's bounding box
-	if (probeX >= l && probeX <= r && probeY >= t && probeY <= b)
-	{
-		return true; // Solid ground detected
-	}
-
-	return false; // No ground
+	return probe->IsGroundAhead();
 }
 void CKoopa::HandleTimer(DWORD dt) {
 	if (shellTimer.IsRunning()) {
@@ -547,6 +538,12 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 	}
 }
 
+void CKoopa::Delete()
+{
+	probe->Delete(this);	//essential part of a koopa, only koopa can delete--->a custom delete with passed argument for future cases if yes
+	probe = NULL;
+	isDeleted = true;
+}
 /// Debug code
 // Convert mangled name (char*) to wstring for DebugOut
 	//std::string className = typeid(*e->obj).name();
