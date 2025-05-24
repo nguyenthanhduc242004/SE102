@@ -1,8 +1,7 @@
 #include "Lift.h"
 
 void CLift::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
-	if (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
-		!CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y))
+	if (!CGame::GetInstance()->IsInCamera(x - cellWidth / 2, DEFAULT_CAM_Y))
 		return;
 
 	x += vx * dt;

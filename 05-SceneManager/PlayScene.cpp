@@ -411,7 +411,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int sprite_begin = atoi(tokens[6].c_str());
 		int sprite_middle = atoi(tokens[7].c_str());
 		int sprite_end = atoi(tokens[8].c_str());
-		float maxRange = (float)atof(tokens[9].c_str());
 
 		objs.push_back(new CLift(
 			x, y,
