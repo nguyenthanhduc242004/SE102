@@ -1,8 +1,15 @@
 #include "Lift.h"
 
 void CLift::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
-	if (!CGame::GetInstance()->IsInCamera(x - cellWidth / 2, DEFAULT_CAM_Y))
+	CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	float marioX, marioY;
+	mario->GetPosition(marioX, marioY);
+	if (marioX <= x && !CGame::GetInstance()->IsInCamera(x - cellWidth / 2, DEFAULT_CAM_Y))
 		return;
+
+	if (marioX > x && !CGame::GetInstance()->IsInCamera(x + cellWidth * (length - 0.5), DEFAULT_CAM_Y)) {
+		Delete();
+	}
 
 	x += vx * dt;
 	y += vy * dt;
