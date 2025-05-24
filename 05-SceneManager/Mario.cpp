@@ -336,7 +336,7 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 			if (questionBlock->GetItemID() == ITEM_LEAF && level == MARIO_LEVEL_SMALL) {
 				questionBlock->SetItemId(ITEM_MUSHROOM_RED);
 			}
-			questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
+			questionBlock->SetState(QUESTION_BLOCK_STATE_BOUNCING);
 		}
 	}
 }

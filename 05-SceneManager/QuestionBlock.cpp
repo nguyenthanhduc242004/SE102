@@ -29,7 +29,7 @@ void CQuestionBlock::GetBoundingBox(float& left, float& top, float& right, float
 void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Bounce the QuestionBlock a bit
-	if (state == QUESTION_BLOCK_STATE_DISABLED) {
+	if (state == QUESTION_BLOCK_STATE_BOUNCING) {
 		ULONGLONG time = GetTickCount64() - disabled_start;
 		int pxMoved = floor(time / (QUESTION_BLOCK_BOUNCE_TIME / 2 / QUESTION_BLOCK_BOUNCE_HEIGHT));
 		if (time < QUESTION_BLOCK_BOUNCE_TIME / 2)
@@ -41,6 +41,9 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (hp > 0) {
 				SetState(QUESTION_BLOCK_STATE_ACTIVE);
 			}
+			else {
+				SetState(QUESTION_BLOCK_STATE_DISABLED);
+			}
 		}
 	}
 
@@ -51,7 +54,7 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CQuestionBlock::Render()
 {
 	int aniId = ID_ANI_QUESTION_BLOCK_ACTIVE;;
-	if (state == QUESTION_BLOCK_STATE_DISABLED)
+	if (state == QUESTION_BLOCK_STATE_DISABLED || state == QUESTION_BLOCK_STATE_BOUNCING)
 	{
 		aniId = ID_ANI_QUESTION_BLOCK_DISABLED;
 	}
@@ -66,6 +69,8 @@ void CQuestionBlock::SetState(int state)
 	switch (state)
 	{
 	case QUESTION_BLOCK_STATE_DISABLED:
+		break;
+	case QUESTION_BLOCK_STATE_BOUNCING:
 		switch (itemID)
 		{
 		case ITEM_COIN:

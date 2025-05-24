@@ -247,6 +247,11 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	//static overlap arguments, when Koopa is passively collided, or it is overlapping
 	//use for when Mario kicking it directly into a block
 	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
+		if (dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CBrick*>(e->obj)) {
+			TakeDamageFrom(e->obj);
+			return;
+		}
+
 		// Shell is held, basically invincible
 		if (isHeld) return;
 		// overlapping platforms are allowed, except CSideCollidablePlatform
@@ -308,6 +313,9 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 				questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
 			}
 		}
+	}
+	if (state == KOOPAS_STATE_WALKING && e->obj->GetState() == QUESTION_BLOCK_STATE_BOUNCING) {
+		TakeDamageFrom(e->obj);
 	}
 	if (e->nx != 0) {
 		ReverseDirection();
@@ -432,7 +440,7 @@ void CKoopa::HandleTimer(DWORD dt) {
 	if (state == KOOPAS_STATE_SHELL && shellTimer.HasPassed(KOOPAS_SHELL_TIMEOUT)) {
 		shellTimer.Reset();
 		// shaking out of shell
-		SetState(KOOPAS_STATE_REVIVING);
+SetState(KOOPAS_STATE_REVIVING);
 	}
 	// shell emerge / only work when in shell
 	if (state == KOOPAS_STATE_REVIVING && revivingTimer.HasPassed(KOOPAS_REVIVING_TIMEOUT)) {
@@ -530,6 +538,25 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 		}
 		return;
 	}
+
+	if (dynamic_cast<CQuestionBlock*>(obj) || dynamic_cast<CBrick*>(obj)) {
+		if (state != KOOPAS_STATE_FIRST_BOUNCE) {
+			float objectX, objectY;
+			obj->GetPosition(objectX, objectY);
+			CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+			mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+			if (x <= objectX) {
+				nx = -1;
+			}
+			else {
+				nx = 1;
+			}
+			SetState(KOOPAS_STATE_FIRST_BOUNCE);
+			return;
+		}
+		return;
+	}
+
 	// Only Mario cant kill the koopa on his own, anything else will kill koopa
 	if (state != KOOPAS_STATE_DIE_WITH_BOUNCE) {
 		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
