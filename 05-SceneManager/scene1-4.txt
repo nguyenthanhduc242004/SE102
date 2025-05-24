@@ -1,3 +1,10 @@
+#define SCENE_SETTING_INDEPENDENT_CAM 1  #define SCENE_SETTING_PLAYTIME 2  #define SCENE_SETTING_CAMERA_LEFT_BOUND 3  #define SCENE_SETTING_LOWER_DEATH_BOUND 4
+[SETTINGS]
+1	1
+2	300
+3	92
+4	800
+
 # list of object assets to load in this scene
 [ASSETS]
 mario.txt
@@ -37,7 +44,11 @@ brick_debris.txt
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = Coins, 5 = Platform
 # See OBJECT_TYPE constants in AssetIDs.h
 
-#6 = Background (Put these before Mario)
+#MARIO
+#0	2100	346
+0	120	340
+
+#6 = Background 
 #type cellW cellH Leng begin middle end
 ##Light blue - black divider (Map)
 6	2696	8	9	16	1	30	220001	220001	220001
@@ -120,9 +131,7 @@ brick_debris.txt
 #BoBro
 16	2532	402
 
-#MARIO
-#0	2100	346
-0	120	340
+
 
 #Pipe			#height #color #isUpsideDown #toX #toY
 12	2044	392	3	1	0	2644	397	1

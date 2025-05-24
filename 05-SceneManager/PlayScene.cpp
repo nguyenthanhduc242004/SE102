@@ -561,12 +561,6 @@ void CPlayScene::Update(DWORD dt)
 {
 	if (CGame::GetInstance()->GetCurrentGameState() == GAME_OVER)
 		return;
-	//{
-	//	playSceneTimer.Tick(dt);
-	//	remainTime = (int)(ceil(DEFAULT_PLAYTIME - (playSceneTimer.getAccumulated() / 1000)));
-	//	hud->SetRemainTime(remainTime);
-	//	if (remainTime < 0) { mario->Delete() };	//this should kill mario immediately--->then reload the scene
-	//}
 	float x, y;
 	// We know that Mario is the first object in the list hence we won't add him into the collidable object list
 	// TO-DO: This is a "dirty" way, need a more organized way
@@ -597,8 +591,6 @@ void CPlayScene::Update(DWORD dt)
 			remainTime = 0;
 			playSceneTimer.Reset();
 			mario->SetState(MARIO_STATE_DIE);
-			//mario->SetLevel(MARIO_LEVEL_SMALL);
-			//mario->TakeDamageFrom(NULL);
 		}
 	}
 
@@ -635,11 +627,27 @@ void CPlayScene::Update(DWORD dt)
 	cy -= game->GetBackBufferHeight() / 2;
 
 	if (cx < camLeftBound) cx = camLeftBound;
-	if (cy > DEFAULT_CAM_Y || (cy < DEFAULT_CAM_Y && cy > DEFAULT_CAM_Y - game->GetBackBufferHeight() / 3) || dynamic_cast<CMario*>(player)->GetLevel() != MARIO_LEVEL_TANOOKI) cy = DEFAULT_CAM_Y;
+	if (cy > DEFAULT_CAM_Y || (cy < DEFAULT_CAM_Y && cy > DEFAULT_CAM_Y - game->GetBackBufferHeight() / 3) || dynamic_cast<CMario*>(player)->GetLevel() != MARIO_LEVEL_TANOOKI || isCameraIndependent) cy = DEFAULT_CAM_Y;
 
 	if (isCameraIndependent) cx = camLeftBound + playSceneTimer.getAccumulated() * CAMERA_MOVE_X_PER_MS;
 
-	CGame::GetInstance()->SetCamPos(cx, cy);
+	game->SetCamPos(cx, cy);
+	float ml, mt, mr, mb, mx, my;
+	player->GetBoundingBox(ml, mt, mr, mb);
+	player->GetPosition(mx, my);
+
+	float screenLeft = cx;
+	float screenRight = cx + game->GetBackBufferWidth();
+
+	// Clamp Mario's position to stay within screen
+	if (ml < screenLeft) {
+		mx += screenLeft - ml; // Move right so left edge is at screen left
+	}
+	else if (mr > screenRight) {
+		mx -= mr - screenRight; // Move left so right edge is at screen right
+	}
+	player->SetPosition(mx, my);
+
 	// Set its gameobject position to the camera position (aligning x--->center, y--->bottom) then in the hud itself, tweak camera_relative x/y to draw
 	hud->SetPosition(cx + (game->GetBackBufferWidth() / 2), cy + (game->GetBackBufferHeight()));
 	hud->Update(dt, mario);
