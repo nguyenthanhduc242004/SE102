@@ -109,6 +109,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	float x = (float)atof(tokens[1].c_str());
 	float y = (float)atof(tokens[2].c_str());
 
+
 	//CGameObject *obj = NULL;
 	vector<LPGAMEOBJECT> objs;
 
@@ -122,8 +123,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			return;
 		}
 		player = new CMario(x, y);
-		objs.push_back(player);
-
+		//objs.push_back(player);
+		//DebugOut(L"X: %f", x);
+		//DebugOut(L" Y: %f\n", y);
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	}
@@ -136,7 +138,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		//objs.push_back(new CBoBro(x, y - 5));
 		break;
 	}
-						   
+
 	case OBJECT_TYPE_BO_BRO: {
 		objs.push_back(new CBoBro(x, y));
 		break;
@@ -151,7 +153,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		int id = -1;
 		int spriteId = -1;
-		
+
 		// 1: headLeft; 2: headRight
 		// 3: bodyLeft; 4: bodyMiddle; 5:bodyRight
 		for (int i = 1; i <= height; i++) {
@@ -389,7 +391,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float toY = atoi(tokens[7].c_str());
 		boolean isAscendingAfter = atoi(tokens[8].c_str());
 
-		objs.push_back(new CPipe(x, y, height, color, isUpsideDown, toX, toY, isAscendingAfter));
+		objectsAfterMario.push_back(new CPipe(x, y, height, color, isUpsideDown, toX, toY, isAscendingAfter));
 
 		break;
 	}
@@ -453,7 +455,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 
 	// General object setup
-	//obj->SetPosition(x, y);
 
 	for (LPGAMEOBJECT obj : objs) {
 		objects.push_back(obj);
@@ -548,6 +549,12 @@ void CPlayScene::Load()
 	remainTime = playSceneTime;
 	playSceneTimer.Start();
 	//load the scene/ reload the scene->reset timer;
+	// player is saved to push at the end, no hiding behind background
+	objects.push_back(player);
+	for (LPGAMEOBJECT obj : objectsAfterMario) {
+		objects.push_back(obj);
+	}
+	objectsAfterMario.clear();
 }
 
 void CPlayScene::Update(DWORD dt)

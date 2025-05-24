@@ -47,7 +47,12 @@ brick_debris.txt
 
 
 
-#6 = Background (Put these before Mario)
+#MARIO
+0	2356	0
+#0	120	392
+#0	120	392
+
+#6 = Background
 #type cellW cellH Leng begin middle end
 
 ##Light blue - black divider (Map)
@@ -159,7 +164,7 @@ brick_debris.txt
 #COIN			itX	itY	ofX	ofY
 #4	100	364	5	3	20	-20
 #Add lifts for testing	last is max range for x movement (pixel)
-14	250	364	16	16	3	303830	303831	303832	96
+#14	250	364	16	16	3	303830	303831	303832	96
 
 
 
@@ -225,9 +230,7 @@ brick_debris.txt
 1	2196	392	1	1	16	16
 
 
-#MARIO
-#0	2356	0
-0	120	392
+
 
 #Pipe			#height #color #isUpsideDown #toX #toY
 12	452	408	3	1	0	-1	-1	0

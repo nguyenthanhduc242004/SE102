@@ -66,6 +66,7 @@ protected:
 
 	vector<LPGAMEOBJECT> objects;
 	vector<LPSPAWNER> spawners;
+	vector<LPGAMEOBJECT> objectsAfterMario;
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 

@@ -244,21 +244,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 
 public:
-	CMario(float x, float y) : CGameObject(x, y)
-	{
-		isSitting = false;
-		isOnPlatform = false;
-		isHolding = false;
-		isReadyToHold = false;
-		maxVy = MARIO_FALL_SPEED_Y;
-		ay = MARIO_GRAVITY;
-		level = MARIO_LEVEL_SMALL;
-		untouchable = 0;
-		life = CGame::GetInstance()->GetLife();
-		score = CGame::GetInstance()->GetScore();
-		coin = CGame::GetInstance()->GetCoin();
-		dragX = MARIO_DRAG_X;
-	}
+	CMario(float x, float y);
 
 	void AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj);
 

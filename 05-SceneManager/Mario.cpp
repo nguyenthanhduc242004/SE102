@@ -202,6 +202,24 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	}
 }
 
+CMario::CMario(float x, float y) : CGameObject(x, y)
+{
+	//DebugOut(L"X: %f", x);
+	//DebugOut(L" Y: %f\n", y);
+	isSitting = false;
+	isOnPlatform = false;
+	isHolding = false;
+	isReadyToHold = false;
+	maxVy = MARIO_FALL_SPEED_Y;
+	ay = MARIO_GRAVITY;
+	level = MARIO_LEVEL_SMALL;
+	untouchable = 0;
+	life = CGame::GetInstance()->GetLife();
+	score = CGame::GetInstance()->GetScore();
+	coin = CGame::GetInstance()->GetCoin();
+	dragX = MARIO_DRAG_X;
+}
+
 void CMario::AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj) {
 	int FLYING_SCORE_TYPE;
 	switch (streak) {
@@ -447,7 +465,7 @@ void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 	if (level == MARIO_LEVEL_SMALL)
 		e->obj->SetState(BRICK_STATE_BOUNCING);
-	else 
+	else
 		e->obj->SetState(BRICK_STATE_BROKEN);
 }
 void CMario::OnCollisionWithLift(LPCOLLISIONEVENT e)
