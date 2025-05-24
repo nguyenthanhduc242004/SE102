@@ -92,6 +92,7 @@ void CQuestionBlock::SetState(int state)
 			item = new CMushroom(x, y - QUESTION_BLOCK_ITEM_Y_OFFSET, MUSHROOM_TYPE_RED);
 			break;
 		case ITEM_SWITCH:
+			item = new CSwitch(x, y - QUESTION_BLOCK_HEIGHT);
 			break;
 		}
 		if (item == NULL) break;

@@ -2,7 +2,7 @@
 #define SCENE_SETTING_INDEPENDENT_CAM 1  #define SCENE_SETTING_PLAYTIME 2  #define SCENE_SETTING_CAMERA_LEFT_BOUND 3  #define SCENE_SETTING_LOWER_DEATH_BOUND 4
 [SETTINGS]
 1	0
-2	350
+2	300
 3	92
 4	800
 
@@ -39,6 +39,7 @@ boomerang_brother.txt
 lift.txt
 item_frame.txt
 brick_debris.txt
+switch.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -224,7 +225,9 @@ brick_debris.txt
 #Brick
 1	2052	408	7	1	16	16
 1	2068	392	5	1	16	16
-1	2084	376	4	1	16	16
+1	2084	376	3	1	16	16
+15	2132	376	1	1	16	16	5	1
+#15	2132	296	1	1	16	16	5	1	
 
 1	2196	408	2	1	16	16
 1	2196	392	1	1	16	16

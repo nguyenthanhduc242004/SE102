@@ -6,7 +6,6 @@
 #include "Mushroom.h"
 #include "Utils.h"
 #include "Mario.h"
-#include "Brick.h"
 #include "PlayScene.h"
 
 #define MUSHROOM_WIDTH  16

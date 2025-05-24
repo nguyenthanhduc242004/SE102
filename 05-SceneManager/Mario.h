@@ -180,13 +180,12 @@
 #define MARIO_KICK_TIME	200	
 #define MARIO_WHIPPING_TAIL_TIME		400
 #define MARIO_WAGGING_TAIL_TIME		400
-#define MARIO_FLYING_TIME			2000
+#define MARIO_FLYING_TIME			2500
 
 #define MARIO_RESIZING_TIME	1200
 #define MARIO_TRANSFORM_TIME 400
 
 #define MARIO_DIE_TIME	500
-
 
 class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
@@ -229,6 +228,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithSwitch(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
