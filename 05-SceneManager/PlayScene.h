@@ -29,6 +29,7 @@
 #include "Lift.h"
 #include "ItemBrick.h"
 #include "BackgroundTree.h"
+#include "Switch.h"
 
 #define SCENE_SETTING_INDEPENDENT_CAM	1
 #define SCENE_SETTING_PLAYTIME			2

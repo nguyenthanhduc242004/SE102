@@ -200,6 +200,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		OnCollisionWithLift(e);
 		return;
 	}
+	if (dynamic_cast<CSwitch*>(e->obj)) {
+		OnCollisionWithSwitch(e);
+		return;
+	}
 }
 
 CMario::CMario(float x, float y) : CGameObject(x, y)
@@ -460,6 +464,10 @@ void CMario::OnCollisionWithPipe(LPCOLLISIONEVENT e)
 			}
 		}
 	}
+}
+void CMario::OnCollisionWithSwitch(LPCOLLISIONEVENT e) {
+	CSwitch* _switch = dynamic_cast<CSwitch*>(e->obj);
+	_switch->SetState(SWITCH_STATE_PRESSING);
 }
 
 void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
@@ -758,96 +766,6 @@ int CMario::GetAniIdTanooki()
 }
 
 
-//int CMario::GetAniIdBig()
-//{
-//	int aniId = -1;
-//	// is jumping
-//	if (!isOnPlatform)
-//	{
-//		if (isHolding) {
-//			if (nx >= 0)
-//				aniId = ID_ANI_MARIO_TAIL_HOLD_JUMP_RIGHT;
-//			else
-//				aniId = ID_ANI_MARIO_TAIL_HOLD_JUMP_LEFT;
-//		}
-//		else if (abs(vx) >= MARIO_RUNNING_SPEED)
-//		{
-//			if (nx >= 0)
-//				aniId = ID_ANI_MARIO_TAIL_DIVE_UP_RIGHT;
-//			else
-//				aniId = ID_ANI_MARIO_TAIL_DIVE_UP_LEFT;
-//		}
-//		else
-//		{
-//			if (nx >= 0) {
-//				aniId = ID_ANI_MARIO_TAIL_JUMP_DOWN_RIGHT;
-//				if (vy <= 0.0f)
-//					aniId = ID_ANI_MARIO_TAIL_JUMP_UP_RIGHT;
-//			}
-//			else {
-//				aniId = ID_ANI_MARIO_TAIL_JUMP_DOWN_LEFT;
-//				if (vy <= 0.0f)
-//					aniId = ID_ANI_MARIO_TAIL_JUMP_UP_LEFT;
-//			}
-//		}
-//	}
-//	//is sitting on the ground
-//	else
-//		if (isSitting)
-//		{
-//			if (nx >= 0)
-//				aniId = ID_ANI_MARIO_TAIL_SIT_RIGHT;
-//			else
-//				aniId = ID_ANI_MARIO_TAIL_SIT_LEFT;
-//		}
-//	//is not sitting on the ground, can hold, can kick
-//	// idle, can hold
-//		else
-//			if (vx == 0.0f)
-//			{
-//				if (nx >= 0) {
-//					aniId = ID_ANI_MARIO_TAIL_IDLE_RIGHT;
-//					if (isHolding) aniId = ID_ANI_MARIO_TAIL_HOLD_IDLE_RIGHT;
-//				}
-//				else {
-//					aniId = ID_ANI_MARIO_TAIL_IDLE_LEFT;
-//					if (isHolding) aniId = ID_ANI_MARIO_TAIL_HOLD_IDLE_LEFT;
-//				}
-//			}
-//	//move right, can hold
-//			else if (vx > 0.0f)
-//			{
-//				if (isHolding)
-//					aniId = ID_ANI_MARIO_TAIL_HOLD_WALKING_RIGHT;
-//				else if (ax < 0)
-//					aniId = ID_ANI_MARIO_TAIL_BRACE_RIGHT;
-//				else if (vx >= MARIO_RUNNING_SPEED)
-//					aniId = ID_ANI_MARIO_TAIL_RUNNING_RIGHT;
-//				else
-//					aniId = ID_ANI_MARIO_TAIL_WALKING_RIGHT;
-//			}
-//	//move left, can hold
-//			else // vx < 0
-//			{
-//				if (isHolding)
-//					aniId = ID_ANI_MARIO_TAIL_HOLD_WALKING_LEFT;
-//				else if (ax > 0.0f)
-//					aniId = ID_ANI_MARIO_TAIL_BRACE_LEFT;
-//				else if (vx <= -MARIO_RUNNING_SPEED)
-//					aniId = ID_ANI_MARIO_TAIL_RUNNING_LEFT;
-//				else
-//					aniId = ID_ANI_MARIO_TAIL_WALKING_LEFT;
-//			}
-//	if (kickTimer.IsRunning()) {
-//		if (nx >= 0)
-//			aniId = ID_ANI_MARIO_TAIL_KICK_RIGHT;
-//		else
-//			aniId = ID_ANI_MARIO_TAIL_KICK_LEFT;
-//	}
-//	if (aniId == -1) aniId = ID_ANI_MARIO_TAIL_IDLE_RIGHT;
-//
-//	return aniId;
-//}
 
 int CMario::GetAniIdTransform(int level) {
 	return ID_ANI_MARIO_TRANSFORM;
@@ -994,8 +912,8 @@ void CMario::SetState(int state)
 			isOnPlatform = false;
 		}
 		else if (level == MARIO_LEVEL_TANOOKI)
-			if (!tailWagTimer.IsRunning())
 				tailWagTimer.Start();
+			//if (!tailWagTimer.IsRunning())
 		break;
 	case MARIO_STATE_RELEASE_JUMP:
 		//release jump reset gravity back
