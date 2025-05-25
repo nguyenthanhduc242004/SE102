@@ -18,9 +18,3 @@ void CProbe::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
-void CProbe::Delete() {
-	//override so it is not allowed to delete itself, only the npc it is attached to can delete it
-}
-void CProbe::Delete(LPGAMEOBJECT obj) {
-	isDeleted = true;
-}

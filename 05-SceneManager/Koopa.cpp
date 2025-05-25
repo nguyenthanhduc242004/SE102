@@ -9,7 +9,7 @@ CKoopa::CKoopa(float x, float y, int color, int type) : CGameObject(x, y) {
 	y0 = y;
 	SetState(KOOPAS_STATE_WALKING);
 	probe = new CProbe(x, y);
-	CGame::GetInstance()->GetCurrentScene()->AddObject(probe);
+	//CGame::GetInstance()->GetCurrentScene()->AddObject(probe);
 }
 
 void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -33,10 +33,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (!CGame::GetInstance()->IsInCamera(x - RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y) &&
 		!CGame::GetInstance()->IsInCamera(x + RESPAWN_OFFSET_CAM_X, DEFAULT_CAM_Y))
-	{
-		Delete();
 		return;
-	}
 
 	vy += ay * dt;
 
@@ -48,7 +45,10 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	float probeX = x + (nx > 0 ? KOOPAS_BBOX_WIDTH / 4 : -KOOPAS_BBOX_WIDTH / 4);
 	float probeY = y + KOOPAS_BBOX_HEIGHT / 4 - PROBE_BB_HEIGHT;
-	if (probe) probe->SetSoftPosition(probeX, probeY);
+	if (probe) { 
+		probe->SetSoftPosition(probeX, probeY); 
+		probe->Update(dt, coObjects);
+	}
 
 }
 
@@ -440,7 +440,7 @@ void CKoopa::HandleTimer(DWORD dt) {
 	if (state == KOOPAS_STATE_SHELL && shellTimer.HasPassed(KOOPAS_SHELL_TIMEOUT)) {
 		shellTimer.Reset();
 		// shaking out of shell
-SetState(KOOPAS_STATE_REVIVING);
+		SetState(KOOPAS_STATE_REVIVING);
 	}
 	// shell emerge / only work when in shell
 	if (state == KOOPAS_STATE_REVIVING && revivingTimer.HasPassed(KOOPAS_REVIVING_TIMEOUT)) {
@@ -568,7 +568,7 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 
 void CKoopa::Delete()
 {
-	probe->Delete(this);	//essential part of a koopa, only koopa can delete--->a custom delete with passed argument for future cases if yes
+	probe->Delete();	//essential part of a koopa, only koopa can delete--->a custom delete with passed argument for future cases if yes, for some reason, still possible null
 	probe = NULL;
 	isDeleted = true;
 }

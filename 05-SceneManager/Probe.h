@@ -12,7 +12,6 @@ protected:
 	float x0, y0;	//soft position, probe will strictly stick to x0, and y will be reseted to y0 if go over a threshold
 	bool isGroundAhead;
 	bool isActive;
-	virtual void Delete() override;
 
 
 public:
@@ -67,6 +66,5 @@ public:
 		x = x0;
 		y = y0;
 	}
-	void Delete(LPGAMEOBJECT obj);
 };
 
