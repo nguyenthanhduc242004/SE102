@@ -75,7 +75,8 @@ void CMario::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
 	y += vy * dt;
-	isOnPlatform = false;
+	if (!isOnPlatformTimer.IsRunning())
+		isOnPlatform = false;
 	isHittingWall = false;
 }
 
@@ -85,6 +86,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		vy = 0.0f;
 		if (e->ny < 0) {
 			isOnPlatform = true;
+			isOnPlatformTimer.Start();
 			dragX = MARIO_DRAG_X;
 		}
 	}
@@ -123,10 +125,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		if (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CQuestionBlock*>(e->obj)) {
 			isHittingWall = true;
 			if (nx == 1) {
-				x -= 0.1f;
+				x -= 0.3f;
 			}
 			else {
-				nx += 0.1f;
+				x += 0.3f;
 			}
 		}
 		else {
@@ -216,11 +218,8 @@ CMario::CMario(float x, float y) : CGameObject(x, y)
 	isReadyToHold = false;
 	maxVy = MARIO_FALL_SPEED_Y;
 	ay = MARIO_GRAVITY;
-	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
-	life = CGame::GetInstance()->GetLife();
-	score = CGame::GetInstance()->GetScore();
-	coin = CGame::GetInstance()->GetCoin();
+	LoadProgress();
 	dragX = MARIO_DRAG_X;
 }
 
@@ -349,8 +348,9 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
-	CPortal* p = (CPortal*)e->obj;
-	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+	CPortal* portal = (CPortal*)e->obj;
+	SaveProgress();
+	CGame::GetInstance()->InitiateSwitchScene(portal->GetSceneId());
 }
 
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
@@ -912,8 +912,8 @@ void CMario::SetState(int state)
 			isOnPlatform = false;
 		}
 		else if (level == MARIO_LEVEL_TANOOKI)
-				tailWagTimer.Start();
-			//if (!tailWagTimer.IsRunning())
+			tailWagTimer.Start();
+		//if (!tailWagTimer.IsRunning())
 		break;
 	case MARIO_STATE_RELEASE_JUMP:
 		//release jump reset gravity back
@@ -955,7 +955,7 @@ void CMario::SetState(int state)
 		ay = MARIO_LIFTED_GRAVITY * 2;
 		isHolding = false;
 		life--;
-		//
+		level = MARIO_LEVEL_SMALL;
 		dieTimer->Start();
 		CGame::GetInstance()->PauseGame();
 		break;
@@ -1046,6 +1046,9 @@ void CMario::HandleTimer(DWORD dt) {
 	if (flyTimer.IsRunning()) {
 		flyTimer.Tick(dt);
 	}
+	if (isOnPlatformTimer.IsRunning()) {
+		isOnPlatformTimer.Tick(dt);
+	}
 	// reset timer if time has passed
 	if (invincibleTimer.HasPassed(MARIO_UNTOUCHABLE_TIME))
 	{
@@ -1065,6 +1068,9 @@ void CMario::HandleTimer(DWORD dt) {
 	}
 	if (flyTimer.HasPassed(MARIO_FLYING_TIME)) {
 		flyTimer.Reset();
+	}
+	if (isOnPlatformTimer.HasPassed(MARIO_IS_ON_PLATFORM_TIME)) {
+		isOnPlatformTimer.Reset();
 	}
 }
 

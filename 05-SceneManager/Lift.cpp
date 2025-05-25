@@ -54,19 +54,10 @@ void CLift::OnCollisionWith(LPCOLLISIONEVENT e) {
 
 void CLift::HandleTimer(DWORD dt) {
 	if (startFallingTimer.IsRunning()) startFallingTimer.Tick(dt);
-	if (respawnTimer.IsRunning()) respawnTimer.Tick(dt);
 
 	if (startFallingTimer.HasPassed(LIFT_START_FALLING_TIME)) {
 		startFallingTimer.Reset();
 		ay = GRAVITY * 0.08f;
-	}
-	if (respawnTimer.HasPassed(LIFT_RESPAWN_TIME)) {
-		if (!CGame::GetInstance()->IsInCamera(x0, y0)) {
-			respawnTimer.Reset();
-			x = x0;
-			y = y0;
-			SetState(LIFT_STATE_GLIDING);
-		}
 	}
 }
 
@@ -80,7 +71,6 @@ void CLift::SetState(int state) {
 	case LIFT_STATE_FALLING:
 		vx = 0;
 		startFallingTimer.Start();
-		respawnTimer.Start();
 		break;
 	}
 }

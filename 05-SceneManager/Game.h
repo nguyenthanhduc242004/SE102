@@ -70,7 +70,7 @@ class CGame
 	int life = 4;
 	int score = 0;
 	int coin = 0;
-
+	int level = 1;
 	BOOLEAN isUpKeyBeingPressed = false;
 public:
 	// Init DirectX, Sprite Handler
@@ -161,6 +161,9 @@ public:
 	int GetCoin() {
 		return coin;
 	}
+	int GetLevel() {
+		return level;
+	}
 	void SetScore(int score) {
 		this->score = score;
 	}
@@ -169,6 +172,9 @@ public:
 	}
 	void SetCoin(int coin) {
 		this->coin = coin;
+	}
+	void SetLevel(int level) {
+		this->level = level;
 	}
 	void SetUpKeyBeingPressed(BOOLEAN isUpKeyBeingPressed) { this->isUpKeyBeingPressed = isUpKeyBeingPressed; }
 	BOOLEAN GetUpKeyBeingPressed() { return this->isUpKeyBeingPressed; }

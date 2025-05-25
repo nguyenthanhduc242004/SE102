@@ -9,15 +9,13 @@
 
 #define LIFT_STATE_GLIDING	0
 #define	LIFT_STATE_FALLING	1
-#define LIFT_SPEED_X	0.05f
+#define LIFT_SPEED_X	0.03f
 
 
 class CLift : public CSideCollidablePlatform, public CMoveable
 {
 protected:
-	CDeltaTimer respawnTimer;
 	CDeltaTimer startFallingTimer;
-	float x0, y0;
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 	void HandleTimer(DWORD dt);
@@ -31,8 +29,6 @@ public:
 		float cell_width, float cell_height, int length,
 		int sprite_id_begin, int sprite_id_middle, int sprite_id_end)
 		: CSideCollidablePlatform(x, y, cell_width, cell_height, length, sprite_id_begin, sprite_id_middle, sprite_id_end) {
-		x0 = x;
-		y0 = y;
 		nx = -1;
 		SetState(LIFT_STATE_GLIDING);
 	}

@@ -178,6 +178,7 @@
 
 #define MARIO_UNTOUCHABLE_TIME 1200
 #define MARIO_KICK_TIME	200	
+#define MARIO_IS_ON_PLATFORM_TIME  70
 #define MARIO_WHIPPING_TAIL_TIME		400
 #define MARIO_WAGGING_TAIL_TIME		400
 #define MARIO_FLYING_TIME			2500
@@ -210,16 +211,16 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	CDeltaTimer invincibleTimer;
 	CDeltaTimer kickTimer;
-	CDeltaTimer*    tailWhipTimer = new CDeltaTimer();    
+	CDeltaTimer* tailWhipTimer = new CDeltaTimer();
 	CDeltaTimer	tailWagTimer;
 	CDeltaTimer flyTimer;
-
+	CDeltaTimer isOnPlatformTimer;
 	CDeltaTimer* resizeTimer = new CDeltaTimer();
 	bool isResizing = false;
 	CDeltaTimer* transformTimer = new CDeltaTimer();
 	bool isTransforming = false;
 
-	CDeltaTimer * dieTimer = new CDeltaTimer();
+	CDeltaTimer* dieTimer = new CDeltaTimer();
 
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -323,8 +324,6 @@ public:
 		{
 			DebugOut(L">>> Mario DIE >>> \n");
 			SetState(MARIO_STATE_DIE);
-			//dieTimer->Start();
-			//CGame::GetInstance()->PauseGame();
 		}
 	}
 
@@ -336,14 +335,10 @@ public:
 			game->GetCamPos(x, y);
 			this->SetPosition(x + game->GetBackBufferWidth() / 2, y + game->GetBackBufferHeight() + MARIO_SMALL_BBOX_HEIGHT);
 			SetState(MARIO_STATE_DIE);
-			//dieTimer->Start();
-			//game->PauseGame();
 			return;
 		}
 		if (life > 0) {
-			game->SetLife(life);
-			game->SetCoin(coin);
-			game->SetScore(score);
+			SaveProgress();
 			game->ReloadCurrentScene();
 			return;
 		}
@@ -355,7 +350,6 @@ public:
 	int GetScore() const { return score; }
 	int GetLife() const { return life; }
 	int GetCoin() const { return coin; }
-
 	void HandleTimer(DWORD dt);
 
 	BOOLEAN IsHolding() {
@@ -401,5 +395,21 @@ public:
 
 	CDeltaTimer* GetTravellingThroughPipeTimer() {
 		return this->travellingThroughPipeTimer;
+	}
+	void SaveProgress() {
+		CGame* game = CGame::GetInstance();
+		game->SetLife(life);
+		game->SetCoin(coin);
+		game->SetScore(score);
+		game->SetLevel(level);
+		return;
+	}
+	void LoadProgress() {
+		CGame* game = CGame::GetInstance();
+		life = game->GetLife();
+		coin = game->GetCoin();
+		score = game->GetScore();
+		level = game->GetLevel();
+		return;
 	}
 };
