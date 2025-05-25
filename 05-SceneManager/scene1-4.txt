@@ -3,7 +3,9 @@
 1	1
 2	300
 3	92
-4	800
+4	700
+5	1843
+5	2699
 
 # list of object assets to load in this scene
 [ASSETS]
@@ -16,7 +18,6 @@ bush.txt
 tree.txt
 background_cloud.txt
 misc.txt
-box.txt
 platform_cloud.txt
 block.txt
 question_block.txt
@@ -27,7 +28,6 @@ koopa.txt
 mushroom.txt
 pipe.txt
 piranha_plant.txt
-bullet.txt
 particles.txt
 leaf.txt
 hud.txt
@@ -199,7 +199,7 @@ brick_debris.txt
 14	1660	312	16	16	3	303830	303831	303832
 14	1852	392	16	16	3	303830	303831	303832
 14	1884	344	16	16	3	303830	303831	303832
-14	1900	424	16	16	3	303830	303831	303832 s
+14	1900	424	16	16	3	303830	303831	303832
 
 #COIN			itX	itY	ofX	ofY
 4	444	312	3	1	16	16

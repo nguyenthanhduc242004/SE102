@@ -68,8 +68,11 @@ void CPlayScene::_ParseSection_SETTINGS(string line)
 	case SCENE_SETTING_CAMERA_LEFT_BOUND:	//start_x
 		camLeftBound = value;
 		break;
-	case SCENE_SETTING_LOWER_DEATH_BOUND: //lower_death_bound
+	case SCENE_SETTING_LOWER_DEATH_BOUND:	//lower_death_bound
 		lowerDeathBound = value;
+		break;
+	case SCENE_SETTING_CAMERA_RIGHT_BOUND:	//interval_x (if mario can go to secret scene) or end_x
+		camRightBounds.push_back(value);
 		break;
 	}
 }
@@ -626,6 +629,17 @@ void CPlayScene::Update(DWORD dt)
 	cy -= game->GetBackBufferHeight() / 2;
 
 	if (cx < camLeftBound) cx = camLeftBound;
+	for (float camRightBound : camRightBounds)
+	{
+		if (cx > camRightBound && cx < camRightBound + game->GetBackBufferWidth()) {
+			cx = camRightBound;
+			if (isCameraIndependent) {
+				isCameraIndependent = false;
+				camLeftBound = cx;
+			}
+			break;
+		}
+	}
 	if (cy > DEFAULT_CAM_Y || (cy < DEFAULT_CAM_Y && cy > DEFAULT_CAM_Y - game->GetBackBufferHeight() / 3) || dynamic_cast<CMario*>(player)->GetLevel() != MARIO_LEVEL_TANOOKI || isCameraIndependent) cy = DEFAULT_CAM_Y;
 
 	if (isCameraIndependent) cx = camLeftBound + playSceneTimer.getAccumulated() * CAMERA_MOVE_X_PER_MS;
@@ -715,6 +729,7 @@ void CPlayScene::Unload()
 	player = NULL;
 
 	DebugOut(L"[INFO] Scene %d unloaded! \n", id);
+	camRightBounds.clear();
 }
 
 bool CPlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }

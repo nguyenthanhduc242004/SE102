@@ -35,7 +35,7 @@
 #define SCENE_SETTING_PLAYTIME			2
 #define SCENE_SETTING_CAMERA_LEFT_BOUND 3
 #define	SCENE_SETTING_LOWER_DEATH_BOUND	4
-
+#define SCENE_SETTING_CAMERA_RIGHT_BOUND 5
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_SETTINGS  0
@@ -83,6 +83,7 @@ protected:
 	bool isCameraIndependent = false;	//also know as isSceneAthletic, since the scene will move constantly
 	float camLeftBound = LEFT_BOUND_CAM_X;
 	float lowerDeathBound = LOWER_BOUND_DEATHZONE;
+	vector<float> camRightBounds;
 	CHUD* hud;
 public:
 	CPlayScene(int id, LPCWSTR filePath);
