@@ -227,9 +227,8 @@ void CPiranhaPlant::TakeDamageFrom(LPGAMEOBJECT obj)
 		SetState(PIRANHA_PLANT_STATE_DIE);
 		return;
 	}
-	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
-		if (mario->GetLevel() == MARIO_LEVEL_TANOOKI)
-			SetState(PIRANHA_PLANT_STATE_DIE);
+	if (CTanookiTail* tanookiTail = dynamic_cast<CTanookiTail*>(obj)) {
+		SetState(PIRANHA_PLANT_STATE_DIE);
 		return;
 	}
 }

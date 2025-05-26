@@ -3,6 +3,8 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	tanookiTail->SetPosition(x, y);
+
 	vy += ay * dt;
 	vx += ax * dt;
 
@@ -77,7 +79,7 @@ void CMario::OnNoCollision(DWORD dt)
 	y += vy * dt;
 	if (!isOnPlatformTimer.IsRunning())
 		isOnPlatform = false;
-	isHittingWall = false;
+	//isHittingWall = false;
 }
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
@@ -93,52 +95,6 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 	if (e->nx != 0 && e->obj->IsBlocking())
 	{
 		vx = 0.0f;
-	}
-
-	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
-		if (CPiranhaPlant* piranhaPlant = (dynamic_cast<CPiranhaPlant*>(e->obj))) {
-			if (tailWhipTimer->IsRunning() && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_HIDDEN && piranhaPlant->GetState() != PIRANHA_PLANT_STATE_DIE) {
-				piranhaPlant->TakeDamageFrom(this);
-			}
-		}
-
-		if (CQuestionBlock* questionBlock = dynamic_cast<CQuestionBlock*>(e->obj)) {
-			if (tailWhipTimer->IsRunning()) {
-				// TODO: Can make a TakeDamageFrom function for questionBlock since the codes below is the same as the codes in OnCollisionWithQuestionBlock(e)
-				if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
-				{
-					if (questionBlock->GetItemID() == ITEM_LEAF && level == MARIO_LEVEL_SMALL) {
-						questionBlock->SetItemId(ITEM_MUSHROOM_RED);
-					}
-					questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
-				}
-			}
-		}
-
-		if (CBrick* brick = dynamic_cast<CBrick*>(e->obj)) {
-			float brickX, brickY;
-			brick->GetPosition(brickX, brickY);
-			if (brickY > y)
-				brick->SetState(BRICK_STATE_BROKEN);
-		}
-
-		if (dynamic_cast<CSideCollidablePlatform*>(e->obj) || dynamic_cast<CQuestionBlock*>(e->obj)) {
-			isHittingWall = true;
-			if (nx == 1) {
-				x -= 0.3f;
-			}
-			else {
-				x += 0.3f;
-			}
-		}
-		else {
-			isHittingWall = false;
-		}
-
-		// Prevent Mario in Tanooki level to consume Mushroom, Leaf immediately after hitting QuestionBlock with Tanooki Tail
-		if (dynamic_cast<CMushroom*>(e->obj) || dynamic_cast<CLeaf*>(e->obj)) {
-			return;
-		}
 	}
 
 	if (e->ny < 0 && !dynamic_cast<CGoomba*>(e->obj) && !dynamic_cast<CKoopa*>(e->obj)) {
@@ -170,11 +126,13 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 		return;
 	}
 	if (dynamic_cast<CMushroom*>(e->obj)) {
-		OnCollisionWithMushroom(e);
+		if (!tailWhipTimer->IsRunning())
+			OnCollisionWithMushroom(e);
 		return;
 	}
 	if (dynamic_cast<CLeaf*>(e->obj)) {
-		OnCollisionWithLeaf(e);
+		if (!tailWhipTimer->IsRunning())
+			OnCollisionWithLeaf(e);
 		return;
 	}
 	if (dynamic_cast<CPiranhaPlant*>(e->obj)) {
@@ -221,6 +179,8 @@ CMario::CMario(float x, float y) : CGameObject(x, y)
 	untouchable = 0;
 	LoadProgress();
 	dragX = MARIO_DRAG_X;
+	tanookiTail = new CTanookiTail(x, y);
+	CGame::GetInstance()->GetCurrentScene()->AddObject(tanookiTail);
 }
 
 void CMario::AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj) {
@@ -260,10 +220,6 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		stompingStreak++;
 		AddScoreBasedOnStreak(stompingStreak, e->obj);
 	}
-	else if (tailWhipTimer->IsRunning() && e->ny == 0) {
-		goomba->TakeDamageFromTanookiTail();
-	}
-
 	else // hit by Goomba
 	{
 		if (goomba->GetState() != GOOMBA_STATE_DIE && goomba->GetState() != GOOMBA_STATE_DIE_WITH_BOUNCE)
@@ -330,13 +286,7 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	// hit the bottom of QuestionBlock >> Change the QuestionBlock state
 	if (e->ny > 0)
 	{
-		if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
-		{
-			if (questionBlock->GetItemID() == ITEM_LEAF && level == MARIO_LEVEL_SMALL) {
-				questionBlock->SetItemId(ITEM_MUSHROOM_RED);
-			}
-			questionBlock->SetState(QUESTION_BLOCK_STATE_BOUNCING);
-		}
+		questionBlock->TakeDamageFrom(this);
 	}
 }
 
@@ -976,12 +926,6 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 			top = y - MARIO_BIG_SITTING_BBOX_HEIGHT / 2;
 			right = left + MARIO_BIG_SITTING_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
-		}
-		else if (tailWhipTimer->IsRunning() && !isHittingWall) {
-			left = x - MARIO_ACTIVE_TAIL_BBOX_WIDTH / 2;
-			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
-			right = left + MARIO_ACTIVE_TAIL_BBOX_WIDTH;
-			bottom = top + MARIO_BIG_BBOX_HEIGHT;
 		}
 		else
 		{

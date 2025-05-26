@@ -273,37 +273,35 @@ void CGoomba::SetState(int state)
 
 void CGoomba::TakeDamageFrom(LPGAMEOBJECT obj)
 {
-	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
-		if (state != GOOMBA_STATE_DIE)
-		{
-			if (isParagoomba) {
-				SetState(GOOMBA_STATE_WALKING);
-				isParagoomba = false;
+	if (state != GOOMBA_STATE_DIE_WITH_BOUNCE && state != GOOMBA_STATE_DIE) {
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		if (CMario* mario = dynamic_cast<CMario*>(obj)) {
+			if (state != GOOMBA_STATE_DIE)
+			{
+				if (isParagoomba) {
+					SetState(GOOMBA_STATE_WALKING);
+					isParagoomba = false;
+				}
+				else {
+					SetState(GOOMBA_STATE_DIE);
+				}
 			}
-			else {
-				SetState(GOOMBA_STATE_DIE);
-			}
+			return;
 		}
-		return;
-	}
-	if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
-		SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
-		return;
-	}
-}
-
-void CGoomba::TakeDamageFromTanookiTail()
-{
-	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (state != GOOMBA_STATE_DIE_WITH_BOUNCE && state != GOOMBA_STATE_DIE)
-	{
-		if (mario->GetTailWhipTimer()->IsRunning()) {
-			nx = mario->GetDirection();
+		if (CKoopa* koopa = dynamic_cast<CKoopa*>(obj)) {
+			SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
+			return;
+		}
+		if (CTanookiTail* tanookiTail = dynamic_cast<CTanookiTail*>(obj)) {
+			float marioX, marioY;
+			mario->GetPosition(marioX, marioY);
+			if (marioX <= x)
+				nx = 1;
+			else
+				nx = -1;
 			SetState(GOOMBA_STATE_DIE_WITH_BOUNCE);
 			mario->AddScore(x, y - (GOOMBA_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, 100, true);
+			return;
 		}
 	}
-	return;
 }
-

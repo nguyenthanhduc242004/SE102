@@ -10,6 +10,7 @@
 #include "Game.h"
 #include "Leaf.h"
 #include "BrickDebris.h"
+#include "TanookiTail.h"
 
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f
@@ -164,7 +165,7 @@
 #define	MARIO_LEVEL_BIG		2
 #define MARIO_LEVEL_TANOOKI 3
 
-#define MARIO_ACTIVE_TAIL_BBOX_WIDTH		(MARIO_BIG_BBOX_WIDTH + 7 * 2)
+#define MARIO_ACTIVE_TAIL_BBOX_WIDTH	(MARIO_BIG_BBOX_WIDTH + 7 * 2)
 
 #define MARIO_BIG_BBOX_WIDTH  14
 #define MARIO_BIG_BBOX_HEIGHT 24
@@ -187,13 +188,14 @@
 #define MARIO_TRANSFORM_TIME 400
 
 #define MARIO_DIE_TIME	500
-
+class CTanookiTail;
 class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isSitting;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;
-	BOOLEAN isHittingWall = false;
+	//BOOLEAN isHittingWall = false;
+
 
 	bool isAscendingThroughPipe = false;
 	bool isDescendingThroughPipe = false;
@@ -222,6 +224,8 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 
 	CDeltaTimer* dieTimer = new CDeltaTimer();
 
+
+	CTanookiTail* tanookiTail = NULL;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);

@@ -87,7 +87,6 @@ public:
 		vy = this->vy;
 	}
 	void TakeDamageFrom(LPGAMEOBJECT obj) override;
-	void TakeDamageFromTanookiTail();
 
 	void SetSpawnerDead(bool isDead);
 };

@@ -109,3 +109,12 @@ void CQuestionBlock::SetState(int state)
 	}
 }
 
+void CQuestionBlock::TakeDamageFrom(LPGAMEOBJECT obj)
+{
+	if (state == QUESTION_BLOCK_STATE_ACTIVE) {
+		if (GetItemID() == ITEM_LEAF && ((CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer())->GetLevel() == MARIO_LEVEL_SMALL) {
+			SetItemId(ITEM_MUSHROOM_RED);
+		}
+			SetState(QUESTION_BLOCK_STATE_BOUNCING);
+	}
+}

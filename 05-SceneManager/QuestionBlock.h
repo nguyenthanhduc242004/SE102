@@ -34,7 +34,7 @@
 #define QUESTION_BLOCK_ITEM_STATE_SPAWNING	1
 
 
-class CQuestionBlock : public CGameObject {
+class CQuestionBlock : public CGameObject, public CDamageable {
 protected:
 	int hp = 1;
 
@@ -57,6 +57,7 @@ protected:
 public:
 	CQuestionBlock(float x, float y);
 	CQuestionBlock(float x, float y, int itemID);
+	virtual void TakeDamageFrom(LPGAMEOBJECT obj) override;
 	virtual void SetState(int state);
 	int GetItemID() {
 		return itemID;

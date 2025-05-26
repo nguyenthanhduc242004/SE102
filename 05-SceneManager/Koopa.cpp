@@ -304,14 +304,7 @@ void CKoopa::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 	if (state == KOOPAS_STATE_SPINNING) {
 		CQuestionBlock* questionBlock = dynamic_cast<CQuestionBlock*>(e->obj);
 		if (e->nx != 0) {
-			if (questionBlock->GetState() != QUESTION_BLOCK_STATE_DISABLED)
-			{
-				if (questionBlock->GetItemID() == ITEM_LEAF
-					&& ((CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer())->GetLevel() == MARIO_LEVEL_SMALL) {
-					questionBlock->SetItemId(ITEM_MUSHROOM_RED);
-				}
-				questionBlock->SetState(QUESTION_BLOCK_STATE_DISABLED);
-			}
+			questionBlock->TakeDamageFrom(this);
 		}
 	}
 	if (state == KOOPAS_STATE_WALKING && e->obj->GetState() == QUESTION_BLOCK_STATE_BOUNCING) {
@@ -516,15 +509,6 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 {
 	// damage caused directly by Mario's stomping
 	if (CMario* mario = dynamic_cast<CMario*>(obj)) {
-		if (mario->GetTailWhipTimer()->IsRunning()) {
-			if (state != KOOPAS_STATE_FIRST_BOUNCE) {
-				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
-				nx = mario->GetDirection();
-				SetState(KOOPAS_STATE_FIRST_BOUNCE);
-				return;
-			}
-			return;
-		}
 		if (type == KOOPAS_TYPE_WING) {
 			vy = 0;
 			ay = KOOPAS_GRAVITY;
@@ -555,6 +539,22 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 			return;
 		}
 		return;
+	}
+
+	if (dynamic_cast<CTanookiTail*>(obj)) {
+		if (state != KOOPAS_STATE_FIRST_BOUNCE) {
+			CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+			if (state != KOOPAS_STATE_SHELL)
+				mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+			float marioX, marioY;
+			mario->GetPosition(marioX, marioY);
+			if (marioX <= x)
+				nx = 1;
+			else
+				nx = -1;
+			SetState(KOOPAS_STATE_FIRST_BOUNCE);
+			return;
+		}
 	}
 
 	// Only Mario cant kill the koopa on his own, anything else will kill koopa
