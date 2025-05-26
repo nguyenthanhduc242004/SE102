@@ -38,8 +38,14 @@ void CBouncingCoin::OnCollisionWith(LPCOLLISIONEVENT e)
 		vx = -vx;
 	}*/
 
-	if (dynamic_cast<CQuestionBlock*>(e->obj))
+	if (dynamic_cast<CQuestionBlock*>(e->obj))	
 		OnCollisionWithQuestionBlock(e);
+	if (dynamic_cast<CMario*>(e->obj)) {
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		mario->AddScore(x, y - (QUESTION_BLOCK_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, false);
+		mario->AddCoin(1);
+		isDeleted = true;
+	}
 }
 
 void CBouncingCoin::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)

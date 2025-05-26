@@ -247,10 +247,10 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	//static overlap arguments, when Koopa is passively collided, or it is overlapping
 	//use for when Mario kicking it directly into a block
 	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
-		//if (dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CBrick*>(e->obj)) {
-		//	TakeDamageFrom(e->obj);
-		//	return;
-		//}
+		if (dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CBrick*>(e->obj)) {
+			TakeDamageFrom(e->obj);
+			return;
+		}
 
 		// Shell is held, basically invincible
 		if (isHeld) return;
@@ -524,7 +524,7 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 		return;
 	}
 
-	/*if (dynamic_cast<CQuestionBlock*>(obj) || dynamic_cast<CBrick*>(obj)) {
+	if (dynamic_cast<CQuestionBlock*>(obj) || dynamic_cast<CBrick*>(obj)) {
 		if (state != KOOPAS_STATE_FIRST_BOUNCE) {
 			float objectX, objectY;
 			obj->GetPosition(objectX, objectY);
@@ -540,7 +540,7 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 			return;
 		}
 		return;
-	}*/
+	}
 
 	if (dynamic_cast<CTanookiTail*>(obj)) {
 		if (state != KOOPAS_STATE_FIRST_BOUNCE) {
