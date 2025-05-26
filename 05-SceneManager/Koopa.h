@@ -126,4 +126,6 @@ public:
 		ay = 0.0f;
 	}
 	BOOLEAN IsHeld() const { return isHeld; }
+
+	void SetSpawnerDead(bool isDead);
 };

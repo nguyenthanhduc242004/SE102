@@ -8,17 +8,17 @@ void CTanookiTail::GetBoundingBox(float& left, float& top, float& right, float& 
 	bottom = top + TANOOKI_TAIL_BBOX_HEIGHT;
 }
 
-//void CTanookiTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
-//	HandleTimer(dt);
-//
-//	/*CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-//	float marioX, marioY;
-//	mario->GetPosition(marioX, marioY);
-//	SetPosition(marioX, marioY);*/
-//
-//	CGameObject::Update(dt, coObjects);
-//	CCollision::GetInstance()->Process(this, dt, coObjects);
-//}
+void CTanookiTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
+	//HandleTimer(dt);
+
+	/*CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	float marioX, marioY;
+	mario->GetPosition(marioX, marioY);
+	SetPosition(marioX, marioY);*/
+
+	CGameObject::Update(dt, coObjects);
+	CCollision::GetInstance()->Process(this, dt, coObjects);
+}
 
 void CTanookiTail::OnCollisionWith(LPCOLLISIONEVENT e)
 {

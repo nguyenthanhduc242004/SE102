@@ -247,10 +247,10 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	//static overlap arguments, when Koopa is passively collided, or it is overlapping
 	//use for when Mario kicking it directly into a block
 	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
-		if (dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CBrick*>(e->obj)) {
-			TakeDamageFrom(e->obj);
-			return;
-		}
+		//if (dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CBrick*>(e->obj)) {
+		//	TakeDamageFrom(e->obj);
+		//	return;
+		//}
 
 		// Shell is held, basically invincible
 		if (isHeld) return;
@@ -491,6 +491,7 @@ void CKoopa::SetState(int state)
 		ay = KOOPAS_GRAVITY;
 		isHeld = false;
 		dyingTimer.Start();
+		SetSpawnerDead(true);
 		break;
 	case KOOPAS_STATE_FIRST_BOUNCE:
 		spinningKillStreak = 0;
@@ -523,7 +524,7 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 		return;
 	}
 
-	if (dynamic_cast<CQuestionBlock*>(obj) || dynamic_cast<CBrick*>(obj)) {
+	/*if (dynamic_cast<CQuestionBlock*>(obj) || dynamic_cast<CBrick*>(obj)) {
 		if (state != KOOPAS_STATE_FIRST_BOUNCE) {
 			float objectX, objectY;
 			obj->GetPosition(objectX, objectY);
@@ -539,7 +540,7 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 			return;
 		}
 		return;
-	}
+	}*/
 
 	if (dynamic_cast<CTanookiTail*>(obj)) {
 		if (state != KOOPAS_STATE_FIRST_BOUNCE) {
@@ -561,7 +562,6 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 	if (state != KOOPAS_STATE_DIE_WITH_BOUNCE) {
 		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
-		nx = mario->GetDirection();
 		SetState(KOOPAS_STATE_DIE_WITH_BOUNCE);
 	}
 }
@@ -581,3 +581,12 @@ void CKoopa::Delete()
 	//DebugOut(L"%d\n", (int)(state == KOOPAS_STATE_SHELL));
 	///
 
+void CKoopa::SetSpawnerDead(bool isDead) {
+	vector<LPSPAWNER> spawners = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetSpawners();
+	for (LPSPAWNER spawner : spawners) {
+		if (spawner->obj == this) {
+			spawner->SetDead(isDead);
+			return;
+		}
+	}
+}
