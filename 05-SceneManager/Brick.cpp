@@ -42,12 +42,14 @@ void CBrick::SetState(int state)
 		break;
 	case BRICK_STATE_BROKEN:
 		CPlayScene* playScene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+		CMario* mario = (CMario*)playScene->GetPlayer();
 		float brickX, brickY;
 		GetPosition(brickX, brickY);
 		playScene->AddObject(new CBrickDebris(brickX, brickY, -1, -1));
 		playScene->AddObject(new CBrickDebris(brickX, brickY, -1, 1));
 		playScene->AddObject(new CBrickDebris(brickX, brickY, 1, -1));
 		playScene->AddObject(new CBrickDebris(brickX, brickY, 1, 1));
+		mario->AddScore(0, 0, 10, 0);
 		Delete();
 		break;
 	}

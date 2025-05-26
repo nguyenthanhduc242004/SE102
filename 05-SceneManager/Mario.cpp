@@ -342,6 +342,7 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
+	AddScore(0, 0, 50, 0);
 	e->obj->Delete();
 	coin++;
 }
@@ -473,8 +474,9 @@ void CMario::OnCollisionWithSwitch(LPCOLLISIONEVENT e) {
 void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
 	if (level == MARIO_LEVEL_SMALL)
 		e->obj->SetState(BRICK_STATE_BOUNCING);
-	else
+	else {
 		e->obj->SetState(BRICK_STATE_BROKEN);
+	}
 }
 void CMario::OnCollisionWithLift(LPCOLLISIONEVENT e)
 {
