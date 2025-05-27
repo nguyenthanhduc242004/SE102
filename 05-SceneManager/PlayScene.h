@@ -48,7 +48,7 @@
 
 #define MAX_SCENE_LINE 1024
 
-#define DEFAULT_CAM_Y 260.0f	
+#define DEFAULT_CAM_Y 264.0f	
 #define LEFT_BOUND_CAM_X 93		
 #define RESPAWN_OFFSET_CAM_X 70
 #define LOWER_BOUND_DEATHZONE 700.0f		//this is fixed
