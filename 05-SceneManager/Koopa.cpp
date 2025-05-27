@@ -247,13 +247,16 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	//static overlap arguments, when Koopa is passively collided, or it is overlapping
 	//use for when Mario kicking it directly into a block
 	if (e->nx == 0 && e->ny == 0 && e->dx == 0 && e->dy == 0) {
-		if (dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CBrick*>(e->obj)) {
-			TakeDamageFrom(e->obj);
-			return;
-		}
 
 		// Shell is held, basically invincible
 		if (isHeld) return;
+
+		if (dynamic_cast<CQuestionBlock*>(e->obj) || dynamic_cast<CBrick*>(e->obj)) {
+			if (e->obj->GetState() == QUESTION_BLOCK_STATE_BOUNCING && e->obj->GetState() == BRICK_STATE_BOUNCING)
+				TakeDamageFrom(e->obj);
+			return;
+		}
+
 		// overlapping platforms are allowed, except CSideCollidablePlatform
 		if (dynamic_cast<CPlatform*>(e->obj) != NULL && dynamic_cast<CSideCollidablePlatform*>(e->obj) == NULL && dynamic_cast<CBlockPlatform*>(e->obj) == NULL) return;
 		// center of shell goes inside bounding box, kill, else, dont, still count as hitting against surface
@@ -265,7 +268,6 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		if (y - KOOPAS_HOLDING_Y_OFFSET > b) return;
 		// judge overlaping vertical more harshly
 		// killed by overlapping kick
-		nx = 0;
 		TakeDamageFrom(NULL);
 		return;
 	}
@@ -562,6 +564,7 @@ void CKoopa::TakeDamageFrom(LPGAMEOBJECT obj)
 	if (state != KOOPAS_STATE_DIE_WITH_BOUNCE) {
 		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->AddScore(x, y - (KOOPAS_BBOX_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+		nx = 0;
 		SetState(KOOPAS_STATE_DIE_WITH_BOUNCE);
 	}
 }
