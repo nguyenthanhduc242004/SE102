@@ -641,7 +641,7 @@ void CPlayScene::Update(DWORD dt)
 		}
 	}
 
-	if ((cy > DEFAULT_CAM_Y || !isCameraIndependent) &&
+	if (isCameraIndependent || cy > DEFAULT_CAM_Y ||
 		!((dynamic_cast<CMario*>(GetPlayer())->HasFlied() && cy < DEFAULT_CAM_Y) || cy < DEFAULT_CAM_Y - game->GetBackBufferHeight() / 2 - 48)) {
 		cy = DEFAULT_CAM_Y;
 

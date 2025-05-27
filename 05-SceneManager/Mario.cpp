@@ -55,7 +55,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (tailWagTimer->IsRunning()) {
 		if (flyTimer.IsRunning())
 			vy = -MARIO_FLY_SPEED;
-		else
+		else if (vy > MARIO_SLOW_FALL_SPEED)
 			vy = MARIO_SLOW_FALL_SPEED;
 	}
 	if (vx > 0.0f) {
@@ -988,7 +988,8 @@ void CMario::HandleTimer(DWORD dt) {
 		tailWhipTimer->Tick(dt);
 	}
 	if (tailWagTimer->IsRunning()) {
-		hasFlied = true;
+		if (vy < 0)
+			hasFlied = true;
 		tailWagTimer->Tick(dt);
 	}
 	if (flyTimer.IsRunning()) {
