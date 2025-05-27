@@ -9,7 +9,7 @@
 #include "Koopa.h"
 
 #define BOOMERANG_BROTHER_BBOX_WIDTH           16
-#define BOOMERANG_BROTHER_BBOX_HEIGHT          24
+#define BOOMERANG_BROTHER_BBOX_HEIGHT          21
 
 #define BOOMERANG_BROTHER_STATE_WALKING         1
 #define BOOMERANG_BROTHER_STATE_DIE            2
