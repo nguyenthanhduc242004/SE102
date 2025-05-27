@@ -194,7 +194,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	BOOLEAN isOnPlatform;
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;
-	//BOOLEAN isHittingWall = false;
+	BOOLEAN hasFlied = false;
 
 
 	bool isAscendingThroughPipe = false;
@@ -214,7 +214,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	CDeltaTimer invincibleTimer;
 	CDeltaTimer kickTimer;
 	CDeltaTimer* tailWhipTimer = new CDeltaTimer();
-	CDeltaTimer	tailWagTimer;
+	CDeltaTimer* tailWagTimer = new CDeltaTimer;
 	CDeltaTimer flyTimer;
 	CDeltaTimer isOnPlatformTimer;
 	CDeltaTimer* resizeTimer = new CDeltaTimer();
@@ -395,6 +395,14 @@ public:
 
 	CDeltaTimer* GetTailWhipTimer() {
 		return this->tailWhipTimer;
+	}
+
+	CDeltaTimer* GetTailWagTimer() {
+		return this->tailWagTimer;
+	}
+
+	bool HasFlied() {
+		return this->hasFlied;
 	}
 
 	CDeltaTimer* GetTravellingThroughPipeTimer() {

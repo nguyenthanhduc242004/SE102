@@ -640,7 +640,12 @@ void CPlayScene::Update(DWORD dt)
 			break;
 		}
 	}
-	if (cy > DEFAULT_CAM_Y || (cy < DEFAULT_CAM_Y && cy > DEFAULT_CAM_Y - game->GetBackBufferHeight() / 3) || dynamic_cast<CMario*>(player)->GetLevel() != MARIO_LEVEL_TANOOKI || isCameraIndependent) cy = DEFAULT_CAM_Y;
+
+	if ((cy > DEFAULT_CAM_Y || !isCameraIndependent) &&
+		!((dynamic_cast<CMario*>(GetPlayer())->HasFlied() && cy < DEFAULT_CAM_Y) || cy < DEFAULT_CAM_Y - game->GetBackBufferHeight() / 2 - 48)) {
+		cy = DEFAULT_CAM_Y;
+
+	}
 
 	if (isCameraIndependent) cx = camLeftBound + playSceneTimer.getAccumulated() * CAMERA_MOVE_X_PER_MS;
 

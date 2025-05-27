@@ -52,7 +52,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
-	if (tailWagTimer.IsRunning()) {
+	if (tailWagTimer->IsRunning()) {
 		if (flyTimer.IsRunning())
 			vy = -MARIO_FLY_SPEED;
 		else
@@ -99,6 +99,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e) {
 
 	if (e->ny < 0 && !dynamic_cast<CGoomba*>(e->obj) && !dynamic_cast<CKoopa*>(e->obj)) {
 		stompingStreak = 0;
+		hasFlied = false;
 	}
 
 	if (dynamic_cast<CGoomba*>(e->obj)) {
@@ -621,7 +622,7 @@ int CMario::GetAniIdTanooki()
 				aniId = ID_ANI_MARIO_TAIL_FLY_LEFT;
 			}
 		}
-		else if (tailWagTimer.IsRunning()) {
+		else if (tailWagTimer->IsRunning()) {
 			if (nx >= 0) {
 				aniId = ID_ANI_MARIO_TAIL_WAGGING_RIGHT;
 			}
@@ -864,8 +865,8 @@ void CMario::SetState(int state)
 			isOnPlatform = false;
 		}
 		else if (level == MARIO_LEVEL_TANOOKI)
-			tailWagTimer.Start();
-		//if (!tailWagTimer.IsRunning())
+			tailWagTimer->Start();
+		//if (!tailWagTimer->IsRunning())
 		break;
 	case MARIO_STATE_RELEASE_JUMP:
 		//release jump reset gravity back
@@ -986,8 +987,9 @@ void CMario::HandleTimer(DWORD dt) {
 	{
 		tailWhipTimer->Tick(dt);
 	}
-	if (tailWagTimer.IsRunning()) {
-		tailWagTimer.Tick(dt);
+	if (tailWagTimer->IsRunning()) {
+		hasFlied = true;
+		tailWagTimer->Tick(dt);
 	}
 	if (flyTimer.IsRunning()) {
 		flyTimer.Tick(dt);
@@ -1009,8 +1011,8 @@ void CMario::HandleTimer(DWORD dt) {
 	{
 		tailWhipTimer->Reset();
 	}
-	if (tailWagTimer.HasPassed(MARIO_WAGGING_TAIL_TIME)) {
-		tailWagTimer.Reset();
+	if (tailWagTimer->HasPassed(MARIO_WAGGING_TAIL_TIME)) {
+		tailWagTimer->Reset();
 	}
 	if (flyTimer.HasPassed(MARIO_FLYING_TIME)) {
 		flyTimer.Reset();
