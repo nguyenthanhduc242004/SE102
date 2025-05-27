@@ -122,15 +122,30 @@ int CKoopa::GetAniIdGreen()
 		}
 		break;
 	case KOOPAS_STATE_SHELL:
-		aniId = ID_ANI_KOOPAS_GREEN_SHELL;
+		if (isUpsideDown)
+			aniId = ID_ANI_KOOPAS_GREEN_SHELL_UPSIDE_DOWN;
+		else
+			aniId = ID_ANI_KOOPAS_GREEN_SHELL;
 		break;
 	case KOOPAS_STATE_REVIVING:
-		aniId = ID_ANI_KOOPAS_GREEN_SHAKE;
+		if (isUpsideDown)
+			aniId = ID_ANI_KOOPAS_GREEN_SHAKE_UPSIDE_DOWN;
+		else
+			aniId = ID_ANI_KOOPAS_GREEN_SHAKE;
 		break;
 	case KOOPAS_STATE_SPINNING:
-		aniId = (nx < 0)
-			? ID_ANI_KOOPAS_GREEN_SPINNING_LEFT
-			: ID_ANI_KOOPAS_GREEN_SPINNING_RIGHT;
+		if (nx < 0) {
+			if (isUpsideDown)
+				aniId = ID_ANI_KOOPAS_GREEN_SPINNING_LEFT_UPSIDE_DOWN;
+			else
+				aniId = ID_ANI_KOOPAS_GREEN_SPINNING_LEFT;
+		}
+		else {
+			if (isUpsideDown)
+				aniId = ID_ANI_KOOPAS_GREEN_SPINNING_RIGHT_UPSIDE_DOWN;
+			else
+				aniId = ID_ANI_KOOPAS_GREEN_SPINNING_RIGHT;
+		}
 		break;
 	case KOOPAS_STATE_DIE_WITH_BOUNCE:
 	case KOOPAS_STATE_SECOND_BOUNCE:
