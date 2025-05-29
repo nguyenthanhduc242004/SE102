@@ -8,7 +8,7 @@
 #include "Animations.h"
 #include "PlayScene.h"
 
-CGame * CGame::__instance = NULL;
+CGame* CGame::__instance = NULL;
 
 /*
 	Initialize DirectX, create a Direct3D device for rendering within the window, initial Sprite library for
@@ -98,7 +98,7 @@ void CGame::Init(HWND hWnd, HINSTANCE hInstance)
 	//
 	//
 
-	D3D10_SAMPLER_DESC desc; 
+	D3D10_SAMPLER_DESC desc;
 	desc.Filter = D3D10_FILTER_MIN_MAG_POINT_MIP_LINEAR;
 	desc.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP;
 	desc.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP;
@@ -152,6 +152,45 @@ void CGame::Init(HWND hWnd, HINSTANCE hInstance)
 
 	DebugOut((wchar_t*)L"[INFO] InitDirectX has been successful\n");
 
+	// Create a 1x1 black texture to use for fade transitions
+	{
+		D3D10_TEXTURE2D_DESC texDesc = {};
+		texDesc.Width = 1;
+		texDesc.Height = 1;
+		texDesc.MipLevels = 1;
+		texDesc.ArraySize = 1;
+		texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		texDesc.SampleDesc.Count = 1;
+		texDesc.Usage = D3D10_USAGE_DEFAULT;
+		texDesc.BindFlags = D3D10_BIND_SHADER_RESOURCE;
+
+		DWORD blackPixel = 0xFF000000; // Solid black with full alpha
+
+		D3D10_SUBRESOURCE_DATA initData = {};
+		initData.pSysMem = &blackPixel;
+		initData.SysMemPitch = sizeof(DWORD);
+
+		ID3D10Texture2D* pTexture = nullptr;
+		HRESULT texHr = pD3DDevice->CreateTexture2D(&texDesc, &initData, &pTexture);
+		if (FAILED(texHr))
+		{
+			DebugOut(L"[ERROR] Failed to create black texture\n");
+			return;
+		}
+
+		ID3D10ShaderResourceView* pSRV = nullptr;
+		texHr = pD3DDevice->CreateShaderResourceView(pTexture, nullptr, &pSRV);
+		if (FAILED(texHr))
+		{
+			DebugOut(L"[ERROR] Failed to create shader resource view for black texture\n");
+			pTexture->Release();
+			return;
+		}
+
+		blackTexture = new CTexture(pTexture, pSRV);
+		DebugOut(L"[INFO] Created 1x1 black texture for fade transitions\n");
+	}
+
 	return;
 }
 
@@ -189,8 +228,8 @@ void CGame::Draw(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int s
 		sprite.TexSize.x = 1.0f;
 		sprite.TexSize.y = 1.0f;
 
-		if (spriteWidth==0) spriteWidth = tex->getWidth();
-		if (spriteHeight==0) spriteHeight = tex->getHeight();
+		if (spriteWidth == 0) spriteWidth = tex->getWidth();
+		if (spriteHeight == 0) spriteHeight = tex->getHeight();
 	}
 	else
 	{
@@ -249,7 +288,7 @@ LPTEXTURE CGame::LoadTexture(LPCWSTR texturePath)
 		return NULL;
 	}
 
-	D3DX10_IMAGE_LOAD_INFO info; 
+	D3DX10_IMAGE_LOAD_INFO info;
 	ZeroMemory(&info, sizeof(D3DX10_IMAGE_LOAD_INFO));
 	info.Width = imageInfo.Width;
 	info.Height = imageInfo.Height;
@@ -485,11 +524,11 @@ void CGame::Load(LPCWSTR gameFile)
 		if (line == "[SETTINGS]") { section = GAME_FILE_SECTION_SETTINGS; continue; }
 		if (line == "[TEXTURES]") { section = GAME_FILE_SECTION_TEXTURES; continue; }
 		if (line == "[SCENES]") { section = GAME_FILE_SECTION_SCENES; continue; }
-		if (line[0] == '[') 
-		{ 
-			section = GAME_FILE_SECTION_UNKNOWN; 
+		if (line[0] == '[')
+		{
+			section = GAME_FILE_SECTION_UNKNOWN;
 			DebugOut(L"[ERROR] Unknown section: %s\n", ToLPCWSTR(line));
-			continue; 
+			continue;
 		}
 
 		//
@@ -511,11 +550,11 @@ void CGame::Load(LPCWSTR gameFile)
 
 void CGame::SwitchScene()
 {
-	if (next_scene < 0 || next_scene == current_scene) return; 
+	if (next_scene < 0 || next_scene == current_scene) return;
 
 	DebugOut(L"[INFO] Switching to scene %d\n", next_scene);
 
-	if (scenes[current_scene]!=NULL)
+	if (scenes[current_scene] != NULL)
 		scenes[current_scene]->Unload();
 
 	CSprites::GetInstance()->Clear();
@@ -531,7 +570,7 @@ void CGame::InitiateSwitchScene(int scene_id)
 {
 	next_scene = scene_id;
 }
-void CGame::ReloadCurrentScene() 
+void CGame::ReloadCurrentScene()
 {
 	DebugOut(L"[INFO] Reloading current scene...\n");
 	if (scenes[current_scene] != NULL)
@@ -563,6 +602,53 @@ CGame::~CGame()
 	pRenderTargetView->Release();
 	pSwapChain->Release();
 	pD3DDevice->Release();
+}
+
+void CGame::StartFadeTransition(std::function<void()> onComplete)
+{
+	fadeState = FADE_OUT;
+	fadeAlpha = 0.0f;
+	onFadeComplete = onComplete;
+}
+
+void CGame::UpdateFade(DWORD dt)
+{
+	//DebugOut(L"Update dt: %d\n", dt);
+	float delta = fadeSpeed * dt / 1000.0f;
+
+	switch (fadeState)
+	{
+	case FADE_OUT:
+		fadeAlpha += delta;
+		if (fadeAlpha >= 1.0f)
+		{
+			fadeAlpha = 1.0f;
+			fadeState = FADE_WAIT;
+
+			// Call scene reload or whatever you passed in
+			if (onFadeComplete) onFadeComplete();
+
+			fadeState = FADE_IN; // start fading back in
+		}
+		break;
+
+	case FADE_IN:
+		fadeAlpha -= delta;
+		if (fadeAlpha <= 0.0f)
+		{
+			fadeAlpha = 0.0f;
+			fadeState = FADE_NONE;
+			onFadeComplete = nullptr;
+		}
+		break;
+	}
+}
+
+void CGame::RenderFadeOverlay()
+{
+	if (fadeAlpha <= 0.0f || blackTexture == nullptr) return;
+
+	Draw(0, 0, blackTexture, nullptr, fadeAlpha, GetBackBufferWidth(), GetBackBufferHeight());
 }
 
 CGame* CGame::GetInstance()

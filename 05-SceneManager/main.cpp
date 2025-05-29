@@ -94,6 +94,7 @@ void Render()
 	pD3DDevice->OMSetBlendState(g->GetAlphaBlending(), NewBlendFactor, 0xffffffff);
 
 	CGame::GetInstance()->GetCurrentScene()->Render();
+	CGame::GetInstance()->RenderFadeOverlay();
 
 	spriteHandler->End();
 	pSwapChain->Present(0, 0);
@@ -175,6 +176,7 @@ int Run()
 
 			CGame::GetInstance()->ProcessKeyboard();			
 			Update(dt);
+			CGame::GetInstance()->UpdateFade(dt);
 			Render();
 
 			CGame::GetInstance()->SwitchScene();

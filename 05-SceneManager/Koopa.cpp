@@ -49,7 +49,6 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		probe->SetSoftPosition(probeX, probeY); 
 		probe->Update(dt, coObjects);
 	}
-
 }
 
 // --- Render()

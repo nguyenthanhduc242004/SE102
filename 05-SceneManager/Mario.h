@@ -332,22 +332,7 @@ public:
 	}
 
 	// will only be called when Mario fall out of bound
-	virtual void Delete() override {
-		CGame* game = CGame::GetInstance();
-		if (state != MARIO_STATE_DIE) {
-			float x, y;
-			game->GetCamPos(x, y);
-			this->SetPosition(x + game->GetBackBufferWidth() / 2, y + game->GetBackBufferHeight() + MARIO_SMALL_BBOX_HEIGHT);
-			SetState(MARIO_STATE_DIE);
-			return;
-		}
-		if (life > 0) {
-			SaveProgress();
-			game->ReloadCurrentScene();
-			return;
-		}
-		game->EndGame();
-	}
+	virtual void Delete() override;
 	void AddLife(float x, float y, bool showEffect);
 	void AddScore(float x, float y, int value, bool showEffect);
 	void AddCoin(int value);

@@ -4,15 +4,15 @@
 #include <d3dx10.h>
 #include <unordered_map>
 #include <string>
+#include <functional>
+#include <dinput.h>
+#include "Texture.h"
+#include "KeyEventHandler.h"
+#include "Scene.h"
 
 using namespace std;
 
 #define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
-
-#include "Texture.h"
-#include "KeyEventHandler.h"
-#include "Scene.h"
 
 #define MAX_FRAME_RATE 100
 #define KEYBOARD_BUFFER_SIZE 1024
@@ -27,6 +27,13 @@ enum GameState {
 	GAME_RUNNING,
 	GAME_PAUSED,
 	GAME_OVER,
+};
+
+enum FadeState {
+	FADE_NONE,
+	FADE_OUT,  // going to black
+	FADE_WAIT, // black, do something
+	FADE_IN    // back to normal
 };
 
 class CGame
@@ -72,6 +79,12 @@ class CGame
 	int coin = 0;
 	int level = 1;
 	BOOLEAN isUpKeyBeingPressed = false;
+	float fadeAlpha = 0.0f;
+	FadeState fadeState = FADE_NONE;
+	float fadeSpeed = 0.5f; // alpha units per second
+
+	function<void()> onFadeComplete = nullptr; // what to do at full black
+	LPTEXTURE blackTexture = nullptr;  // At the class level
 public:
 	// Init DirectX, Sprite Handler
 	void Init(HWND hWnd, HINSTANCE hInstance);
@@ -178,6 +191,10 @@ public:
 	}
 	void SetUpKeyBeingPressed(BOOLEAN isUpKeyBeingPressed) { this->isUpKeyBeingPressed = isUpKeyBeingPressed; }
 	BOOLEAN GetUpKeyBeingPressed() { return this->isUpKeyBeingPressed; }
+
+	void StartFadeTransition(std::function<void()> onComplete);
+	void UpdateFade(DWORD dt);
+	void RenderFadeOverlay();
 };
 typedef CGame* LPGAME;
 

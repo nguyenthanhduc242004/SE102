@@ -13,7 +13,6 @@ protected:
 	bool hasHit = false;
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render() {
 		//RenderBoundingBox();
 	};
@@ -25,6 +24,6 @@ protected:
 	//void HandleTimer(DWORD dt);
 public:
 	CTanookiTail(float x, float y) : CGameObject(x, y) {}
-	//void SetState(int state);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 };
 

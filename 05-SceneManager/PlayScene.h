@@ -51,7 +51,7 @@
 #define DEFAULT_CAM_Y 264.0f	
 #define LEFT_BOUND_CAM_X 93		
 #define RESPAWN_OFFSET_CAM_X 70
-#define LOWER_BOUND_DEATHZONE 700.0f		//this is fixed
+#define LOWER_BOUND_DEATHZONE 700.0f		
 #define DEFAULT_PLAYTIME        300	
 #define CAMERA_MOVE_X_PER_MS	0.02f
 
@@ -79,7 +79,7 @@ protected:
 
 	CDeltaTimer playSceneTimer;
 	int remainTime;
-	int playSceneTime = DEFAULT_PLAYTIME; // second, when use timer (Tick)--->multiply by 1000. for now, not used, just go by the default
+	int playSceneTime = DEFAULT_PLAYTIME; 
 	bool isCameraIndependent = false;	//also know as isSceneAthletic, since the scene will move constantly
 	float camLeftBound = LEFT_BOUND_CAM_X;
 	float lowerDeathBound = LOWER_BOUND_DEATHZONE;

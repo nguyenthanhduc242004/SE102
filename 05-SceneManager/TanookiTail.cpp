@@ -9,13 +9,6 @@ void CTanookiTail::GetBoundingBox(float& left, float& top, float& right, float& 
 }
 
 void CTanookiTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
-	//HandleTimer(dt);
-
-	/*CMario* mario = (CMario*)((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	float marioX, marioY;
-	mario->GetPosition(marioX, marioY);
-	SetPosition(marioX, marioY);*/
-
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }

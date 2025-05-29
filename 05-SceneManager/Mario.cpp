@@ -71,8 +71,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
+	tanookiTail->Update(dt, coObjects);
 }
-
 void CMario::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
@@ -181,7 +181,6 @@ CMario::CMario(float x, float y) : CGameObject(x, y)
 	LoadProgress();
 	dragX = MARIO_DRAG_X;
 	tanookiTail = new CTanookiTail(x, y);
-	CGame::GetInstance()->GetCurrentScene()->AddObject(tanookiTail);
 }
 
 void CMario::AddScoreBasedOnStreak(int streak, LPGAMEOBJECT obj) {
@@ -943,6 +942,26 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 	}
+}
+
+void CMario::Delete() {
+	CGame* game = CGame::GetInstance();
+	if (state != MARIO_STATE_DIE) {
+		float x, y;
+		game->GetCamPos(x, y);
+		this->SetPosition(x + game->GetBackBufferWidth() / 2, y + game->GetBackBufferHeight() + MARIO_SMALL_BBOX_HEIGHT);
+		SetState(MARIO_STATE_DIE);
+		return;
+	}
+	if (life > 0) {
+		SaveProgress();
+		game->StartFadeTransition([]() {
+			CGame::GetInstance()->ReloadCurrentScene();
+			});
+		isDeleted = true;
+		return;
+	}
+	game->EndGame();
 }
 
 void CMario::AddLife(float x, float y, bool showEffect)
