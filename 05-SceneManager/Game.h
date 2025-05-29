@@ -81,7 +81,7 @@ class CGame
 	BOOLEAN isUpKeyBeingPressed = false;
 	float fadeAlpha = 0.0f;
 	FadeState fadeState = FADE_NONE;
-	float fadeSpeed = 0.5f; // alpha units per second
+	float fadeSpeed = 1.3f; // alpha units per second
 
 	function<void()> onFadeComplete = nullptr; // what to do at full black
 	LPTEXTURE blackTexture = nullptr;  // At the class level

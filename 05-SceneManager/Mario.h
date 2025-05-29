@@ -247,7 +247,7 @@ class CMario : public CGameObject, public CMoveable, public CDamageable {
 	int GetAniIdResize(int level);
 	int GetAniIdTransform(int level);
 
-
+	bool isSoftDeleted = false;
 public:
 	CMario(float x, float y);
 

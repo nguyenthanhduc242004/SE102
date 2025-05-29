@@ -3,6 +3,7 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isSoftDeleted) return;
 	tanookiTail->SetPosition(x, y);
 
 	vy += ay * dt;
@@ -301,7 +302,10 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* portal = (CPortal*)e->obj;
 	SaveProgress();
-	CGame::GetInstance()->InitiateSwitchScene(portal->GetSceneId());
+	int nextSceneId = portal->GetSceneId();
+	CGame::GetInstance()->StartFadeTransition([nextSceneId]() {
+		CGame::GetInstance()->InitiateSwitchScene(nextSceneId);
+		});
 }
 
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
@@ -945,6 +949,7 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 }
 
 void CMario::Delete() {
+	if (isSoftDeleted) return;
 	CGame* game = CGame::GetInstance();
 	if (state != MARIO_STATE_DIE) {
 		float x, y;
@@ -958,7 +963,7 @@ void CMario::Delete() {
 		game->StartFadeTransition([]() {
 			CGame::GetInstance()->ReloadCurrentScene();
 			});
-		isDeleted = true;
+		isSoftDeleted = true;
 		return;
 	}
 	game->EndGame();

@@ -633,7 +633,7 @@ void CGame::UpdateFade(DWORD dt)
 		break;
 
 	case FADE_IN:
-		fadeAlpha -= delta;
+		fadeAlpha -= delta * 3;
 		if (fadeAlpha <= 0.0f)
 		{
 			fadeAlpha = 0.0f;
@@ -648,7 +648,7 @@ void CGame::RenderFadeOverlay()
 {
 	if (fadeAlpha <= 0.0f || blackTexture == nullptr) return;
 
-	Draw(0, 0, blackTexture, nullptr, fadeAlpha, GetBackBufferWidth(), GetBackBufferHeight());
+	Draw(GetBackBufferWidth()/2 + 1, GetBackBufferHeight()/2, blackTexture, nullptr, fadeAlpha, GetBackBufferWidth(), GetBackBufferHeight());
 }
 
 CGame* CGame::GetInstance()
