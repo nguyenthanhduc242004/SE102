@@ -14,6 +14,7 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		game->ReloadCurrentScene();
 		return;
 	}
+	if (mario->GetState() == MARIO_STATE_DIE) return;
 	if (KeyCode == DIK_ESCAPE) {
 		if (game->GetCurrentGameState() == GAME_RUNNING) {
 			game->PauseGame();
