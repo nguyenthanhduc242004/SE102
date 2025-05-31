@@ -49,6 +49,36 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CGameObject::Update(dt, coObjects);
 }
+void CQuestionBlock::OnCollisionWith(LPCOLLISIONEVENT e) {
+	if (CMario* mario = dynamic_cast<CMario*>(e->obj)) {
+		if (!e->nx && !e->ny && !e->dx && !e->dy) {
+			float ml, mt, mr, mb, mx, my, l, t, r, b;
+			mario->GetBoundingBox(ml, mt, mr, mb);
+			mario->GetPosition(mx, my);
+			GetBoundingBox(l, t, r, b);
+
+			// Calculate overlap on both axes
+			float overlapLeft = mr - l;
+			float overlapRight = r - ml;
+			float overlapTop = mb - t;
+			float overlapBottom = b - mt;
+
+			// Find the minimal translation axis
+			float minOverlapX = (overlapLeft < overlapRight) ? -overlapLeft : overlapRight;
+			float minOverlapY = (overlapTop < overlapBottom) ? -overlapTop : overlapBottom;
+
+			if (std::abs(minOverlapX) < std::abs(minOverlapY)) {
+				// Push mario along X
+				mx += minOverlapX;
+			}
+			else {
+				// Push mario along Y
+				my += minOverlapY;
+			}
+			mario->SetPosition(mx, my);
+		}
+	}
+}
 
 
 void CQuestionBlock::Render()

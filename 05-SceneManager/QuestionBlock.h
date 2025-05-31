@@ -53,7 +53,7 @@ protected:
 	virtual int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 1; }
 	void SetHp(int hp) { this->hp = hp; }
-
+	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 public:
 	CQuestionBlock(float x, float y);
 	CQuestionBlock(float x, float y, int itemID);

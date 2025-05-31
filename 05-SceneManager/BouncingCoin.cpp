@@ -6,7 +6,7 @@
 
 
 CBouncingCoin::CBouncingCoin(float x, float y) :CGameObject(x, y) {
-	state = BOUNCING_COIN_STATE_IDLE;
+	SetState(BOUNCING_COIN_STATE_IDLE);
 }
 
 void CBouncingCoin::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -17,35 +17,29 @@ void CBouncingCoin::GetBoundingBox(float& left, float& top, float& right, float&
 	bottom = top + BOUNCING_COIN_HEIGHT;
 }
 
-void CBouncingCoin::OnNoCollision(DWORD dt)
-{
-	x += vx * dt;
-	y += vy * dt;
-};
-
 void CBouncingCoin::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (!e->obj->IsBlocking()) return;
-	// Return when a BouncingCoin collide with a BouncingCoin??? -> No need
-	//if (dynamic_cast<CBouncingCoin*>(e->obj)) return;
+	//if (!e->obj->IsBlocking()) return;
+	//// Return when a BouncingCoin collide with a BouncingCoin??? -> No need
+	////if (dynamic_cast<CBouncingCoin*>(e->obj)) return;
 
-	/*if (e->ny != 0)
-	{
-		vy = 0;
-	}
-	else if (e->nx != 0)
-	{
-		vx = -vx;
-	}*/
+	///*if (e->ny != 0)
+	//{
+	//	vy = 0;
+	//}
+	//else if (e->nx != 0)
+	//{
+	//	vx = -vx;
+	//}*/
 
-	if (dynamic_cast<CQuestionBlock*>(e->obj))	
-		OnCollisionWithQuestionBlock(e);
-	if (dynamic_cast<CMario*>(e->obj)) {
-		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-		mario->AddScore(x, y - (QUESTION_BLOCK_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, false);
-		mario->AddCoin(1);
-		isDeleted = true;
-	}
+	//if (dynamic_cast<CQuestionBlock*>(e->obj))
+	//	OnCollisionWithQuestionBlock(e);
+	//if (dynamic_cast<CMario*>(e->obj)) {
+	//	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	//	mario->AddScore(x, y - (QUESTION_BLOCK_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, false);
+	//	mario->AddCoin(1);
+	//	isDeleted = true;
+	//}
 }
 
 void CBouncingCoin::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
@@ -66,9 +60,17 @@ void CBouncingCoin::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 
 void CBouncingCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	x += vx * dt;
+	y += vy * dt;
+
 	vy += ay * dt;
 	vx += ax * dt;
-
+	if (state == BOUNCING_COIN_STATE_SPAWNING && y > y0) {
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		mario->AddScore(x, y - (QUESTION_BLOCK_HEIGHT + FLYING_SCORE_HEIGHT) / 2, FLYING_SCORE_TYPE_100, true);
+		mario->AddCoin(1);
+		isDeleted = true;
+	}
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -86,6 +88,7 @@ void CBouncingCoin::SetState(int state) {
 	switch (state)
 	{
 	case BOUNCING_COIN_STATE_IDLE:
+		y0 = y;
 		break;
 	case BOUNCING_COIN_STATE_SPAWNING:
 		ay = BOUNCING_COIN_GRAVITY;
